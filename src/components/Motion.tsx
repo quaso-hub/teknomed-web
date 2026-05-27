@@ -537,11 +537,15 @@ export function HorizontalScrollSection({
 type MarqueeProps = { children: ReactNode; className?: string; speed?: number; reverse?: boolean }
 export function MarqueeTrack({ children, className, speed = 30, reverse = false }: MarqueeProps) {
   const reduced = useReducedMotion()
-  if (reduced) return <div className={cn('flex w-full overflow-hidden', className)}>{children}</div>
+  if (reduced) return (
+    <div className={cn('flex w-full overflow-hidden', className)}>
+      <div className="flex min-w-full justify-around gap-6">{children}</div>
+    </div>
+  )
   return (
     <div className={cn('flex w-full overflow-hidden select-none', className)}>
       <div
-        className="flex shrink-0 gap-6 [&>*]:shrink-0 group"
+        className="flex min-w-full shrink-0 justify-around gap-6 [&>*]:shrink-0"
         style={{
           animation: `marquee ${speed}s linear infinite${reverse ? ' reverse' : ''}`,
           animationPlayState: 'running',
@@ -551,10 +555,9 @@ export function MarqueeTrack({ children, className, speed = 30, reverse = false 
       >
         {children}
       </div>
-      {/* Duplicate for seamless loop */}
       <div
         aria-hidden
-        className="flex shrink-0 gap-6 [&>*]:shrink-0"
+        className="flex min-w-full shrink-0 justify-around gap-6 [&>*]:shrink-0"
         style={{ animation: `marquee ${speed}s linear infinite${reverse ? ' reverse' : ''}` }}
       >
         {children}

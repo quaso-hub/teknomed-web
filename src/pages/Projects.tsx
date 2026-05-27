@@ -31,10 +31,20 @@ export default function Projects() {
     document.addEventListener('keydown', handleKey)
     document.body.style.overflow = 'hidden'
     lenis?.stop()
+    // Force scroll to current position so fixed modal stays centered
+    const scrollY = window.scrollY
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
     modalRef.current?.focus()
     return () => {
       document.removeEventListener('keydown', handleKey)
+      const scrollY = Math.abs(parseInt(document.body.style.top || '0'))
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
       document.body.style.overflow = ''
+      window.scrollTo(0, scrollY)
       lenis?.start()
     }
   }, [selectedProject, lenis])
