@@ -11,7 +11,8 @@ import {
   Counter, FloatCard, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
   CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
-  ScrollTiltCard, DepthReveal,
+  ScrollTiltCard, DepthReveal, MouseParallaxLayer,
+  TiltCard3D, ScrollStory,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { Badge } from '../components/ui/Badge'
@@ -97,8 +98,10 @@ export default function Home() {
           <div className="absolute inset-0 hero-grid opacity-25" />
           {/* Vignette */}
           <div className="vignette absolute inset-0" />
-          {/* Ambient medical/MEP icons - parallax on scroll */}
-          <AmbientIcons containerRef={heroRef} />
+          {/* Ambient icons with mouse parallax — NRG dual-lag pattern */}
+          <MouseParallaxLayer strength={20} lag={10} className="absolute inset-0 pointer-events-none">
+            <AmbientIcons containerRef={heroRef} />
+          </MouseParallaxLayer>
         </div>
 
         <motion.div
@@ -285,7 +288,7 @@ export default function Home() {
           {services.map(({ icon: Icon, title, desc, color, to }, index) => (
             <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
-                <ScrollTiltCard maxTilt={4} className="h-full">
+                <TiltCard3D maxTilt={8} className="h-full">
                   <Card className={`group h-full card-shine holo-card transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth flip-reveal flip-reveal-delay-${Math.min(index + 1, 5)}`}>
                     <CardContent className="p-6 space-y-4">
                       <div className="flex items-center justify-between">
@@ -314,12 +317,23 @@ export default function Home() {
                       </div>
                     </CardContent>
                   </Card>
-                </ScrollTiltCard>
+                </TiltCard3D>
               </Link>
             </StaggerItem3D>
           ))}
         </Stagger>
       </div>
+
+      {/* ── Scroll Story — Vaonis Hyperia scroll-scrubbed text ───────────────── */}
+      <ScrollStory
+        blocks={[
+          'Kami membangun fasilitas kesehatan yang menyelamatkan nyawa.',
+          'Setiap instalasi gas medis dirancang dengan presisi tinggi.',
+          'Dari Jawa Timur hingga Sulawesi — standar yang sama.',
+          'Kepercayaan dibangun satu proyek dalam satu waktu.',
+        ]}
+        className="bg-[var(--tm-footer)]"
+      />
 
       {/* ── Area Coverage Marquee — NRG editorial style ─────────────────────── */}
       <div className="relative overflow-hidden border-y border-[var(--tm-border)]"

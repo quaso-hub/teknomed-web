@@ -752,3 +752,187 @@ export function DepthReveal({
     </motion.div>
   )
 }
+
+// ── MouseParallaxLayer — NRG dual-lag mouse parallax ─────────────────────────
+// Wrap hero content in this. Background layer moves slow, foreground fast.
+export function MouseParallaxLayer({
+  children,
+  className,
+  strength = 16,
+  lag = 12,
+}: {
+  children: ReactNode
+  className?: string
+  strength?: number
+  lag?: number
+}) {
+  const reduced = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+  const state = useRef({ x: 0, y: 0, xLag: 0, yLag: 0 })
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    if (reduced) return
+    const onMove = (e: MouseEvent) => {
+      state.current.x = e.clientX
+      state.current.y = e.clientY
+    }
+    window.addEventListener('mousemove', onMove)
+    const tick = () => {
+      const s = state.current
+      s.xLag += (s.x - s.xLag) / lag
+      s.yLag += (s.y - s.yLag) / lag
+      if (ref.current) {
+        const x = (s.xLag / window.innerWidth - 0.5) * -strength
+        const y = (s.yLag / window.innerHeight - 0.5) * -(strength * 0.6)
+        ref.current.style.transform = `translate(${x}px, ${y}px)`
+      }
+      rafRef.current = requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [reduced, lag, strength])
+
+  return (
+    <div ref={ref} className={cn('will-change-transform', className)}>
+      {children}
+    </div>
+  )
+}
+
+// ── TiltCard3D — Digitalists 3D tilt with content depth parallax ─────────────
+export function TiltCard3D({
+  children,
+  className,
+  maxTilt = 12,
+  perspective = 1000,
+}: {
+  children: ReactNode
+  className?: string
+  maxTilt?: number
+  perspective?: number
+}) {
+  const reduced = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
+  const x = useSpring(rawX, { stiffness: 150, damping: 20 })
+  const y = useSpring(rawY, { stiffness: 150, damping: 20 })
+  const rotateX = useTransform(y, [-0.5, 0.5], [maxTilt, -maxTilt])
+  const rotateY = useTransform(x, [-0.5, 0.5], [-maxTilt, maxTilt])
+  const contentX = useTransform(x, [-0.5, 0.5], [-12, 12])
+  const contentY = useTransform(y, [-0.5, 0.5], [-6, 6])
+
+  if (reduced) return <div className={className}>{children}</div>
+
+  return (
+    <div style={{ perspective }}>
+      <motion.div
+        ref={ref}
+        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+        className={cn('cursor-pointer', className)}
+        onMouseMove={(e) => {
+          const rect = ref.current!.getBoundingClientRect()
+          rawX.set((e.clientX - rect.left) / rect.width - 0.5)
+          rawY.set((e.clientY - rect.top) / rect.height - 0.5)
+        }}
+        onMouseLeave={() => { rawX.set(0); rawY.set(0) }}
+      >
+        <motion.div style={{ x: contentX, y: contentY }}>
+          {children}
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+}
+
+// ── ScrollStoryBlock — Vaonis Hyperia scroll-scrubbed text ───────────────────
+// Each block fades in word-by-word, then blurs out as you scroll past.
+export function ScrollStoryBlock({
+  text,
+  index,
+  total,
+  containerRef,
+}: {
+  text: string
+  index: number
+  total: number
+  containerRef: React.RefObject<HTMLElement | null>
+}) {
+  const reduced = useReducedMotion()
+  const words = text.split(' ')
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  })
+  const sliceSize = 1 / total
+  const start = index * sliceSize
+  const mid = start + sliceSize * 0.35
+  const end = start + sliceSize
+
+  const opacity = useTransform(scrollYProgress, [start, mid, end - sliceSize * 0.1, end], [0, 1, 1, 0])
+  const blur = useTransform(scrollYProgress, [start, mid, end - sliceSize * 0.1, end], [10, 0, 0, 8])
+  const y = useTransform(scrollYProgress, [start, mid], [30, 0])
+  const smoothBlur = useSpring(blur, { stiffness: 80, damping: 18 })
+  const filterVal = useTransform(smoothBlur, (v) => `blur(${v}px)`)
+
+  if (reduced) return null
+
+  return (
+    <motion.div
+      style={{ opacity, y, filter: filterVal }}
+      className="absolute inset-0 flex items-center justify-center px-8 text-center"
+    >
+      <p className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+        {words.map((word, i) => (
+          <motion.span
+            key={i}
+            className="mr-[0.25em] inline-block"
+            style={{
+              opacity: useTransform(
+                scrollYProgress,
+                [start + i * 0.003, start + i * 0.003 + 0.04],
+                [0, 1]
+              ),
+            }}
+          >
+            {word}
+          </motion.span>
+        ))}
+      </p>
+    </motion.div>
+  )
+}
+
+// ── ScrollStory — Vaonis Hyperia full story section ──────────────────────────
+export function ScrollStory({
+  blocks,
+  className,
+}: {
+  blocks: string[]
+  className?: string
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  return (
+    <div
+      ref={containerRef}
+      className={cn('relative', className)}
+      style={{ height: `${blocks.length * 120}vh` }}
+    >
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {blocks.map((text, i) => (
+          <ScrollStoryBlock
+            key={i}
+            text={text}
+            index={i}
+            total={blocks.length}
+            containerRef={containerRef as React.RefObject<HTMLElement | null>}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
