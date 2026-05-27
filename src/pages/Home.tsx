@@ -9,8 +9,9 @@ import { useRef } from 'react'
 import { AmbientIcons } from '../components/AmbientIcons'
 import {
   Counter, FloatCard, MagneticWrap, Reveal,
-  Stagger, StaggerItem, SpotlightSection,
+  Stagger, StaggerItem, StaggerItem3D, SpotlightSection,
   CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
+  ScrollTiltCard, DepthReveal,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { Badge } from '../components/ui/Badge'
@@ -190,12 +191,12 @@ export default function Home() {
               </Button>
             </Reveal>
 
-            {/* Stats - bento grid */}
-            <ScaleReveal delay={0.2} className="mt-10">
+            {/* Stats - bento grid with 3D depth */}
+            <DepthReveal delay={0.2} className="mt-10">
               <div className="grid grid-cols-3 gap-3">
                 {HOME_STATS.map(({ value, suffix, label, icon: Icon, sub }) => (
-                  <FloatCard key={label} className="h-full">
-                    <Card className="h-full card-shine">
+                  <ScrollTiltCard key={label} maxTilt={5} className="h-full">
+                    <Card className="h-full card-shine shadow-depth">
                       <CardContent className="p-4">
                         <div
                           className="grid size-9 place-items-center rounded-md mb-2"
@@ -213,10 +214,10 @@ export default function Home() {
                         <p className="text-[0.65rem] text-[var(--tm-muted)]">{sub}</p>
                       </CardContent>
                     </Card>
-                  </FloatCard>
+                  </ScrollTiltCard>
                 ))}
               </div>
-            </ScaleReveal>
+            </DepthReveal>
           </div>
 
           {/* Right: animated visual card — Vaonis perspective depth */}
@@ -304,38 +305,40 @@ export default function Home() {
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map(({ icon: Icon, title, desc, color, to }, index) => (
-            <StaggerItem key={title}>
+            <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
-                <Card className="group h-full card-shine float-shadow transition-colors duration-300 hover:border-[var(--tm-primary)]">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div
-                        className="grid size-12 place-items-center rounded-xl"
-                        style={{ background: `color-mix(in srgb, ${color} 15%, var(--tm-surface-muted))`, color }}
-                      >
-                        <Icon className="size-6" />
+                <ScrollTiltCard maxTilt={4} className="h-full">
+                  <Card className="group h-full card-shine transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div
+                          className="grid size-12 place-items-center rounded-xl"
+                          style={{ background: `color-mix(in srgb, ${color} 15%, var(--tm-surface-muted))`, color }}
+                        >
+                          <Icon className="size-6" />
+                        </div>
+                        <span
+                          className="service-num text-3xl font-bold opacity-10 group-hover:opacity-20 transition-opacity"
+                          style={{ color }}
+                        >
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
                       </div>
-                      <span
-                        className="service-num text-3xl font-bold opacity-10 group-hover:opacity-20 transition-opacity"
-                        style={{ color }}
+                      <div>
+                        <h3 className="font-serif text-lg font-bold text-[var(--tm-text-strong)]">{title}</h3>
+                        <p className="mt-2 text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
+                      </div>
+                      <div
+                        className="flex items-center gap-1.5 text-xs font-semibold group-hover:gap-2 transition-all"
+                        style={{ color: 'var(--tm-primary)' }}
                       >
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[var(--tm-text-strong)]">{title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
-                    </div>
-                    <div
-                      className="flex items-center gap-1.5 text-xs font-semibold group-hover:gap-2 transition-all"
-                      style={{ color: 'var(--tm-primary)' }}
-                    >
-                      Lihat detail <ArrowRight className="size-3" />
-                    </div>
-                  </CardContent>
-                </Card>
+                        Lihat detail <ArrowRight className="size-3" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </ScrollTiltCard>
               </Link>
-            </StaggerItem>
+            </StaggerItem3D>
           ))}
         </Stagger>
       </div>

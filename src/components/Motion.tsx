@@ -654,3 +654,98 @@ export function ViewParallax({ children, className, speed = 0.3 }: ViewParallaxP
     </div>
   )
 }
+
+// ── StaggerItem3D - elements fly in from Z-axis (NRG card grid pattern) ─────────
+export function StaggerItem3D({ children, className }: { children: ReactNode; className?: string }) {
+  const reduced = useReducedMotion()
+  return (
+    <motion.div
+      className={className}
+      style={{ transformStyle: 'preserve-3d' }}
+      variants={reduced ? {} : {
+        hidden: {
+          opacity: 0,
+          scale: 0.85,
+          rotateX: 12,
+          y: 24,
+          filter: 'blur(4px)',
+        },
+        visible: {
+          opacity: 1,
+          scale: 1,
+          rotateX: 0,
+          y: 0,
+          filter: 'blur(0px)',
+          transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+        },
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// ── ScrollTiltCard - card tilts driven by scroll position (Vaonis Hyperia) ───────
+type ScrollTiltProps = { children: ReactNode; className?: string; maxTilt?: number }
+
+export function ScrollTiltCard({ children, className, maxTilt = 7 }: ScrollTiltProps) {
+  const reduced = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  })
+  const rotateX = useTransform(
+    scrollYProgress,
+    [0, 0.35, 0.5, 0.65, 1],
+    [maxTilt, maxTilt * 0.3, 0, -maxTilt * 0.3, -maxTilt]
+  )
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.93, 1, 1, 0.93])
+  const opacity = useTransform(scrollYProgress, [0, 0.12, 0.88, 1], [0, 1, 1, 0])
+  const springRotateX = useSpring(rotateX, { stiffness: 80, damping: 22 })
+  const springScale = useSpring(scale, { stiffness: 80, damping: 22 })
+
+  if (reduced) return <div className={className}>{children}</div>
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{
+        rotateX: springRotateX,
+        scale: springScale,
+        opacity,
+        perspective: 1000,
+        transformStyle: 'preserve-3d',
+        willChange: 'transform, opacity',
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// ── DepthReveal - section entrance with Z-depth + blur (EatNaked/Digitalists) ───
+export function DepthReveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  const reduced = useReducedMotion()
+  return (
+    <motion.div
+      className={className}
+      initial={reduced ? false : { opacity: 0, scale: 0.9, y: 40, filter: 'blur(12px)', rotateX: 8 }}
+      whileInView={reduced ? undefined : { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)', rotateX: 0 }}
+      viewport={{ once: true, margin: '-8% 0px' }}
+      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay }}
+      style={{ transformStyle: 'preserve-3d', perspective: 800 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
