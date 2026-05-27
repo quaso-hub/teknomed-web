@@ -569,9 +569,10 @@ export function CustomCursor() {
         left: sx,
         top: sy,
         scale,
-        width: 10,
-        height: 10,
+        width: 8,
+        height: 8,
         backgroundColor: 'var(--tm-primary)',
+        opacity: 0.55,
         mixBlendMode: 'multiply',
       }}
     />

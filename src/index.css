@@ -76,10 +76,8 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-stopped { overflow: hidden; }
 .lenis.lenis-smooth iframe { pointer-events: none; }
 
-/* Custom cursor - hide default on desktop when CustomCursor is active */
-@media (pointer: fine) {
-  * { cursor: none !important; }
-}
+/* CustomCursor co-exists with the native cursor as a small accent dot.
+   Native cursor stays visible so inputs, links, and touch behavior remain normal. */
 
 body {
   margin: 0;

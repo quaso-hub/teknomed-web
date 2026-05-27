@@ -1,5 +1,5 @@
 import { ArrowRight, Move3d, Sparkles } from 'lucide-react'
-import { lazy, Suspense, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Reveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
@@ -8,8 +8,9 @@ import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card'
 
-// Heavy: split into its own chunk so /catalog list doesn't pay the three.js cost
-const Product3DViewer = lazy(() => import('../components/Product3DViewer'))
+// 3D viewer dipause dulu - ganti placeholder.
+// File Product3DViewer.tsx tetap ada di src/components/, tinggal di-wire ulang
+// nanti setelah arah final 3D experience disepakati (lihat PLAN.md fase 4).
 
 type Product = {
   slug: string
@@ -156,33 +157,39 @@ export default function ProductDetail() {
             <Reveal delay={0.1}>
               <Card className="h-full overflow-hidden">
                 <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
-                  <Suspense
-                    fallback={
-                      <div className="grid h-full w-full place-items-center bg-[linear-gradient(135deg,var(--tm-primary),var(--tm-accent))]">
-                        <div className="flex items-center gap-3 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
-                          <span className="size-2 animate-pulse rounded-full bg-white" />
-                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/90">Memuat 3D viewer</span>
-                        </div>
-                      </div>
-                    }
+                  {/* Placeholder gradient panel - 3D viewer akan kembali setelah Phase 4 */}
+                  <div
+                    className="grid h-full w-full place-items-center"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, var(--tm-primary) 0%, var(--tm-accent) 60%, var(--tm-footer) 100%)',
+                    }}
                   >
-                    <Product3DViewer slug={product.slug} className="h-full w-full" />
-                  </Suspense>
-                  <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
-                    <Move3d className="size-3" />
-                    Interactive 3D
+                    <div className="flex flex-col items-center gap-3 px-6 text-center">
+                      <div className="grid size-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+                        <Move3d className="size-6 text-white" />
+                      </div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/85">
+                        3D experience coming soon
+                      </p>
+                      <p className="max-w-[28ch] text-sm leading-6 text-white/75">
+                        Visualisasi interaktif sedang disiapkan ulang untuk pengalaman
+                        produk yang lebih mendalam.
+                      </p>
+                    </div>
                   </div>
-                  <div className="pointer-events-none absolute bottom-3 right-3 rounded-md bg-black/40 px-2 py-1 text-[10px] font-medium text-white/85 backdrop-blur-sm">
-                    Drag untuk memutar - scroll untuk zoom
+                  <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                    <Sparkles className="size-3" />
+                    Preview
                   </div>
                 </div>
                 <CardContent className="space-y-4 p-6">
                   <div className="rounded-md border border-dashed border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4 text-sm text-[var(--tm-muted)]">
                     <p className="font-semibold text-[var(--tm-text-strong)]">Tentang preview 3D</p>
                     <ul className="mt-2 space-y-1 text-xs">
-                      <li>- Visualisasi prosedural untuk gambaran cepat komponen utama</li>
-                      <li>- Auto-rotate, drag mouse / touch untuk eksplor sudut</li>
-                      <li>- Mengikuti tema light/dark secara otomatis</li>
+                      <li>- Visualisasi interaktif sedang disiapkan ulang</li>
+                      <li>- Akan tersedia di update berikutnya</li>
+                      <li>- Sementara, tim teknis dapat mengirim spesifikasi penuh</li>
                     </ul>
                   </div>
                   <div className="flex items-center gap-2 text-sm font-semibold text-[var(--tm-text-strong)]">
