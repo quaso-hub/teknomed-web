@@ -1,7 +1,7 @@
 import { useState, useMemo, useDeferredValue, useTransition } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Search, X, SlidersHorizontal } from 'lucide-react'
-import { Reveal, Stagger, StaggerItem } from '../components/Motion'
+import { Reveal, Stagger, StaggerItem3D, DepthReveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import Badge from '../components/ui/Badge'
@@ -156,7 +156,7 @@ export default function Catalog() {
             const Icon = product.icon
             const isHovered = hoveredCard === product.slug
             return (
-              <StaggerItem key={product.slug}>
+              <StaggerItem3D key={product.slug}>
                 <Link to={`/catalog/${product.slug}`} className="block h-full no-underline">
                   <Card
                     className="h-full transition-all duration-300 cursor-pointer group perf-card"
@@ -263,7 +263,7 @@ export default function Catalog() {
                     </CardContent>
                   </Card>
                 </Link>
-              </StaggerItem>
+              </StaggerItem3D>
             )
           })}
         </Stagger>

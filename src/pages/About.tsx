@@ -1,5 +1,5 @@
 import { ClipboardList, ShieldCheck, Compass, FileCheck2, Users } from 'lucide-react'
-import { FloatCard, Stagger, StaggerItem, CharReveal, ClipReveal, ScaleReveal } from '../components/Motion'
+import { FloatCard, Stagger, StaggerItem3D, CharReveal, ClipReveal, DepthReveal, ScrollTiltCard } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'
@@ -28,7 +28,7 @@ export default function About() {
         description="Medical contractor yang berdiri sejak 2021, berfokus pada konstruksi MEP, tata udara, instalasi gas medis, MOT, dan maintenance untuk fasilitas kesehatan di Indonesia Timur."
       >
         <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <ScaleReveal>
+          <DepthReveal>
             <Card className="float-shadow">
               <CardHeader>
                 <div className="flex flex-wrap gap-2">
@@ -52,9 +52,9 @@ export default function About() {
                 </CardContent>
               </ClipReveal>
             </Card>
-          </ScaleReveal>
+          </DepthReveal>
 
-          <ScaleReveal delay={0.15}>
+          <DepthReveal delay={0.15}>
             <Card className="h-full overflow-hidden float-shadow">
               <CardHeader
                 className="relative rounded-t-lg overflow-hidden animated-gradient"
@@ -76,7 +76,7 @@ export default function About() {
               <CardContent className="space-y-3 p-6">
                 <Stagger>
                   {whyUs.map(({ icon: Icon, title, desc }) => (
-                    <StaggerItem key={title}>
+                    <StaggerItem3D key={title}>
                       <div className="flex gap-3 rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4 hover:border-[var(--tm-primary)] transition-colors duration-300">
                         <div
                           className="grid size-10 shrink-0 place-items-center rounded-md bg-[var(--tm-surface-strong)]"
@@ -89,12 +89,12 @@ export default function About() {
                           <p className="mt-1 text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
                         </div>
                       </div>
-                    </StaggerItem>
+                    </StaggerItem3D>
                   ))}
                 </Stagger>
               </CardContent>
             </Card>
-          </ScaleReveal>
+          </DepthReveal>
         </div>
       </Section>
 
@@ -104,7 +104,7 @@ export default function About() {
         description="Visi dan misi menjadi fondasi setiap keputusan dan langkah kerja kami."
       >
         <Stagger className="grid gap-6 md:grid-cols-2">
-          <StaggerItem>
+          <StaggerItem3D>
             <FloatCard>
               <Card className="h-full">
                 <CardHeader>
@@ -123,9 +123,9 @@ export default function About() {
                 </CardContent>
               </Card>
             </FloatCard>
-          </StaggerItem>
+          </StaggerItem3D>
 
-          <StaggerItem>
+          <StaggerItem3D>
             <FloatCard>
               <Card className="h-full">
                 <CardHeader>
@@ -149,7 +149,7 @@ export default function About() {
                 </CardContent>
               </Card>
             </FloatCard>
-          </StaggerItem>
+          </StaggerItem3D>
         </Stagger>
       </Section>
     </div>

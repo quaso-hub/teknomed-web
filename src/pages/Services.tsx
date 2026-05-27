@@ -1,5 +1,5 @@
 import { ArrowRight, Package, Hammer, Gauge, Zap, Snowflake, Layers3, Stethoscope } from 'lucide-react'
-import { FloatCard, Reveal } from '../components/Motion'
+import { FloatCard, Reveal, DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'
