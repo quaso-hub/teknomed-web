@@ -9,8 +9,8 @@ import { useRef } from 'react'
 import { AmbientIcons } from '../components/AmbientIcons'
 import {
   Counter, FloatCard, MagneticWrap, Reveal,
-  Stagger, StaggerItem, StaggerItem3D, SpotlightSection,
-  CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
+  Stagger, StaggerItem3D, SpotlightSection,
+  CharReveal, ClipReveal, MarqueeTrack,
   ScrollTiltCard, DepthReveal,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
@@ -89,38 +89,16 @@ export default function Home() {
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <SpotlightSection className="relative overflow-hidden" ref={heroRef}>
-        {/* Animated background orbs */}
+        {/* Animated background — CSS mesh gradient (no Three.js, zero bundle cost) */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          {/* Base gradient */}
-          <div
-            className="absolute inset-0 animated-gradient"
-            style={{
-              background: [
-                'radial-gradient(ellipse 80% 60% at 15% 15%, color-mix(in srgb, var(--tm-primary) 12%, transparent), transparent 60%)',
-                'radial-gradient(ellipse 60% 60% at 85% 80%, color-mix(in srgb, var(--tm-accent) 8%, transparent), transparent 60%)',
-                'var(--tm-page)',
-              ].join(', '),
-            }}
-          />
-          {/* Grid */}
-          <div className="absolute inset-0 hero-grid" />
+          {/* Layered conic + radial mesh — shader.se feel without WebGL */}
+          <div className="absolute inset-0 hero-mesh-bg" />
+          {/* Grid overlay */}
+          <div className="absolute inset-0 hero-grid opacity-25" />
           {/* Vignette */}
           <div className="vignette absolute inset-0" />
           {/* Ambient medical/MEP icons - parallax on scroll */}
           <AmbientIcons containerRef={heroRef} />
-          {/* Floating orbs */}
-          <div
-            className="orb-float absolute -top-32 -left-32 size-96 rounded-full opacity-30 blur-3xl pointer-events-none"
-            style={{ background: 'color-mix(in srgb, var(--tm-primary) 35%, transparent)' }}
-          />
-          <div
-            className="orb-float-delay absolute top-1/2 -right-24 size-72 rounded-full opacity-20 blur-3xl pointer-events-none"
-            style={{ background: 'color-mix(in srgb, var(--tm-accent) 40%, transparent)' }}
-          />
-          <div
-            className="orb-float absolute bottom-0 left-1/3 size-64 rounded-full opacity-15 blur-3xl pointer-events-none"
-            style={{ background: 'color-mix(in srgb, var(--tm-secondary) 50%, transparent)', animationDelay: '-5s' }}
-          />
         </div>
 
         <motion.div

@@ -571,3 +571,61 @@ h1, h2, h3 { font-optical-sizing: auto; }
     0 0 0 1px color-mix(in srgb, var(--tm-primary) 30%, transparent);
   transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ─── Hero mesh background (CSS-only, shader.se feel, zero bundle cost) ─────── */
+@property --mesh-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --mesh-x {
+  syntax: '<percentage>';
+  initial-value: 20%;
+  inherits: false;
+}
+@property --mesh-y {
+  syntax: '<percentage>';
+  initial-value: 20%;
+  inherits: false;
+}
+
+@keyframes mesh-rotate {
+  to { --mesh-angle: 360deg; }
+}
+@keyframes mesh-drift-x {
+  0%, 100% { --mesh-x: 15%; }
+  33%       { --mesh-x: 75%; }
+  66%       { --mesh-x: 40%; }
+}
+@keyframes mesh-drift-y {
+  0%, 100% { --mesh-y: 15%; }
+  33%       { --mesh-y: 70%; }
+  66%       { --mesh-y: 85%; }
+}
+
+.hero-mesh-bg {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at var(--mesh-x) var(--mesh-y),
+      color-mix(in srgb, var(--tm-primary) 18%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 80% 75%,
+      color-mix(in srgb, var(--tm-accent) 12%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 40% 40% at 50% 50%,
+      color-mix(in srgb, var(--tm-secondary) 6%, transparent),
+      transparent 70%
+    ),
+    var(--tm-page);
+  animation:
+    mesh-drift-x 14s ease-in-out infinite,
+    mesh-drift-y 18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mesh-bg { animation: none; }
+}
