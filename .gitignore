@@ -10,7 +10,18 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist_old_*/
 *.local
+
+# Local-only guidance (do not commit)
+skills/
+scientific-skills/
+arahan/
+TEKNOMED_WEBSITE_ANALYSIS.md
+DO_NOT_UPLOAD.md
+opencode-b-opus.cmd
+.kiro/
+logo/
 
 # Editor directories and files
 .vscode/*
