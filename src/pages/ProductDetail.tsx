@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Reveal } from '../components/Motion'
+import { MarkersRail } from '../components/MarkersRail'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'
@@ -145,6 +146,7 @@ export default function ProductDetail() {
 
   const [activeId, setActiveId] = useState<string>(CHAPTERS[0].id)
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   // IntersectionObserver: highlight chapter saat 30% terlihat di viewport
   useEffect(() => {
@@ -215,9 +217,18 @@ export default function ProductDetail() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[200px_minmax(0,1fr)]">
-        <ChapterTOC activeId={activeId} onJump={jumpTo} />
+        {/* Left col: TOC + MarkersRail */}
+        <div className="hidden lg:flex lg:gap-3">
+          <MarkersRail
+            sections={CHAPTERS}
+            activeId={activeId}
+            containerRef={contentRef}
+            className="pt-[4.5rem] shrink-0"
+          />
+          <ChapterTOC activeId={activeId} onJump={jumpTo} />
+        </div>
 
-        <div className="space-y-12">
+        <div ref={contentRef} className="space-y-12">
           {/* Chapter: Overview */}
           <section id="overview" className="scroll-mt-24">
             <Reveal>
@@ -335,7 +346,7 @@ export default function ProductDetail() {
           {/* Chapter: CTA */}
           <section id="cta" className="scroll-mt-24">
             <Reveal>
-              <Card>
+              <Card className="gradient-border">
                 <CardHeader>
                   <div className="grid size-10 place-items-center rounded-md bg-[var(--tm-surface-muted)] text-[var(--tm-primary)]">
                     <Phone className="size-5" />

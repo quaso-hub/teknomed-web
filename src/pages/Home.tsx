@@ -6,6 +6,7 @@ import {
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useRef } from 'react'
+import { AmbientIcons } from '../components/AmbientIcons'
 import {
   Counter, FloatCard, MagneticWrap, Reveal,
   Stagger, StaggerItem, SpotlightSection,
@@ -104,6 +105,8 @@ export default function Home() {
           <div className="absolute inset-0 hero-grid" />
           {/* Vignette */}
           <div className="vignette absolute inset-0" />
+          {/* Ambient medical/MEP icons - parallax on scroll */}
+          <AmbientIcons containerRef={heroRef} />
           {/* Floating orbs */}
           <div
             className="orb-float absolute -top-32 -left-32 size-96 rounded-full opacity-30 blur-3xl pointer-events-none"
@@ -219,7 +222,7 @@ export default function Home() {
 
           {/* Right: animated visual card */}
           <ScaleReveal delay={0.3} className="h-full">
-            <Card className="overflow-hidden h-full float-shadow">
+            <Card className="overflow-hidden h-full float-shadow gradient-border">
               <CardHeader className="p-0">
                 {/* Animated mesh gradient background */}
                 <div

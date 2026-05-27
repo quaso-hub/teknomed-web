@@ -1,12 +1,27 @@
 import * as React from 'react'
 import { cn } from '../../lib/utils'
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+type CardVariant = 'default' | 'glass'
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: CardVariant
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = 'default', ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'rounded-lg border border-[var(--tm-border)] bg-[var(--tm-surface)] text-[var(--tm-text)] shadow-sm transition-colors duration-300',
+        'rounded-lg border text-[var(--tm-text)] shadow-sm transition-colors duration-300',
+        variant === 'default' && 'border-[var(--tm-border)] bg-[var(--tm-surface)]',
+        variant === 'glass' && [
+          'border-white/20 dark:border-white/10',
+          'bg-white/20 dark:bg-white/5',
+          'backdrop-blur-xl',
+          '[backdrop-filter:blur(16px)_saturate(1.6)]',
+          '[-webkit-backdrop-filter:blur(16px)_saturate(1.6)]',
+          '@supports(backdrop-filter:blur(1px)):bg-white/20',
+        ],
         className
       )}
       {...props}
