@@ -620,3 +620,66 @@ Prioritas UI/UX/QoL yang masih pending:
 
 *Dokumen ini ditulis untuk minimum redundancy + maximum signal. Tidak ada filler.
 Update dokumen ini setiap kali ada arsitektur change atau decision baru.*
+## 17. Sesi Penerima: State Saat Ini (2026-05-27)
+
+> Section ini ditulis di akhir sesi. Inti: tahu apa yang baru, apa yang perlu
+> dibaca selanjutnya, apa yang sengaja di-pause.
+
+### 17.1 Apa yang baru dari Section 16
+- Lint, type, build hijau di commit 481de8e (main).
+- 13 ESLint error dari section 16 sudah dibereskan: CommandPalette
+  use-before-declare diperbaiki dengan useCallback + atomic state reset di
+  open(); Motion HorizontalScrollSection useTransform-in-callback diekstrak ke
+  HScrollDot subcomponent; Toast useToast dipindah ke toast-context.ts supaya
+  fast-refresh aman.
+- Cursor: rule global cursor: none di index.css dihapus. Native cursor balik.
+  CustomCursor jadi accent dot 8px opacity 0.55, mixBlendMode multiply.
+- 3D viewer di /catalog/:slug DI-PAUSE: ProductDetail sekarang render
+  placeholder gradient dengan icon Move3d + copy "3D experience coming soon".
+  File Product3DViewer.tsx tetap ada di src/components/, tinggal di-rewire
+  saat fase 4 plan.
+- Bundle: ProductDetail 7.18 kB (turun dari 7.6), Three.js chunk hilang dari
+  graph (tidak ada route yang panggil), main CSS turun 63 -> 55 kB.
+- File baru: PLAN.md di root. Berisi 6 fase eksekusi + research findings
+  dari 5 site referensi.
+- .gitignore tambah dist_old_*/, .kiro/, logo/, opencode-b-opus.cmd.
+
+### 17.2 Yang harus dibaca sesi penerima
+1. PLAN.md (root) - prioritas eksekusi 6 fase + research synthesis.
+2. HANDOFF.md section 0-16 - konteks bisnis + arsitektur + history.
+3. src/components/Motion.tsx - 16 motion primitives (lihat list di section 6).
+4. src/index.css - design tokens + animations + utility classes.
+5. src/data/projects.ts dan src/data/products.ts - data shape untuk Catalog
+   dan Projects.
+
+### 17.3 Yang sengaja di-pause (jangan diaktifkan tanpa diskusi)
+- Product3DViewer.tsx import. Sudah dibuang dari ProductDetail. File tetap
+  ada untuk re-wire nanti.
+- NoiseMeshGradient.tsx + shader file. Sudah di-write tapi tidak di-import
+  dari mana pun. Aktifkan kalau fase 4 putuskan Hero butuh shader background.
+- HorizontalScrollSection di Home untuk Services. Sudah aktif, tapi pertimbangkan
+  apakah sesuai dengan brand medical (saran PLAN: re-evaluate di fase 3).
+
+### 17.4 Referensi visual baru yang harus jadi standar
+1. https://worldofnrg.com - card-based topical explorer + video micro-content
+2. https://vaonis.com/pages/product/hyperia - chapter-scroll product page
+3. https://www.shader.se - self-aware studio voice
+4. https://digitalists.at - cursor identity + word-by-word reveal
+5. https://eatnaked.co - metric-driven storytelling
+
+Sintesis lengkap di PLAN.md section 2.
+
+### 17.5 Quick context untuk pertanyaan umum
+- "Cursor hilang?" Sudah balik. Section 17.1.
+- "3D viewer kemana?" Di-pause sampai fase 4. Section 17.1 dan PLAN section 3.
+- "Mau tambah feature X?" Cek dulu PLAN.md, masuk fase berapa? Kalau belum di
+  list, append ke section 1.5 (TODO HANDOFF) atau ke fase yang relevan.
+- "Build error setelah git pull?" Lihat HANDOFF section 2 (build commands +
+  EPERM workaround).
+- "Mau ganti warna brand?" src/index.css :root + .dark blocks. Token, bukan
+  hex langsung di komponen.
+
+### 17.6 Commit history singkat sesi 2026-05-27
+- 739ea6a feat: full UI/UX rebuild - components, motion primitives, data layer, QoL
+- 481de8e fix(ux): restore native cursor and pause 3D viewer with placeholder
+
