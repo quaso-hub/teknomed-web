@@ -99,7 +99,7 @@ const CHAPTERS: Chapter[] = [
   { id: 'cta', label: 'Konsultasi' },
 ]
 
-/** Sticky TOC dengan IntersectionObserver untuk highlight section aktif. */
+/** Sticky TOC desktop — vertical list di sisi kiri */
 function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block">
@@ -134,6 +134,36 @@ function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: strin
           )
         })}
       </ul>
+    </nav>
+  )
+}
+
+/** Mobile TOC — sticky horizontal pill strip di bawah navbar */
+function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
+  return (
+    <nav
+      aria-label="Navigasi bab produk"
+      className="sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-[var(--tm-page)]/90 px-4 py-2.5 backdrop-blur-sm lg:hidden"
+      style={{ scrollbarWidth: 'none' }}
+    >
+      {CHAPTERS.map(ch => {
+        const active = ch.id === activeId
+        return (
+          <button
+            key={ch.id}
+            type="button"
+            onClick={() => onJump(ch.id)}
+            className={[
+              'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200',
+              active
+                ? 'bg-[var(--tm-primary)] text-white shadow-sm'
+                : 'bg-[var(--tm-surface-muted)] text-[var(--tm-muted)] hover:bg-[var(--tm-surface-active)] hover:text-[var(--tm-text)]',
+            ].join(' ')}
+          >
+            {ch.label}
+          </button>
+        )
+      })}
     </nav>
   )
 }
@@ -215,6 +245,9 @@ export default function ProductDetail() {
           ← Kembali ke Catalog
         </Link>
       </div>
+
+      {/* Mobile chapter nav — horizontal pill strip, sticky below navbar */}
+      <MobileChapterNav activeId={activeId} onJump={jumpTo} />
 
       <div className="grid gap-8 lg:grid-cols-[200px_minmax(0,1fr)]">
         {/* Left col: TOC + MarkersRail */}

@@ -159,7 +159,7 @@ export default function Projects() {
                   <StaggerItem key={project.id}>
                     <TiltCard className="h-full">
                       <Card
-                        className="group h-full cursor-pointer border border-[var(--tm-border)] bg-[var(--tm-surface)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                        className="group h-full cursor-pointer border border-[var(--tm-border)] bg-[var(--tm-surface)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)] hover:border-[var(--tm-primary)/30]"
                         onClick={() => setSelectedProject(project)}
                       >
                         <CardContent className="flex h-full flex-col p-6">

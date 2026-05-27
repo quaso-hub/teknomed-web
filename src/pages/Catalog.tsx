@@ -135,7 +135,7 @@ export default function Catalog() {
                 style={{
                   backgroundColor: activeCategory === cat ? 'var(--tm-primary)' : 'transparent',
                   color: activeCategory === cat ? '#ffffff' : 'var(--tm-text)',
-                  boxShadow: activeCategory === cat ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
+                  boxShadow: activeCategory === cat ? 'var(--shadow-sm), 0 0 0 1px var(--tm-primary)' : 'none',
                 }}
               >
                 {cat}
@@ -161,8 +161,8 @@ export default function Catalog() {
                       backgroundColor: 'var(--tm-surface)',
                       transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
                       boxShadow: isHovered
-                        ? '0 12px 32px rgba(0,0,0,0.12)'
-                        : '0 1px 3px rgba(0,0,0,0.04)',
+                        ? 'var(--shadow-lg), 0 0 0 1px var(--tm-border)'
+                        : 'var(--shadow-sm)',
                     }}
                     onMouseEnter={() => setHoveredCard(product.slug)}
                     onMouseLeave={() => setHoveredCard(null)}
