@@ -683,3 +683,49 @@ Sintesis lengkap di PLAN.md section 2.
 - 739ea6a feat: full UI/UX rebuild - components, motion primitives, data layer, QoL
 - 481de8e fix(ux): restore native cursor and pause 3D viewer with placeholder
 
+---
+
+## 18. Sesi Penerima: State Saat Ini (2026-05-28)
+
+> Section ini ditulis di akhir sesi 2026-05-28. Semua fase 1-4 selesai.
+> Sesi ini fokus pada: Phase 4 completion + bug fixes + 3D vibe upgrade dari 5 referensi.
+
+### 18.1 Commit history sesi 2026-05-28
+- 9d2c3e7 feat(phase-1): foundation hardening complete
+- c26f893 feat(phase-2): page consistency pass - validation, TOC, route skeletons
+- 7aac403 feat(phase-3): visual identity layer - cursor/word/prefix/easing
+- 6ed057c fix(critical): RWD layout, marquee dedup, dark theme tokens, z-index ladder
+- ab07ea5 feat(phase-4): premium style polish - glass card, ambient icons, markers rail, gradient border, ease audit
+- fa03a28 fix(ux): mobile chapter nav, dark-mode shadow tokens, ease consistency
+- b4a974b feat(ux): navbar editorial redesign, mobile chapter nav fix, lenis scroll lock, marquee full-width, shadow tokens
+- 58717ad feat(3d-vibe): NRG text wipe, EatNaked glassmorphism CTA, Vaonis perspective card, depth shadows
+
+### 18.2 File baru yang ditambahkan sesi ini
+- `src/components/AmbientIcons.tsx` - 6 floating medical/MEP SVG icons di Hero, parallax scroll
+- `src/components/MarkersRail.tsx` - animated SVG vertical rail + wave morph di ProductDetail
+- `PLAN_PHASE4_REVISED.md` - revised Phase 4 plan (web-wide premium, bukan 3D product viewer)
+
+### 18.3 Perubahan signifikan
+1. **Navbar** - editorial redesign: index prefix (01-06), animated active pill (layoutId),
+   theme toggle dengan AnimatePresence rotate, mobile drawer dengan numbered nav items.
+2. **CommandPalette** - Lenis stop/start saat modal buka/tutup (fix scroll-behind-modal).
+3. **ProductDetail** - MobileChapterNav: sticky horizontal pill strip di mobile (top-14).
+4. **Home Hero** - text-wipe animation (NRG), glassmorphism CTA (EatNaked),
+   perspective-card + shadow-depth pada hero right card (Vaonis).
+5. **Card.tsx** - variant="glass" prop: backdrop-blur + rgba bg.
+6. **MarqueeTrack** - w-full fix untuk desktop centering.
+7. **Shadow tokens** - semua rgba(0,0,0) hardcode diganti ke var(--shadow-*) tokens.
+8. **index.css** - tambah: .text-wipe, .cta-glass, .perspective-card, .shadow-depth.
+
+### 18.4 Yang masih pending (Phase 5+)
+Per PLAN.md:
+- **Phase 5**: foto proyek asli, koordinat Maps, sitemap.xml, JSON-LD, meta per page
+- **Phase 6**: backend integration, cross-project connection
+
+### 18.5 Quick context
+- "Navbar index prefix?" Digitalists pattern. Lihat Navbar.tsx navItems array.
+- "text-wipe gak jalan?" Cek browser support @property CSS. Fallback: text-shimmer.
+- "cta-glass warnanya?" Pakai var(--tm-primary) via ::before pseudo. Tidak hardcode hex.
+- "AmbientIcons terlalu ramai?" Turunkan opacity di ICONS array di AmbientIcons.tsx.
+- "MarkersRail tidak muncul?" Hanya di lg: breakpoint. Mobile pakai MobileChapterNav pills.
+- "Phase 5 mulai dari mana?" Foto proyek dulu - ganti Unsplash URL di src/data/projects.ts.
