@@ -131,7 +131,8 @@ export default function Services() {
             </div>
             <a
               href="mailto:teknomedindotimurpt@gmail.com"
-              className="inline-flex h-10 shrink-0 items-center justify-center rounded-md bg-white px-5 text-sm font-semibold text-[#043962] transition-colors hover:bg-white/90"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-md px-5 text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ backgroundColor: 'var(--tm-pill-bg)', color: 'var(--tm-pill-fg)' }}
             >
               Hubungi Kami <ArrowRight className="ml-2 size-4" />
             </a>

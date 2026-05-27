@@ -31,7 +31,7 @@ export default function BackToTop() {
     return visible ? (
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 z-50 grid size-12 place-items-center rounded-full bg-[var(--tm-primary)] text-white shadow-lg hover:bg-[var(--tm-primary-strong)] transition-colors"
+        className="fixed bottom-6 right-6 z-30 grid size-12 place-items-center rounded-full bg-[var(--tm-primary)] text-white shadow-lg hover:bg-[var(--tm-primary-strong)] transition-colors"
         aria-label="Scroll to top"
       >
         <ArrowUp className="size-5" />
@@ -51,7 +51,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.5 }}
           transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 grid size-12 place-items-center rounded-full bg-[var(--tm-primary)] text-white shadow-lg hover:bg-[var(--tm-primary-strong)] transition-colors"
+          className="fixed bottom-6 right-6 z-30 grid size-12 place-items-center rounded-full bg-[var(--tm-primary)] text-white shadow-lg hover:bg-[var(--tm-primary-strong)] transition-colors"
           aria-label="Scroll to top"
         >
           <ArrowUp className="size-5" />

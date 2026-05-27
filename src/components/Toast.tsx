@@ -40,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ addToast }}>
       {children}
       {createPortal(
-        <div className="fixed bottom-6 left-1/2 z-[70] flex -translate-x-1/2 flex-col gap-2 px-4">
+        <div className="fixed bottom-6 left-1/2 z-[60] flex -translate-x-1/2 flex-col gap-2 px-4">
           <AnimatePresence mode="popLayout">
             {toasts.map((toast) => (
               <motion.div

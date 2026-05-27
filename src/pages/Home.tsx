@@ -1,15 +1,15 @@
 import {
   ArrowRight, Building2, Hospital,
   Stethoscope, Snowflake, Zap, Layers3, Gauge, Hammer,
-  MapPin, CheckCircle2, TrendingUp, Award, ChevronRight
+  CheckCircle2, TrendingUp, Award
 } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useRef } from 'react'
 import {
   Counter, FloatCard, MagneticWrap, Reveal,
-  Stagger, StaggerItem, TiltCard, SpotlightSection,
-  CharReveal, ClipReveal, ScaleReveal, HorizontalScrollSection, MarqueeTrack,
+  Stagger, StaggerItem, SpotlightSection,
+  CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { Badge } from '../components/ui/Badge'
@@ -259,20 +259,6 @@ export default function Home() {
                     <p className="text-sm text-white/70">
                       Dari perencanaan hingga maintenance, kami pastikan fasilitas Anda aman dan siap beroperasi.
                     </p>
-                    {/* Area coverage - marquee inside card */}
-                    <div className="pt-2 overflow-hidden">
-                      <MarqueeTrack speed={20} className="gap-2">
-                        {SITE.serviceAreas.map((area) => (
-                          <span
-                            key={area}
-                            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[0.65rem] font-medium bg-white/10 text-white/80 ring-1 ring-white/20 shrink-0"
-                          >
-                            <MapPin className="size-2.5 shrink-0" />
-                            {area}
-                          </span>
-                        ))}
-                      </MarqueeTrack>
-                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -300,92 +286,56 @@ export default function Home() {
         </motion.div>
       </SpotlightSection>
 
-      {/* ── Services - Horizontal Scroll (desktop) ──────────────────────────── */}
-      <div className="py-4">
+      {/* ── Services - responsive grid ───────────────────────────────────────── */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <Reveal>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-4">
+          <div className="mb-8 max-w-2xl">
             <Badge variant="secondary" className="text-xs tracking-widest uppercase mb-3">Jasa layanan</Badge>
             <h2 className="font-serif text-2xl font-bold text-[var(--tm-text-strong)] sm:text-3xl">
               Melayani konstruksi fasilitas kesehatan
             </h2>
-            <p className="mt-2 text-sm text-[var(--tm-muted)] max-w-xl">
+            <p className="mt-2 text-sm text-[var(--tm-muted)]">
               Layanan inti untuk kebutuhan MEP, tata udara, gas medis, dan ruang operasi modular.
-              Scroll ke kanan untuk melihat semua layanan.
             </p>
-            {/* Only shown on mobile - desktop uses horizontal scroll instruction */}
-            <p className="mt-1 text-xs text-[var(--tm-muted)] md:hidden">Geser untuk melihat semua.</p>
           </div>
         </Reveal>
 
-        {/* Desktop: pinned horizontal scroll */}
-        <HorizontalScrollSection panels={services.length} className="hidden md:block">
+        <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map(({ icon: Icon, title, desc, color, to }, index) => (
-            <div key={title} className="h-scroll-panel flex items-center justify-center px-12 lg:px-20">
-              <Link to={to} className="no-underline group w-full max-w-xl">
-                <TiltCard>
-                  <Card className="card-shine border-2 group-hover:border-[var(--tm-primary)] transition-colors duration-300">
-                    <CardContent className="p-8 space-y-6">
-                      {/* Number + icon row */}
-                      <div className="flex items-center justify-between">
-                        <div
-                          className="grid size-16 place-items-center rounded-2xl ring-1 ring-white/10"
-                          style={{ background: `color-mix(in srgb, ${color} 15%, var(--tm-surface-muted))`, color }}
-                        >
-                          <Icon className="size-8" />
-                        </div>
-                        <span
-                          className="service-num text-6xl font-bold opacity-10 group-hover:opacity-20 transition-opacity"
-                          style={{ color }}
-                        >
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                      </div>
-
-                      <div>
-                        <h3 className="font-serif text-2xl font-bold text-[var(--tm-text-strong)]">{title}</h3>
-                        <p className="mt-3 text-base leading-7 text-[var(--tm-muted)]">{desc}</p>
-                      </div>
-
+            <StaggerItem key={title}>
+              <Link to={to} className="block h-full no-underline">
+                <Card className="group h-full card-shine float-shadow transition-colors duration-300 hover:border-[var(--tm-primary)]">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center justify-between">
                       <div
-                        className="flex items-center gap-2 text-sm font-semibold group-hover:gap-3 transition-all"
-                        style={{ color: 'var(--tm-primary)' }}
-                      >
-                        Lihat detail <ArrowRight className="size-4" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TiltCard>
-              </Link>
-            </div>
-          ))}
-        </HorizontalScrollSection>
-
-        {/* Mobile: normal grid */}
-        <div className="md:hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8">
-          <Stagger className="grid gap-4 sm:grid-cols-2">
-            {services.map(({ icon: Icon, title, desc, color, to }) => (
-              <StaggerItem key={title}>
-                <Link to={to} className="block no-underline">
-                  <Card className="h-full card-shine float-shadow">
-                    <CardContent className="p-5 space-y-3">
-                      <div
-                        className="grid size-11 place-items-center rounded-xl"
+                        className="grid size-12 place-items-center rounded-xl"
                         style={{ background: `color-mix(in srgb, ${color} 15%, var(--tm-surface-muted))`, color }}
                       >
-                        <Icon className="size-5" />
+                        <Icon className="size-6" />
                       </div>
-                      <h3 className="font-serif text-base font-bold text-[var(--tm-text-strong)]">{title}</h3>
-                      <p className="text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
-                      <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: 'var(--tm-primary)' }}>
-                        Lihat detail <ChevronRight className="size-3" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
+                      <span
+                        className="service-num text-3xl font-bold opacity-10 group-hover:opacity-20 transition-opacity"
+                        style={{ color }}
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[var(--tm-text-strong)]">{title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
+                    </div>
+                    <div
+                      className="flex items-center gap-1.5 text-xs font-semibold group-hover:gap-2 transition-all"
+                      style={{ color: 'var(--tm-primary)' }}
+                    >
+                      Lihat detail <ArrowRight className="size-3" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </div>
 
       {/* ── Area Coverage Marquee ────────────────────────────────────────────── */}
@@ -464,22 +414,13 @@ export default function Home() {
                   Dari survey awal hingga serah terima, kami siap mendampingi setiap tahap proyek
                   fasilitas kesehatan Anda.
                 </p>
-                <div className="mt-4 overflow-hidden">
-                  <MarqueeTrack speed={20} className="gap-2">
-                    {SITE.serviceAreas.map((area) => (
-                      <span key={area} className="text-xs px-2.5 py-1 rounded-full bg-white/10 text-white/70 ring-1 ring-white/15 shrink-0">
-                        {area}
-                      </span>
-                    ))}
-                  </MarqueeTrack>
-                </div>
               </div>
               <div className="flex flex-col gap-3 shrink-0">
                 <MagneticWrap strength={0.2}>
                   <a
                     href={`mailto:${SITE.contact.email}`}
                     className="inline-flex h-12 items-center justify-center rounded-lg px-6 text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg"
-                    style={{ backgroundColor: '#ffffff', color: '#043962' }}
+                    style={{ backgroundColor: 'var(--tm-pill-bg)', color: 'var(--tm-pill-fg)' }}
                   >
                     Hubungi Kami <ArrowRight className="ml-2 size-4" />
                   </a>

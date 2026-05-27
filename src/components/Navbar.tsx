@@ -70,7 +70,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-[var(--tm-border)] transition-all duration-300 ${
+      className={`sticky top-0 z-30 border-b border-[var(--tm-border)] transition-all duration-300 ${
         scrolled
           ? 'bg-[color-mix(in_srgb,var(--tm-page)_90%,transparent)] backdrop-blur-xl shadow-sm'
           : 'bg-[color-mix(in_srgb,var(--tm-page)_95%,transparent)] backdrop-blur-md border-transparent'

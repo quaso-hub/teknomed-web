@@ -237,7 +237,8 @@ export default function Projects() {
             </p>
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-[0.95rem] font-bold text-[#043962] no-underline"
+              className="inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-[0.95rem] font-bold no-underline"
+              style={{ backgroundColor: 'var(--tm-pill-bg)', color: 'var(--tm-pill-fg)' }}
             >
               Hubungi Kami <ArrowRight size={18} />
             </a>
@@ -254,7 +255,7 @@ export default function Projects() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setSelectedProject(null)}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
             aria-modal="true"
             aria-label={`Detail proyek: ${selectedProject.title}`}
             role="dialog"

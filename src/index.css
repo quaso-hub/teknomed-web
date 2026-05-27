@@ -36,6 +36,11 @@
   --tm-on-primary:     #ffffff;
   --tm-on-surface:     oklch(0.145 0.01 250);
   --tm-active:         var(--tm-primary);
+  /* "Inverted pill" tokens - dipakai di CTA banner gradient (white/dark surface).
+     Light: pill putih dengan text primary (high contrast on dark gradient).
+     Dark: pill light surface dengan text primary-strong (kontras tetap tinggi). */
+  --tm-pill-bg:        #ffffff;
+  --tm-pill-fg:        #043962;
 }
 
 .dark {
@@ -58,6 +63,9 @@
   --tm-on-primary:     #ffffff;
   --tm-on-surface:     oklch(0.950 0.005 250);
   --tm-active:         var(--tm-primary);
+  /* Dark inverted pill: light cream surface, primary-strong (lighter blue) for AA contrast */
+  --tm-pill-bg:        oklch(0.95 0.005 250);
+  --tm-pill-fg:        #043962;
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */

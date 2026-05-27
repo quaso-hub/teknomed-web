@@ -20,7 +20,7 @@ export default function ScrollProgress() {
   }, [])
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-[60] h-[3px] bg-transparent">
+    <div className="fixed left-0 right-0 top-0 z-40 h-[3px] bg-transparent">
       {reduced ? (
         <div
           className="h-full bg-[var(--tm-primary)]"
