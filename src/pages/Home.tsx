@@ -10,7 +10,7 @@ import { AmbientIcons } from '../components/AmbientIcons'
 import {
   Counter, FloatCard, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
-  CharReveal, ClipReveal, MarqueeTrack,
+  CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
   ScrollTiltCard, DepthReveal,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
