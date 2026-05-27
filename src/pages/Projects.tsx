@@ -1,6 +1,6 @@
-﻿import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ArrowRight, X, MapPin, Calendar, ChevronRight } from 'lucide-react'
-import { Reveal, Stagger, StaggerItem, TiltCard, CharReveal, ClipReveal } from '../components/Motion'
+import { Reveal, Stagger, StaggerItem3D, TiltCard, CharReveal, ClipReveal } from '../components/Motion'
 import { motion, AnimatePresence } from 'motion/react'
 import { useLenis } from 'lenis/react'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
@@ -42,7 +42,7 @@ export default function Projects() {
   return (
     <>
       <Section>
-        {/* Header — Digitalists editorial style */}
+        {/* Header - Digitalists editorial style */}
         <div className="mb-12">
           <Reveal>
             <p className="mb-3 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-[var(--tm-muted)]">
@@ -62,7 +62,7 @@ export default function Projects() {
           </ClipReveal>
         </div>
 
-        {/* Stats Bar — compact */}
+        {/* Stats Bar - compact */}
         <Reveal>
           <div className="mb-10 grid gap-px rounded-xl border border-[var(--tm-border)] bg-[var(--tm-border)] overflow-hidden [grid-template-columns:repeat(auto-fit,minmax(120px,1fr))]">
             {PROJECT_STATS.map(stat => (
@@ -75,7 +75,7 @@ export default function Projects() {
           </div>
         </Reveal>
 
-        {/* Area pills — centered, premium marquee style */}
+        {/* Area pills - centered, premium marquee style */}
         <Reveal>
           <div className="mb-8 flex flex-wrap justify-center gap-2">
             {PROJECT_AREAS.map((area, i) => (
@@ -117,7 +117,7 @@ export default function Projects() {
           </div>
         </Reveal>
 
-        {/* Project Grid — Vaonis card depth */}
+        {/* Project Grid - Vaonis card depth */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
@@ -129,7 +129,7 @@ export default function Projects() {
             <Stagger>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((project, idx) => (
-                  <StaggerItem key={project.id}>
+                  <StaggerItem3D key={project.id}>
                     <TiltCard className="h-full">
                       <Card
                         className="group h-full cursor-pointer overflow-hidden border border-[var(--tm-border)] bg-[var(--tm-surface)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--tm-primary)] hover:shadow-depth"
@@ -176,7 +176,7 @@ export default function Projects() {
                         </CardContent>
                       </Card>
                     </TiltCard>
-                  </StaggerItem>
+                  </StaggerItem3D>
                 ))}
               </div>
             </Stagger>
