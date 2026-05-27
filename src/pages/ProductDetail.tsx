@@ -99,15 +99,15 @@ const CHAPTERS: Chapter[] = [
   { id: 'cta', label: 'Konsultasi' },
 ]
 
-/** Sticky TOC desktop — vertical list di sisi kiri */
+/** Sticky TOC desktop — clean vertical list */
 function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
-    <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block">
-      <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--tm-muted)]">
+    <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block w-full">
+      <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--tm-muted)]">
         Daftar Isi
       </p>
-      <ul className="space-y-1">
-        {CHAPTERS.map(ch => {
+      <ul className="space-y-0.5">
+        {CHAPTERS.map((ch, i) => {
           const active = ch.id === activeId
           return (
             <li key={ch.id}>
@@ -115,20 +115,22 @@ function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: strin
                 type="button"
                 onClick={() => onJump(ch.id)}
                 className={[
-                  'group flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors',
+                  'group flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all duration-200',
                   active
-                    ? 'bg-[var(--tm-surface-muted)] font-semibold text-[var(--tm-text-strong)]'
+                    ? 'bg-[var(--tm-primary)]/10 font-semibold text-[var(--tm-primary)]'
                     : 'text-[var(--tm-muted)] hover:bg-[var(--tm-surface-muted)] hover:text-[var(--tm-text)]',
                 ].join(' ')}
               >
-                <span
-                  className={[
-                    'h-px w-6 transition-all',
-                    active ? 'w-10 bg-[var(--tm-primary)]' : 'bg-[var(--tm-border)] group-hover:bg-[var(--tm-muted)]',
-                  ].join(' ')}
-                  aria-hidden="true"
-                />
-                {ch.label}
+                <span className={[
+                  'shrink-0 font-mono text-[0.55rem] font-semibold transition-colors',
+                  active ? 'text-[var(--tm-primary)]' : 'text-[var(--tm-border)] group-hover:text-[var(--tm-muted)]',
+                ].join(' ')}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="whitespace-nowrap">{ch.label}</span>
+                {active && (
+                  <span className="ml-auto size-1.5 shrink-0 rounded-full bg-[var(--tm-primary)]" />
+                )}
               </button>
             </li>
           )
@@ -249,17 +251,9 @@ export default function ProductDetail() {
       {/* Mobile chapter nav — horizontal pill strip, sticky below navbar */}
       <MobileChapterNav activeId={activeId} onJump={jumpTo} />
 
-      <div className="grid gap-8 lg:grid-cols-[200px_minmax(0,1fr)]">
-        {/* Left col: TOC + MarkersRail */}
-        <div className="hidden lg:flex lg:gap-3">
-          <MarkersRail
-            sections={CHAPTERS}
-            activeId={activeId}
-            containerRef={contentRef}
-            className="pt-[4.5rem] shrink-0"
-          />
-          <ChapterTOC activeId={activeId} onJump={jumpTo} />
-        </div>
+      <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+        {/* Left col: TOC only — clean, no MarkersRail overlap */}
+        <ChapterTOC activeId={activeId} onJump={jumpTo} />
 
         <div ref={contentRef} className="space-y-12">
           {/* Chapter: Overview */}
