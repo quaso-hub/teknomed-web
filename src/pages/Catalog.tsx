@@ -148,7 +148,7 @@ export default function Catalog() {
       {/* Product Grid */}
       {filtered.length > 0 ? (
         <Stagger className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200 ${isPending ? 'opacity-60' : ''}`}>
-          {filtered.map((product) => {
+          {filtered.map((product, idx) => {
             const Icon = product.icon
             const isHovered = hoveredCard === product.slug
             return (
@@ -168,15 +168,10 @@ export default function Catalog() {
                     onMouseLeave={() => setHoveredCard(null)}
                   >
                     <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between mb-3">
-                        <div
-                          className="w-12 h-12 rounded-xl flex items-center justify-center"
-                          style={{
-                            background: 'linear-gradient(135deg, var(--tm-primary), var(--tm-accent))',
-                          }}
-                        >
-                          <Icon size={22} color="#ffffff" />
-                        </div>
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--tm-muted)]">
+                          ITM·{String(idx + 1).padStart(3, '0')}
+                        </span>
                         <Badge
                           className="text-xs"
                           style={{
@@ -188,15 +183,27 @@ export default function Catalog() {
                           {product.category}
                         </Badge>
                       </div>
-                      <CardTitle
-                        className="text-lg leading-tight"
-                        style={{ color: 'var(--tm-text-strong)' }}
-                      >
-                        {product.name}
-                      </CardTitle>
-                      <CardDescription style={{ color: 'var(--tm-muted)' }}>
-                        {product.desc}
-                      </CardDescription>
+                      <div className="flex items-start gap-3">
+                        <div
+                          className="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center"
+                          style={{
+                            background: 'linear-gradient(135deg, var(--tm-primary), var(--tm-accent))',
+                          }}
+                        >
+                          <Icon size={22} color="#ffffff" />
+                        </div>
+                        <div className="min-w-0">
+                          <CardTitle
+                            className="text-lg leading-tight"
+                            style={{ color: 'var(--tm-text-strong)' }}
+                          >
+                            {product.name}
+                          </CardTitle>
+                          <CardDescription style={{ color: 'var(--tm-muted)' }}>
+                            {product.desc}
+                          </CardDescription>
+                        </div>
+                      </div>
                     </CardHeader>
                     <CardContent className="pt-0 flex flex-col flex-1">
                       {/* Specs */}

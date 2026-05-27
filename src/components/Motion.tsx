@@ -29,6 +29,9 @@ export function AppMotionProvider({ children }: { children: ReactNode }) {
 // ── Reveal on scroll ──────────────────────────────────────────────────────────
 type RevealProps = { children: ReactNode; className?: string; delay?: number }
 
+// NRG default easing - sharp ease-in-out, lebih premium dari ease-out biasa
+const PREMIUM_EASE = [0.55, 0.1, 0.26, 0.995] as const
+
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const reduced = useReducedMotion()
   return (
@@ -36,7 +39,7 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
       initial={reduced ? false : { opacity: 0, y: 20 }}
       whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-6% 0px' }}
-      transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94], delay }}
+      transition={{ duration: 0.55, ease: PREMIUM_EASE, delay }}
       className={cn(className)}
     >
       {children}
@@ -71,7 +74,7 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
     <motion.div
       variants={reduced ? {} : {
         hidden: { opacity: 0, y: 16 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: PREMIUM_EASE } },
       }}
       className={cn(className)}
     >
@@ -223,25 +226,59 @@ export function TextScramble({ text, className, delay = 0 }: { text: string; cla
   return <span ref={ref} className={cn(className)}>{text}</span>
 }
 
-// ── Word reveal - words fade in staggered on scroll ───────────────────────────
-export function WordReveal({ text, className }: { text: string; className?: string }) {
+// ── Word reveal - words fade in staggered (Digitalists-style blur+opacity) ────
+type WordRevealProps = {
+  text: string
+  className?: string
+  /** Trigger at page load instead of when scrolled into view (default: false). */
+  instant?: boolean
+  /** Stagger delay between words in seconds (default: 0.12). */
+  stagger?: number
+  /** Initial blur radius in px (default: 6). */
+  blur?: number
+  /** Total transition duration per word in seconds (default: 0.7). */
+  duration?: number
+  /** Delay before first word starts. */
+  delay?: number
+}
+export function WordReveal({
+  text,
+  className,
+  instant = false,
+  stagger = 0.12,
+  blur = 6,
+  duration = 0.7,
+  delay = 0,
+}: WordRevealProps) {
   const reduced = useReducedMotion()
   const words = text.split(' ')
+  const triggerProps = instant
+    ? { initial: 'hidden' as const, animate: 'visible' as const }
+    : { initial: 'hidden' as const, whileInView: 'visible' as const, viewport: { once: true, margin: '-10% 0px' } }
   return (
     <motion.span
       className={cn('inline', className)}
-      initial={reduced ? false : 'hidden'}
-      whileInView="visible"
-      viewport={{ once: true, margin: '-10% 0px' }}
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+      aria-label={text}
+      {...(reduced ? {} : triggerProps)}
+      variants={{
+        hidden: {},
+        visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
+      }}
     >
       {words.map((word, i) => (
         <motion.span
           key={i}
           className="inline-block mr-[0.25em]"
+          aria-hidden="true"
           variants={reduced ? {} : {
-            hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
-            visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
+            hidden: { opacity: 0, y: 12, filter: `blur(${blur}px)` },
+            visible: {
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              // sine-out-ish curve (lebih lembut dari default ease-out di project)
+              transition: { duration, ease: [0.39, 0.575, 0.565, 1] },
+            },
           }}
         >
           {word}
@@ -526,7 +563,7 @@ export function MarqueeTrack({ children, className, speed = 30, reverse = false 
   )
 }
 
-// ── Custom cursor - spring dot following mouse (hidden on touch devices) ────────
+// ── Custom cursor - spring dot with directional skew (Digitalists pattern) ─────
 export function CustomCursor() {
   const reduced = useReducedMotion()
   const x = useMotionValue(-100)
@@ -534,13 +571,27 @@ export function CustomCursor() {
   const sx = useSpring(x, { stiffness: 500, damping: 40 })
   const sy = useSpring(y, { stiffness: 500, damping: 40 })
   const scale = useMotionValue(1)
+  const rotate = useMotionValue(0)
+  const rotateSpring = useSpring(rotate, { stiffness: 300, damping: 40 })
 
   useEffect(() => {
     if (reduced) return
-    const move = (e: MouseEvent) => { x.set(e.clientX); y.set(e.clientY) }
+    let lastX = -100
+    let resetTimer: ReturnType<typeof setTimeout> | null = null
+
+    const move = (e: MouseEvent) => {
+      const dx = e.clientX - lastX
+      lastX = e.clientX
+      x.set(e.clientX)
+      y.set(e.clientY)
+      // Rotation based on horizontal velocity (Digitalists 4*delta clamp -90/90)
+      const target = Math.max(-90, Math.min(90, dx * 4))
+      rotate.set(target)
+      if (resetTimer) clearTimeout(resetTimer)
+      resetTimer = setTimeout(() => rotate.set(0), 400)
+    }
     const down = () => animate(scale, 0.7, { duration: 0.15 })
     const up   = () => animate(scale, 1,   { duration: 0.15 })
-    // Grow on hoverable elements
     const enter = (e: MouseEvent) => {
       const el = e.target as HTMLElement
       if (el.closest('a, button, [role="button"]')) animate(scale, 1.8, { duration: 0.2 })
@@ -552,13 +603,14 @@ export function CustomCursor() {
     document.addEventListener('mouseover', enter)
     document.addEventListener('mouseout', leave)
     return () => {
+      if (resetTimer) clearTimeout(resetTimer)
       window.removeEventListener('mousemove', move)
       window.removeEventListener('mousedown', down)
       window.removeEventListener('mouseup', up)
       document.removeEventListener('mouseover', enter)
       document.removeEventListener('mouseout', leave)
     }
-  }, [x, y, scale, reduced])
+  }, [x, y, scale, rotate, reduced])
 
   if (reduced) return null
 
@@ -569,6 +621,7 @@ export function CustomCursor() {
         left: sx,
         top: sy,
         scale,
+        rotate: rotateSpring,
         width: 8,
         height: 8,
         backgroundColor: 'var(--tm-primary)',

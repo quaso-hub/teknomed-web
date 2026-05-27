@@ -164,8 +164,8 @@ export default function Projects() {
                       >
                         <CardContent className="flex h-full flex-col p-6">
                           <div className="mb-4 flex items-center justify-between">
-                            <span className="rounded-md bg-[var(--tm-primary)] px-2.5 py-1 text-xs font-bold text-white">
-                              {String(idx + 1).padStart(2, '0')}
+                            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--tm-muted)]">
+                              PRJ {String(project.year).slice(-2)}·{String(idx + 1).padStart(2, '0')}
                             </span>
                             <Badge>{project.category}</Badge>
                           </div>
