@@ -763,6 +763,41 @@ Per PLAN.md:
 
 ---
 
+## 21. Sesi Penerima: State Saat Ini (2026-05-28 lanjutan 3)
+
+### 21.1 Commit history sesi ini
+- 5da4358 fix(ux): navbar lenis stop/start, modal fixed center, marquee no index, nav no prefix, dark mode button white
+- f092f02 feat(ux): ProductDetail redesign editorial, navbar clean underline, all fixes
+- 6195426 feat(3d-wow): text-3d extrusion, holo-card shimmer, flip-reveal, glow-pulse, depth layers CSS
+
+### 21.2 Fixes kritis sesi ini
+1. **Navbar mobile** — `useLenis` + `lenis.stop()/start()` saat drawer buka/tutup. Tidak lagi ketutupan.
+2. **Projects modal** — `fixed inset-0 items-center` + `max-h-[88vh] overflow-y-auto` pada inner div. Selalu di tengah viewport.
+3. **Home marquee** — hapus angka index 01/02/03, hanya area name + ✦ separator.
+4. **Navbar** — hapus index prefix 01-06, ganti dengan animated underline `scale-x-0 → scale-x-100`.
+5. **Dark mode button** — `!text-white` force pada semua primary buttons.
+6. **ProductDetail** — redesign editorial: chapter prefix 01-05, coverage grid 2-col, engineering 3-col cards, CTA gradient section.
+
+### 21.3 3D WOW CSS effects baru di index.css
+| Class | Effect | Source |
+|---|---|---|
+| `.text-3d` | Layered text-shadow extrusion | shader.se |
+| `.holo-card` | Holographic shimmer on hover | EatNaked |
+| `.flip-reveal` | 3D Y-axis flip entrance | NRG |
+| `.glow-pulse` | Animated glow box-shadow | Vaonis |
+| `.depth-layer-1/2/3` | Z-depth parallax layers | Digitalists |
+
+### 21.4 Applied ke
+- Home Hero: `text-3d` pada "Indo Timur", `glow-pulse + holo-card` pada hero right card
+- Home Services: `holo-card + flip-reveal` pada service cards
+- ProductDetail: editorial redesign lengkap
+
+### 21.5 Yang masih pending
+- Phase 5: foto proyek asli, sitemap.xml, JSON-LD, meta per page
+- Phase 6: backend integration
+
+---
+
 ## 19. Sesi Penerima: State Saat Ini (2026-05-28 lanjutan)
 
 ### 19.1 Commit history sesi ini (lanjutan dari section 18)
