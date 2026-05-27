@@ -1,5 +1,5 @@
 import {
-  ArrowRight, Building2, Activity, ShieldCheck, Hospital,
+  ArrowRight, Building2, Hospital,
   Stethoscope, Snowflake, Zap, Layers3, Gauge, Hammer,
   MapPin, CheckCircle2, TrendingUp, Award, ChevronRight
 } from 'lucide-react'
@@ -16,6 +16,7 @@ import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardFooter, CardHeader } from '../components/ui/Card'
 import { SITE } from '../config/site'
+import { HOME_STATS } from '../data/stats'
 
 const services = [
   {
@@ -60,12 +61,6 @@ const services = [
     color: 'oklch(55% 0.2 10)',
     to: '/catalog/mgps',
   },
-]
-
-const stats = [
-  { value: 2021, suffix: '', label: 'Berdiri', icon: Building2, sub: 'Aktif & beroperasi' },
-  { value: 6, suffix: '+', label: 'Layanan', icon: Activity, sub: 'MEP, Gas, HVAC, MOT' },
-  { value: 100, suffix: '%', label: 'Fokus medis', icon: ShieldCheck, sub: 'Fasilitas kesehatan' },
 ]
 
 const highlights = [
@@ -196,7 +191,7 @@ export default function Home() {
             {/* Stats - bento grid */}
             <ScaleReveal delay={0.2} className="mt-10">
               <div className="grid grid-cols-3 gap-3">
-                {stats.map(({ value, suffix, label, icon: Icon, sub }) => (
+                {HOME_STATS.map(({ value, suffix, label, icon: Icon, sub }) => (
                   <FloatCard key={label} className="h-full">
                     <Card className="h-full card-shine">
                       <CardContent className="p-4">

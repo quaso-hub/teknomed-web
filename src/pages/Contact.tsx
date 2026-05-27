@@ -201,7 +201,7 @@ export default function Contact() {
         description={SITE.address.full}
       >
         <Reveal>
-          <div className="overflow-hidden rounded-xl border border-[var(--tm-border)] shadow-md">
+          <div data-lenis-prevent className="overflow-hidden rounded-xl border border-[var(--tm-border)] shadow-md">
             <iframe
               title="Lokasi PT Teknomed Indo Timur"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15957.6!2d124.8897!3d1.5167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32870c3b3b3b3b3b%3A0x0!2sMapanget%2C+Manado%2C+Sulawesi+Utara!5e0!3m2!1sid!2sid!4v1716000000000!5m2!1sid!2sid"

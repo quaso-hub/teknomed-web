@@ -34,6 +34,63 @@
     <!-- Preconnect for Google Fonts (faster than @import in CSS) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Structured Data: Organization + LocalBusiness -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.teknomedindotimurpt.co.id/#org",
+            "name": "PT Teknomed Indo Timur",
+            "alternateName": "Teknomed",
+            "url": "https://www.teknomedindotimurpt.co.id/",
+            "logo": "https://www.teknomedindotimurpt.co.id/logo_pt.png",
+            "foundingDate": "2021",
+            "description": "Medical contractor untuk konstruksi MEP, instalasi gas medis, HVAC, Modular Operating Theatre, dan maintenance fasilitas kesehatan.",
+            "areaServed": [
+              { "@type": "AdministrativeArea", "name": "Jawa Timur" },
+              { "@type": "AdministrativeArea", "name": "Bali" },
+              { "@type": "AdministrativeArea", "name": "Nusa Tenggara Barat" },
+              { "@type": "AdministrativeArea", "name": "Nusa Tenggara Timur" },
+              { "@type": "AdministrativeArea", "name": "Sulawesi" }
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+62-812-4436-0317",
+              "contactType": "customer service",
+              "email": "teknomedindotimurpt@gmail.com",
+              "availableLanguage": ["Indonesian", "English"]
+            }
+          },
+          {
+            "@type": "LocalBusiness",
+            "@id": "https://www.teknomedindotimurpt.co.id/#localbusiness",
+            "name": "PT Teknomed Indo Timur",
+            "image": "https://www.teknomedindotimurpt.co.id/logo_pt.png",
+            "url": "https://www.teknomedindotimurpt.co.id/",
+            "telephone": "+62-812-4436-0317",
+            "email": "teknomedindotimurpt@gmail.com",
+            "priceRange": "$$$",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Perumahan Tamansari Metropolitan, Cluster Lihaga, Ruko No.19, Paniki Bawah, Mapanget",
+              "addressLocality": "Manado",
+              "addressRegion": "Sulawesi Utara",
+              "postalCode": "95256",
+              "addressCountry": "ID"
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              "opens": "08:00",
+              "closes": "17:00"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

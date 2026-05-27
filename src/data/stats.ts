@@ -1,18 +1,19 @@
-/**
+﻿/**
  * Data layer: homepage statistics
+ * Single source of truth - dipakai Home.tsx (dan future page)
  */
-import { Building2, Activity, ShieldCheck } from 'lucide-react'
+import { Building2, Activity, ShieldCheck, type LucideIcon } from 'lucide-react'
 
 export interface Stat {
   value: number
   suffix: string
   label: string
-  iconName: string
-  icon: React.ComponentType<{ className?: string }>
+  sub: string
+  icon: LucideIcon
 }
 
-export const stats: Stat[] = [
-  { value: 2021, suffix: '', label: 'Tahun berdiri', iconName: 'Building2', icon: Building2 },
-  { value: 6, suffix: '+', label: 'Layanan utama', iconName: 'Activity', icon: Activity },
-  { value: 100, suffix: '%', label: 'Fokus kesehatan', iconName: 'ShieldCheck', icon: ShieldCheck },
+export const HOME_STATS: Stat[] = [
+  { value: 2021, suffix: '', label: 'Berdiri', sub: 'Aktif & beroperasi', icon: Building2 },
+  { value: 6, suffix: '+', label: 'Layanan', sub: 'MEP, Gas, HVAC, MOT', icon: Activity },
+  { value: 100, suffix: '%', label: 'Fokus medis', sub: 'Fasilitas kesehatan', icon: ShieldCheck },
 ]
