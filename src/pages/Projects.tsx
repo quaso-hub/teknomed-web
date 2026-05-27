@@ -75,16 +75,15 @@ export default function Projects() {
           </div>
         </Reveal>
 
-        {/* Area pills — compact horizontal */}
+        {/* Area pills — centered, premium marquee style */}
         <Reveal>
-          <div className="mb-8 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-[var(--tm-muted)] mr-2">Area</span>
-            {PROJECT_AREAS.map(area => (
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
+            {PROJECT_AREAS.map((area, i) => (
               <span
                 key={area}
-                className="inline-flex items-center gap-1 rounded-full border border-[var(--tm-border)] px-3 py-1 text-xs font-medium text-[var(--tm-text)]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tm-border)] bg-[var(--tm-surface)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[var(--tm-text)] uppercase transition-colors hover:border-[var(--tm-primary)] hover:text-[var(--tm-primary)]"
               >
-                <MapPin size={10} className="text-[var(--tm-primary)]" />
+                <MapPin size={10} className="text-[var(--tm-primary)] shrink-0" />
                 {area}
               </span>
             ))}
@@ -224,7 +223,8 @@ export default function Projects() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={() => setSelectedProject(null)}
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            data-lenis-prevent
+            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-black/60 p-4 pt-[8vh] backdrop-blur-sm"
             aria-modal="true"
             aria-label={`Detail proyek: ${selectedProject.title}`}
             role="dialog"
@@ -238,7 +238,7 @@ export default function Projects() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               onClick={e => e.stopPropagation()}
-              className="relative w-full max-w-[680px] max-h-[90vh] overflow-y-auto rounded-2xl border border-[var(--tm-border)] bg-[var(--tm-surface)]"
+              className="relative mb-8 w-full max-w-[680px] rounded-2xl border border-[var(--tm-border)] bg-[var(--tm-surface)]"
             >
               {/* Hero photo */}
               <div className="relative h-[220px] overflow-hidden rounded-t-2xl">

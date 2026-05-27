@@ -181,7 +181,7 @@ export default function Home() {
               <MagneticWrap strength={0.4}>
                 <a
                   href={`mailto:${SITE.contact.email}`}
-                  className="cta-glass inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                  className="cta-glass inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold !text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   Hubungi Kami <ArrowRight className="ml-2 size-4" />
                 </a>
