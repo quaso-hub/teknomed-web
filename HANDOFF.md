@@ -732,6 +732,37 @@ Per PLAN.md:
 
 ---
 
+## 20. Sesi Penerima: State Saat Ini (2026-05-28 lanjutan 2)
+
+### 20.1 Commit history sesi ini
+- 82df053 fix(ux): modal center fix, mobile nav fixed position, area pills centered, cta-glass text force white
+- 8d49113 feat(wow): CSS hero mesh bg animated, fix modal scroll/center, mobile nav fixed, area pills centered
+- 084e3be fix(colors): pill-fg glassmorphism white, Badge/Button explicit white text, CardDescription token fix
+
+### 20.2 Fixes kritis sesi ini
+1. **Projects modal** — `items-start overflow-y-auto pt-[8vh]` + `data-lenis-prevent` pada overlay. Modal sekarang selalu visible dari posisi scroll manapun.
+2. **Mobile chapter nav ProductDetail** — ganti `sticky` ke `fixed top-14` dengan spacer div. Tidak lagi ketutupan saat scroll.
+3. **Projects area pills** — `justify-center`, hapus label "Area" dan angka index.
+4. **Hero background** — CSS animated mesh gradient (`hero-mesh-bg`) dengan `@property` animation. Zero bundle cost, shader.se feel.
+5. **Color audit lengkap** — semua issues ditemukan dan fixed:
+   - `--tm-pill-fg` di gradient CTA → `rgba(255,255,255,0.15)` glassmorphism + `color: #ffffff`
+   - `CardDescription` `--tm-text-on-muted` orphan token → `--tm-muted`
+   - `Button` secondary `--tm-on-surface` → `--tm-text-strong`
+   - `Badge` default `--tm-on-primary` → explicit `text-white`
+
+### 20.3 3D Primitives yang sudah live di Motion.tsx
+- `StaggerItem3D` — Z-axis fly-in (NRG)
+- `ScrollTiltCard` — scroll-driven tilt (Vaonis)
+- `DepthReveal` — depth entrance blur+scale (EatNaked)
+- Applied ke: Home, About, Services, Catalog, Projects
+
+### 20.4 Yang masih pending
+- Phase 5: foto proyek asli, sitemap.xml, JSON-LD, meta per page
+- Phase 6: backend integration, cross-project connection
+- User masih melaporkan ada beberapa button biru tulisan hitam — sudah difix semua yang ditemukan via audit. Jika masih ada, perlu screenshot spesifik dari user.
+
+---
+
 ## 19. Sesi Penerima: State Saat Ini (2026-05-28 lanjutan)
 
 ### 19.1 Commit history sesi ini (lanjutan dari section 18)
