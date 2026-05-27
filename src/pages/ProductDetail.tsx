@@ -138,37 +138,33 @@ function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: strin
   )
 }
 
-/** Mobile TOC — fixed horizontal pill strip di bawah navbar, selalu visible */
+/** Mobile TOC — sticky horizontal pill strip, di dalam flow normal */
 function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
-    <div className="lg:hidden">
-      {/* Spacer untuk kompensasi fixed nav */}
-      <div className="h-12 mb-2" />
-      <nav
-        aria-label="Navigasi bab produk"
-        className="fixed top-14 left-0 right-0 z-20 flex gap-2 overflow-x-auto border-b border-[var(--tm-border)] bg-[var(--tm-page)]/95 px-4 py-2 backdrop-blur-md"
-        style={{ scrollbarWidth: 'none' }}
-      >
-        {CHAPTERS.map(ch => {
-          const active = ch.id === activeId
-          return (
-            <button
-              key={ch.id}
-              type="button"
-              onClick={() => onJump(ch.id)}
-              className={[
-                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 whitespace-nowrap',
-                active
-                  ? 'bg-[var(--tm-primary)] text-white shadow-sm'
-                  : 'bg-[var(--tm-surface-muted)] text-[var(--tm-muted)] hover:bg-[var(--tm-surface-active)] hover:text-[var(--tm-text)]',
-              ].join(' ')}
-            >
-              {ch.label}
-            </button>
-          )
-        })}
-      </nav>
-    </div>
+    <nav
+      aria-label="Navigasi bab produk"
+      className="sticky top-14 z-[25] -mx-4 sm:-mx-6 lg:hidden flex gap-2 overflow-x-auto border-b border-[var(--tm-border)] bg-[var(--tm-page)]/95 px-4 py-2.5 backdrop-blur-md mb-6"
+      style={{ scrollbarWidth: 'none' }}
+    >
+      {CHAPTERS.map(ch => {
+        const active = ch.id === activeId
+        return (
+          <button
+            key={ch.id}
+            type="button"
+            onClick={() => onJump(ch.id)}
+            className={[
+              'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 whitespace-nowrap',
+              active
+                ? 'bg-[var(--tm-primary)] text-white shadow-sm'
+                : 'bg-[var(--tm-surface-muted)] text-[var(--tm-muted)] hover:bg-[var(--tm-surface-active)] hover:text-[var(--tm-text)]',
+            ].join(' ')}
+          >
+            {ch.label}
+          </button>
+        )
+      })}
+    </nav>
   )
 }
 
