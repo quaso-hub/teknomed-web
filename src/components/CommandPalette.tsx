@@ -163,8 +163,8 @@ export default function CommandPalette() {
               </div>
             </div>
 
-            {/* Results */}
-            <ul ref={listRef} className="max-h-[320px] overflow-auto py-2">
+            {/* Results — data-lenis-prevent agar Lenis tidak intercept scroll di dalam modal */}
+            <ul ref={listRef} data-lenis-prevent className="max-h-[320px] overflow-y-auto py-2 overscroll-contain">
               {filtered.length === 0 && (
                 <li className="px-4 py-3 text-sm text-[var(--tm-muted)] text-center">
                   Tidak ada hasil untuk "{query}"

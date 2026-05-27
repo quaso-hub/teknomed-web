@@ -42,92 +42,66 @@ export default function Projects() {
   return (
     <>
       <Section>
-        {/* Header */}
-        <div className="mb-12 text-center">
+        {/* Header — Digitalists editorial style */}
+        <div className="mb-12">
           <Reveal>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--tm-muted)]">Portofolio</p>
+            <p className="mb-3 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-[var(--tm-muted)]">
+              PRJ / Portofolio
+            </p>
           </Reveal>
-          <h1 className="mb-4 text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-[1.1] text-[var(--tm-text-strong)]">
-            <CharReveal text="Portofolio Proyek" />
+          <h1 className="mb-4 text-[clamp(2.2rem,5vw,3.75rem)] font-extrabold leading-[1.05] tracking-tight text-[var(--tm-text-strong)]">
+            <CharReveal text="Portofolio" delay={0.05} />
+            <span className="block text-[var(--tm-primary)]">
+              <CharReveal text="Proyek" delay={0.2} />
+            </span>
           </h1>
-          <ClipReveal delay={0.3}>
-            <p className="mx-auto max-w-[640px] text-lg text-[var(--tm-muted)]">
-              Proyek konstruksi fasilitas kesehatan yang telah kami selesaikan di Jawa Timur, Bali, NTB, NTT, dan Sulawesi.
+          <ClipReveal delay={0.4}>
+            <p className="max-w-[560px] text-base leading-7 text-[var(--tm-muted)]">
+              Konstruksi fasilitas kesehatan di Jawa Timur, Bali, NTB, NTT, dan Sulawesi.
             </p>
           </ClipReveal>
         </div>
 
-        {/* Stats Bar */}
+        {/* Stats Bar — compact */}
         <Reveal>
-          <div className="mb-8 grid gap-6 rounded-2xl border border-[var(--tm-border)] bg-[var(--tm-surface)] p-8 [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]">
+          <div className="mb-10 grid gap-px rounded-xl border border-[var(--tm-border)] bg-[var(--tm-border)] overflow-hidden [grid-template-columns:repeat(auto-fit,minmax(120px,1fr))]">
             {PROJECT_STATS.map(stat => (
-              <div key={stat.label} className="text-center">
-                <div className="mb-2 flex items-center justify-center gap-2 text-[var(--tm-primary)]">
-                  <stat.icon size={20} />
-                </div>
-                <div className="text-[1.75rem] font-bold text-[var(--tm-text-strong)]">{stat.getValue()}</div>
-                <div className="text-sm text-[var(--tm-muted)]">{stat.label}</div>
+              <div key={stat.label} className="flex flex-col items-center justify-center gap-1 bg-[var(--tm-surface)] px-4 py-5 text-center">
+                <stat.icon size={16} className="text-[var(--tm-primary)] mb-1" />
+                <div className="text-2xl font-bold tabular-nums text-[var(--tm-text-strong)]">{stat.getValue()}</div>
+                <div className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-[var(--tm-muted)]">{stat.label}</div>
               </div>
             ))}
           </div>
         </Reveal>
 
-        {/* Scope Categories */}
+        {/* Area pills — compact horizontal */}
         <Reveal>
-          <div className="mb-6">
-            <h2 className="mb-3 text-base font-semibold text-[var(--tm-text-strong)]">
-              Lingkup Pekerjaan
-            </h2>
-            <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
-              {SCOPE_CATEGORIES.map(({ label, icon: Icon, count }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-3 rounded-[0.625rem] border border-[var(--tm-border)] bg-[var(--tm-surface)] px-4 py-3.5"
-                >
-                  <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-[var(--tm-surface-muted)] text-[var(--tm-primary)]">
-                    <Icon size={18} />
-                  </div>
-                  <div>
-                    <div className="text-[0.8rem] font-semibold text-[var(--tm-text-strong)]">{label}</div>
-                    <div className="text-[0.7rem] text-[var(--tm-muted)]">{count} proyek</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Area Coverage */}
-        <Reveal>
-          <div className="mb-10">
-            <h2 className="mb-3 text-base font-semibold text-[var(--tm-text-strong)]">
-              Area Layanan
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {PROJECT_AREAS.map(area => (
-                <span
-                  key={area}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tm-border)] bg-[var(--tm-surface)] px-4 py-2 text-[0.8rem] font-medium text-[var(--tm-text)]"
-                >
-                  <MapPin size={12} className="text-[var(--tm-primary)]" />
-                  {area}
-                </span>
-              ))}
-            </div>
+          <div className="mb-8 flex flex-wrap items-center gap-2">
+            <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-[var(--tm-muted)] mr-2">Area</span>
+            {PROJECT_AREAS.map(area => (
+              <span
+                key={area}
+                className="inline-flex items-center gap-1 rounded-full border border-[var(--tm-border)] px-3 py-1 text-xs font-medium text-[var(--tm-text)]"
+              >
+                <MapPin size={10} className="text-[var(--tm-primary)]" />
+                {area}
+              </span>
+            ))}
           </div>
         </Reveal>
 
         {/* Filter Tabs */}
         <Reveal>
-          <div className="mb-10 flex justify-center">
-            <div className="relative inline-flex rounded-xl bg-[var(--tm-surface-muted)] p-1">
+          <div className="mb-8 flex justify-center">
+            <div className="relative inline-flex rounded-xl bg-[var(--tm-surface-muted)] p-1 gap-0.5">
               {PROJECT_CATEGORIES.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveFilter(cat)}
                   className={[
-                    'relative z-[1] rounded-lg border-0 bg-transparent px-6 py-2.5 text-[0.9rem] font-semibold transition-colors cursor-pointer',
-                    activeFilter === cat ? 'text-white' : 'text-[var(--tm-muted)]',
+                    'relative z-[1] rounded-lg px-5 py-2 text-sm font-semibold transition-colors cursor-pointer',
+                    activeFilter === cat ? 'text-white' : 'text-[var(--tm-muted)] hover:text-[var(--tm-text)]',
                   ].join(' ')}
                 >
                   {cat}
@@ -144,7 +118,7 @@ export default function Projects() {
           </div>
         </Reveal>
 
-        {/* Project Grid */}
+        {/* Project Grid — Vaonis card depth */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
@@ -154,56 +128,51 @@ export default function Projects() {
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
             <Stagger>
-              <div className="grid gap-6 [grid-template-columns:repeat(auto-fill,minmax(340px,1fr))]">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map((project, idx) => (
                   <StaggerItem key={project.id}>
                     <TiltCard className="h-full">
                       <Card
-                        className="group h-full cursor-pointer border border-[var(--tm-border)] bg-[var(--tm-surface)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[var(--shadow-lg)] hover:border-[var(--tm-primary)/30]"
+                        className="group h-full cursor-pointer overflow-hidden border border-[var(--tm-border)] bg-[var(--tm-surface)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--tm-primary)] hover:shadow-depth"
                         onClick={() => setSelectedProject(project)}
                       >
-                        <CardContent className="flex h-full flex-col p-6">
-                          <div className="mb-4 flex items-center justify-between">
-                            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--tm-muted)]">
+                        {/* Image */}
+                        <div className="relative h-44 overflow-hidden">
+                          <img
+                            src={project.imageUrl}
+                            alt={project.title}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+                            <Badge className="text-[0.6rem]">{project.category}</Badge>
+                            <span className="font-mono text-[0.55rem] font-semibold uppercase tracking-[0.2em] text-white/70">
                               PRJ {String(project.year).slice(-2)}·{String(idx + 1).padStart(2, '0')}
                             </span>
-                            <Badge>{project.category}</Badge>
                           </div>
+                        </div>
 
-                          <h3 className="mb-1 text-xl font-bold text-[var(--tm-text-strong)]">
+                        <CardContent className="flex flex-col gap-2 p-4">
+                          <h3 className="text-base font-bold leading-snug text-[var(--tm-text-strong)] group-hover:text-[var(--tm-primary)] transition-colors">
                             {project.title}
                           </h3>
-
-                          <div className="mb-2 flex items-center gap-1.5 text-sm text-[var(--tm-muted)]">
-                            <MapPin size={14} />
-                            <span>{project.subtitle}</span>
+                          <div className="flex items-center gap-3 text-xs text-[var(--tm-muted)]">
+                            <span className="flex items-center gap-1"><MapPin size={11} />{project.area}</span>
+                            <span className="flex items-center gap-1"><Calendar size={11} />{project.year}</span>
                           </div>
-
-                          <div className="mb-3 flex items-center gap-3">
-                            <span className="flex items-center gap-1 text-[0.8rem] text-[var(--tm-muted)]">
-                              <Calendar size={13} /> {project.year}
-                            </span>
-                            <span className="flex items-center gap-1 text-[0.8rem] text-[var(--tm-muted)]">
-                              <MapPin size={13} /> {project.area}
-                            </span>
-                          </div>
-
-                          <p className="mb-4 text-[0.9rem] font-medium italic leading-6 text-[var(--tm-primary)]">
+                          <p className="text-xs italic text-[var(--tm-primary)] line-clamp-2">
                             &ldquo;{project.highlight}&rdquo;
                           </p>
-
-                          <div className="mb-5 flex flex-wrap gap-1.5">
-                            {project.tags.map(tag => (
-                              <span key={tag} className="rounded-md bg-[var(--tm-surface-muted)] px-2 py-1 text-xs font-medium text-[var(--tm-text)]">
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {project.tags.slice(0, 3).map(tag => (
+                              <span key={tag} className="rounded bg-[var(--tm-surface-muted)] px-1.5 py-0.5 text-[0.6rem] font-medium text-[var(--tm-muted)]">
                                 {tag}
                               </span>
                             ))}
                           </div>
-
-                          <div className="mt-auto">
-                            <button className="inline-flex cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-sm font-semibold text-[var(--tm-primary)]">
-                              Lihat Detail <ChevronRight size={16} />
-                            </button>
+                          <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-[var(--tm-primary)]">
+                            Lihat Detail <ChevronRight size={13} />
                           </div>
                         </CardContent>
                       </Card>
@@ -214,7 +183,7 @@ export default function Projects() {
             </Stagger>
 
             {filtered.length === 0 && (
-              <div className="px-4 py-16 text-center text-[var(--tm-muted)]">
+              <div className="py-16 text-center text-[var(--tm-muted)]">
                 <p className="text-lg">Belum ada proyek di kategori ini.</p>
               </div>
             )}
@@ -262,6 +231,7 @@ export default function Projects() {
           >
             <motion.div
               ref={modalRef}
+              data-lenis-prevent
               tabIndex={-1}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

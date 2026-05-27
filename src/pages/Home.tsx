@@ -340,25 +340,30 @@ export default function Home() {
         </Stagger>
       </div>
 
-      {/* ── Area Coverage Marquee ────────────────────────────────────────────── */}
-      <Reveal>
-        <div
-          className="py-5 border-y border-[var(--tm-border)] overflow-hidden"
-          style={{ backgroundColor: 'var(--tm-surface)' }}
-        >
-          <MarqueeTrack speed={25} className="gap-10">
-            {[...SITE.serviceAreas, ...SITE.serviceAreas].map((area, i) => (
-              <div key={i} className="flex items-center gap-3 shrink-0">
-                <span
-                  className="size-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: 'var(--tm-primary)' }}
-                />
-                <span className="text-sm font-semibold text-[var(--tm-text-strong)] whitespace-nowrap">{area}</span>
+      {/* ── Area Coverage Marquee — NRG editorial style ─────────────────────── */}
+      <div className="relative overflow-hidden border-y border-[var(--tm-border)]"
+        style={{ backgroundColor: 'var(--tm-surface)' }}
+      >
+        {/* Fade edges */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[var(--tm-surface)] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[var(--tm-surface)] to-transparent" />
+
+        <div className="py-4">
+          <MarqueeTrack speed={30}>
+            {SITE.serviceAreas.map((area, i) => (
+              <div key={i} className="flex items-center gap-5 shrink-0">
+                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-sm font-semibold tracking-wide text-[var(--tm-text-strong)] whitespace-nowrap uppercase">
+                  {area}
+                </span>
+                <span className="text-[var(--tm-border)] select-none" aria-hidden>✦</span>
               </div>
             ))}
           </MarqueeTrack>
         </div>
-      </Reveal>
+      </div>
 
       {/* ── Projects teaser ──────────────────────────────────────────────────── */}
       <Reveal>
