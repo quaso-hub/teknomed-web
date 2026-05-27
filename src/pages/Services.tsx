@@ -132,7 +132,7 @@ export default function Services() {
             <a
               href="mailto:teknomedindotimurpt@gmail.com"
               className="inline-flex h-10 shrink-0 items-center justify-center rounded-md px-5 text-sm font-semibold transition-opacity hover:opacity-90"
-              style={{ backgroundColor: 'var(--tm-pill-bg)', color: 'var(--tm-pill-fg)' }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}
             >
               Hubungi Kami <ArrowRight className="ml-2 size-4" />
             </a>

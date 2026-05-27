@@ -9,7 +9,7 @@ interface BadgeProps {
 
 export default function Badge({ children, variant = 'default', size = 'md', className }: BadgeProps) {
   const variantStyles = {
-    default: 'bg-[var(--tm-primary)] text-[var(--tm-on-primary)]',
+    default: 'bg-[var(--tm-primary)] text-white',
     outline: 'border border-[var(--tm-border)] bg-transparent text-[var(--tm-text-strong)]',
     secondary: 'bg-[var(--tm-surface-muted)] text-[var(--tm-text)]',
     accent: 'bg-[var(--tm-accent)] text-white',

@@ -14,7 +14,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const variants = {
       default:   'bg-[var(--tm-primary)] text-[var(--tm-on-primary)] hover:bg-[var(--tm-primary-strong)]',
       outline:   'border border-[var(--tm-border)] bg-[var(--tm-surface)] text-[var(--tm-text-strong)] hover:bg-[var(--tm-surface-muted)]',
-      secondary: 'bg-[var(--tm-surface-muted)] text-[var(--tm-on-surface)] hover:bg-[var(--tm-surface-active)]',
+      secondary: 'bg-[var(--tm-surface-muted)] text-[var(--tm-text-strong)] hover:bg-[var(--tm-surface-active)]',
       ghost:     'text-[var(--tm-text)] hover:bg-[var(--tm-surface-muted)]',
       link:      'text-[var(--tm-primary)] underline-offset-4 hover:underline',
     } as const

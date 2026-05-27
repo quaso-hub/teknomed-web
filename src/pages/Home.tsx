@@ -408,7 +408,7 @@ export default function Home() {
                   <a
                     href={`mailto:${SITE.contact.email}`}
                     className="inline-flex h-12 items-center justify-center rounded-lg px-6 text-sm font-semibold transition-all hover:opacity-90 hover:shadow-lg"
-                    style={{ backgroundColor: 'var(--tm-pill-bg)', color: 'var(--tm-pill-fg)' }}
+                    style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}
                   >
                     Hubungi Kami <ArrowRight className="ml-2 size-4" />
                   </a>
