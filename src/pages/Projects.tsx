@@ -224,7 +224,7 @@ export default function Projects() {
             transition={{ duration: 0.2 }}
             onClick={() => setSelectedProject(null)}
             data-lenis-prevent
-            className="fixed inset-0 z-[70] flex items-start justify-center overflow-y-auto bg-black/60 p-4 pt-[8vh] backdrop-blur-sm"
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
             aria-modal="true"
             aria-label={`Detail proyek: ${selectedProject.title}`}
             role="dialog"
@@ -238,7 +238,7 @@ export default function Projects() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               onClick={e => e.stopPropagation()}
-              className="relative mb-8 w-full max-w-[680px] rounded-2xl border border-[var(--tm-border)] bg-[var(--tm-surface)]"
+              className="relative mb-0 w-full max-w-[680px] max-h-[88vh] overflow-y-auto rounded-2xl border border-[var(--tm-border)] bg-[var(--tm-surface)]"
             >
               {/* Hero photo */}
               <div className="relative h-[220px] overflow-hidden rounded-t-2xl">
@@ -321,7 +321,7 @@ export default function Projects() {
                 <div className="flex gap-3">
                   <a
                     href="/contact"
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--tm-primary)] px-5 py-3 text-sm font-semibold text-white no-underline"
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--tm-primary)] px-5 py-3 text-sm font-semibold !text-white no-underline hover:opacity-90 transition-opacity"
                   >
                     Diskusikan Proyek Serupa <ArrowRight size={15} />
                   </a>

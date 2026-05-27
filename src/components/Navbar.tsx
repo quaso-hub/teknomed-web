@@ -2,6 +2,7 @@ import { MoonStar, SunMedium, Command, Search, X as XIcon, Menu, ArrowUpRight } 
 import { useEffect, useId, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import { useLenis } from 'lenis/react'
 import Container from './Container'
 import { useTheme } from './theme-context'
 
@@ -37,18 +38,21 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const scrolled = useScrolled()
   const reduced = useReducedMotion()
+  const lenis = useLenis()
 
   useEffect(() => {
     if (!isOpen) return
+    lenis?.stop()
     document.body.style.overflow = 'hidden'
     closeBtnRef.current?.focus()
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsOpen(false) }
     document.addEventListener('keydown', onKeyDown)
     return () => {
+      lenis?.start()
       document.body.style.overflow = ''
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [isOpen])
+  }, [isOpen, lenis])
 
   const iconBtnClass =
     'inline-flex size-9 items-center justify-center rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface)] text-[var(--tm-text)] hover:bg-[var(--tm-surface-muted)] transition-colors'
@@ -75,7 +79,7 @@ export default function Navbar() {
             </span>
           </NavLink>
 
-          {/* Desktop nav — Digitalists-inspired with index prefix */}
+          {/* Desktop nav — clean hover underline, no index prefix */}
           <nav className="hidden items-center md:flex" aria-label="Main navigation">
             {navItems.map((item) => (
               <NavLink
@@ -85,7 +89,7 @@ export default function Navbar() {
                 onMouseEnter={() => setHoveredItem(item.to)}
                 onMouseLeave={() => setHoveredItem(null)}
                 className={({ isActive }) => [
-                  'group relative flex items-center gap-1 px-3 py-2 text-sm transition-all duration-200',
+                  'group relative px-3 py-2 text-sm font-medium transition-colors duration-200',
                   isActive
                     ? 'text-[var(--tm-text-strong)]'
                     : 'text-[var(--tm-muted)] hover:text-[var(--tm-text-strong)]',
@@ -93,15 +97,14 @@ export default function Navbar() {
               >
                 {({ isActive }) => (
                   <>
+                    {item.label}
+                    {/* Animated underline */}
                     <span className={[
-                      'font-mono text-[0.55rem] font-semibold transition-all duration-200',
-                      isActive || hoveredItem === item.to
-                        ? 'text-[var(--tm-primary)] opacity-100'
-                        : 'opacity-0 group-hover:opacity-60',
-                    ].join(' ')}>
-                      {item.index}
-                    </span>
-                    <span className="font-medium">{item.label}</span>
+                      'absolute bottom-0 left-3 right-3 h-px origin-left transition-transform duration-300',
+                      isActive
+                        ? 'scale-x-100 bg-[var(--tm-primary)]'
+                        : 'scale-x-0 bg-[var(--tm-primary)] group-hover:scale-x-100',
+                    ].join(' ')} />
                     {isActive && !reduced && (
                       <motion.span
                         layoutId="nav-active-pill"
@@ -246,35 +249,22 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Nav links — Digitalists editorial style */}
+              {/* Nav links — clean, no index prefix */}
               <nav className="flex-1 py-3" aria-label="Mobile navigation">
-                {navItems.map((item, i) => (
+                {navItems.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
                     end={item.to === '/'}
                     onClick={() => setIsOpen(false)}
                     className={({ isActive }) => [
-                      'group flex items-center gap-4 px-5 py-3.5 transition-all duration-200',
+                      'flex items-center gap-3 px-5 py-3.5 text-sm font-medium transition-all duration-200 border-l-2',
                       isActive
-                        ? 'bg-[var(--tm-surface-muted)] text-[var(--tm-text-strong)]'
-                        : 'text-[var(--tm-muted)] hover:bg-[var(--tm-surface-muted)] hover:text-[var(--tm-text-strong)]',
+                        ? 'border-[var(--tm-primary)] bg-[var(--tm-surface-muted)] text-[var(--tm-text-strong)]'
+                        : 'border-transparent text-[var(--tm-muted)] hover:bg-[var(--tm-surface-muted)] hover:text-[var(--tm-text-strong)] hover:border-[var(--tm-border)]',
                     ].join(' ')}
                   >
-                    {({ isActive }) => (
-                      <>
-                        <span className={[
-                          'font-mono text-[0.6rem] font-semibold w-5 shrink-0 transition-colors',
-                          isActive ? 'text-[var(--tm-primary)]' : 'text-[var(--tm-border)] group-hover:text-[var(--tm-muted)]',
-                        ].join(' ')}>
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        <span className="text-sm font-medium">{item.label}</span>
-                        {isActive && (
-                          <span className="ml-auto size-1.5 rounded-full bg-[var(--tm-primary)]" />
-                        )}
-                      </>
-                    )}
+                    {item.label}
                   </NavLink>
                 ))}
               </nav>

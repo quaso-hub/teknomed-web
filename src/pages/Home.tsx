@@ -332,14 +332,11 @@ export default function Home() {
         <div className="py-4">
           <MarqueeTrack speed={30}>
             {SITE.serviceAreas.map((area, i) => (
-              <div key={i} className="flex items-center gap-5 shrink-0">
-                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="text-sm font-semibold tracking-wide text-[var(--tm-text-strong)] whitespace-nowrap uppercase">
+              <div key={i} className="flex items-center gap-4 shrink-0">
+                <span className="text-sm font-semibold tracking-[0.12em] text-[var(--tm-text-strong)] whitespace-nowrap uppercase">
                   {area}
                 </span>
-                <span className="text-[var(--tm-border)] select-none" aria-hidden>✦</span>
+                <span className="text-[var(--tm-primary)] select-none text-xs" aria-hidden>✦</span>
               </div>
             ))}
           </MarqueeTrack>
