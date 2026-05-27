@@ -488,3 +488,86 @@ h1, h2, h3 { font-optical-sizing: auto; }
 ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--tm-primary) 70%, transparent);
 }
+
+/* ─── NRG gradient text wipe ─────────────────────────────────────────────────── */
+/* Text appears to be "painted" with brand color as it enters — worldofnrg.com signature */
+@keyframes text-wipe {
+  0%   { background-position: 110% 50%; }
+  100% { background-position: -10% 50%; }
+}
+.text-wipe {
+  background: linear-gradient(
+    90deg,
+    var(--tm-text-strong) 0%,
+    var(--tm-text-strong) 40%,
+    var(--tm-primary) 50%,
+    var(--tm-secondary) 60%,
+    var(--tm-text-strong) 70%,
+    var(--tm-text-strong) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-wipe 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.5s;
+  background-position: 110% 50%;
+}
+
+/* ─── EatNaked glassmorphism CTA ─────────────────────────────────────────────── */
+/* Frosted glass button with blur layer — eatnaked.co pattern */
+.cta-glass {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cta-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--tm-primary) 90%, white 10%);
+  z-index: -2;
+}
+.cta-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.15) 0%,
+    rgba(255,255,255,0.05) 50%,
+    rgba(255,255,255,0.0) 100%
+  );
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+.cta-glass:hover::after {
+  opacity: 0;
+}
+
+/* ─── 3D perspective card (Vaonis/Hyperia depth) ─────────────────────────────── */
+.perspective-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.perspective-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+}
+
+/* ─── Depth shadow (layered, premium) ───────────────────────────────────────── */
+.shadow-depth {
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--tm-primary) 8%, transparent),
+    0 4px 8px color-mix(in srgb, var(--tm-primary) 6%, transparent),
+    0 12px 24px color-mix(in srgb, var(--tm-primary) 4%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--tm-border) 60%, transparent);
+}
+.shadow-depth:hover {
+  box-shadow:
+    0 2px 4px color-mix(in srgb, var(--tm-primary) 12%, transparent),
+    0 8px 16px color-mix(in srgb, var(--tm-primary) 10%, transparent),
+    0 20px 40px color-mix(in srgb, var(--tm-primary) 8%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--tm-primary) 30%, transparent);
+  transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}

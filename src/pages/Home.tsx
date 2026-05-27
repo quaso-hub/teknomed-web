@@ -135,12 +135,12 @@ export default function Home() {
               </Badge>
             </Reveal>
 
-            {/* H1 with CharReveal - Awwwards signature effect */}
+            {/* H1 with CharReveal + NRG text wipe */}
             <h1 className="font-serif text-4xl font-bold tracking-tight text-[var(--tm-text-strong)] sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
-              <span className="block text-shimmer pb-1">
+              <span className="block pb-1">
                 <CharReveal text="PT Teknomed" delay={0.1} />
               </span>
-              <span className="block">
+              <span className="block text-wipe">
                 <CharReveal text="Indo Timur" delay={0.4} />
               </span>
             </h1>
@@ -175,18 +175,17 @@ export default function Home() {
               ))}
             </motion.div>
 
-            {/* CTA */}
+            {/* CTA — EatNaked glassmorphism style */}
             <Reveal delay={1.1} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <MagneticWrap strength={0.4}>
                 <a
                   href={`mailto:${SITE.contact.email}`}
-                  className="inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold transition-all hover:opacity-90 glow-primary-sm"
-                  style={{ backgroundColor: 'var(--tm-primary)', color: '#ffffff' }}
+                  className="cta-glass inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   Hubungi Kami <ArrowRight className="ml-2 size-4" />
                 </a>
               </MagneticWrap>
-              <Button variant="outline" className="px-6 py-3" onClick={() => navigate('/services')}>
+              <Button variant="outline" className="px-6 py-3 hover:-translate-y-0.5 transition-transform duration-300" onClick={() => navigate('/services')}>
                 Lihat Layanan
               </Button>
             </Reveal>
@@ -220,9 +219,9 @@ export default function Home() {
             </ScaleReveal>
           </div>
 
-          {/* Right: animated visual card */}
+          {/* Right: animated visual card — Vaonis perspective depth */}
           <ScaleReveal delay={0.3} className="h-full">
-            <Card className="overflow-hidden h-full float-shadow gradient-border">
+            <Card className="overflow-hidden h-full perspective-card shadow-depth gradient-border">
               <CardHeader className="p-0">
                 {/* Animated mesh gradient background */}
                 <div
