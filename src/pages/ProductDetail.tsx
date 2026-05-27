@@ -1,7 +1,7 @@
-﻿import { ArrowRight, Move3d, Sparkles, ShieldCheck, Layers3, Phone } from 'lucide-react'
+﻿import { ArrowRight, Move3d, Sparkles, ShieldCheck, Layers3, Phone, CheckCircle2, Zap, Award } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Reveal } from '../components/Motion'
+import { Reveal, DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
 import { MarkersRail } from '../components/MarkersRail'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
@@ -267,148 +267,137 @@ export default function ProductDetail() {
 
         <div ref={contentRef} className="space-y-12">
           {/* Chapter: Overview */}
-          <section id="overview" className="scroll-mt-24">
-            <Reveal>
-              <Card>
-                <CardHeader>
-                  <Badge variant="secondary" className="w-fit px-3 py-1 text-xs">Product Detail</Badge>
-                  <CardTitle className="text-2xl">{product.name}</CardTitle>
-                  <CardDescription>{product.summary}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {['Konsultasi', 'Instalasi', 'Maintenance'].map((item) => (
-                      <Badge key={item} variant="outline">{item}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Reveal>
+          <section id="overview" className="scroll-mt-28">
+            <DepthReveal>
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">01 / Overview</span>
+              </div>
+              <h2 className="mb-3 text-2xl font-bold text-[var(--tm-text-strong)]">{product.name}</h2>
+              <p className="mb-6 text-base leading-7 text-[var(--tm-muted)]">{product.summary}</p>
+              <div className="flex flex-wrap gap-2">
+                {['Konsultasi', 'Instalasi', 'Maintenance', 'Commissioning'].map((item) => (
+                  <Badge key={item} variant="outline" className="px-3 py-1">{item}</Badge>
+                ))}
+              </div>
+            </DepthReveal>
           </section>
 
           {/* Chapter: Preview */}
-          <section id="preview" className="scroll-mt-24">
-            <Reveal delay={0.05}>
-              <Card className="overflow-hidden">
-                <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
-                  <div
-                    className="grid h-full w-full place-items-center"
-                    style={{
-                      background:
-                        'linear-gradient(135deg, var(--tm-primary) 0%, var(--tm-accent) 60%, var(--tm-footer) 100%)',
-                    }}
-                  >
-                    <div className="flex flex-col items-center gap-3 px-6 text-center">
-                      <div className="grid size-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
-                        <Move3d className="size-6 text-white" />
-                      </div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/85">
-                        3D experience coming soon
-                      </p>
-                      <p className="max-w-[28ch] text-sm leading-6 text-white/75">
-                        Visualisasi interaktif sedang disiapkan ulang untuk pengalaman
-                        produk yang lebih mendalam.
-                      </p>
-                    </div>
+          <section id="preview" className="scroll-mt-28">
+            <DepthReveal delay={0.05}>
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">02 / Preview</span>
+              </div>
+              <div
+                className="relative overflow-hidden rounded-2xl"
+                style={{ background: 'linear-gradient(135deg, var(--tm-primary) 0%, var(--tm-accent) 60%, var(--tm-footer) 100%)' }}
+              >
+                <div className="flex flex-col items-center gap-4 px-8 py-16 text-center">
+                  <div className="grid size-16 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+                    <Move3d className="size-7 text-white" />
                   </div>
-                  <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70 mb-2">
+                      3D Experience
+                    </p>
+                    <p className="text-lg font-bold text-white mb-1">Visualisasi Interaktif</p>
+                    <p className="max-w-[32ch] text-sm leading-6 text-white/70">
+                      Sedang disiapkan. Tim teknis dapat mengirim spesifikasi penuh via email.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
                     <Sparkles className="size-3" />
-                    Preview
+                    Coming Soon
                   </div>
                 </div>
-                <CardContent className="space-y-4 p-6">
-                  <div className="rounded-md border border-dashed border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4 text-sm text-[var(--tm-muted)]">
-                    <p className="font-semibold text-[var(--tm-text-strong)]">Tentang preview 3D</p>
-                    <ul className="mt-2 space-y-1 text-xs">
-                      <li>- Visualisasi interaktif sedang disiapkan ulang</li>
-                      <li>- Akan tersedia di update berikutnya</li>
-                      <li>- Sementara, tim teknis dapat mengirim spesifikasi penuh</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </Reveal>
+                {/* Decorative grid */}
+                <div className="absolute inset-0 hero-grid opacity-10 pointer-events-none" />
+              </div>
+            </DepthReveal>
           </section>
 
           {/* Chapter: Coverage */}
-          <section id="coverage" className="scroll-mt-24">
-            <Reveal>
-              <Card>
-                <CardHeader>
-                  <div className="grid size-10 place-items-center rounded-md bg-[var(--tm-surface-muted)] text-[var(--tm-primary)]">
-                    <Layers3 className="size-5" />
-                  </div>
-                  <CardTitle className="text-xl">Cakupan Layanan</CardTitle>
-                  <CardDescription>Tahap demi tahap, sesuai standar.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3 text-sm leading-6 text-[var(--tm-muted)]">
-                    {product.bullets.map((b) => (
-                      <li key={b} className="flex gap-2">
-                        <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[var(--tm-primary)]" />
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </Reveal>
+          <section id="coverage" className="scroll-mt-28">
+            <DepthReveal>
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">03 / Cakupan</span>
+              </div>
+              <h3 className="mb-6 text-xl font-bold text-[var(--tm-text-strong)]">Cakupan Layanan</h3>
+              <Stagger className="grid gap-3 sm:grid-cols-2">
+                {product.bullets.map((b, i) => (
+                  <StaggerItem3D key={b}>
+                    <div className="flex items-start gap-3 rounded-xl border border-[var(--tm-border)] bg-[var(--tm-surface)] p-4 transition-colors hover:border-[var(--tm-primary)]">
+                      <div className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--tm-primary)]/10">
+                        <CheckCircle2 className="size-3.5 text-[var(--tm-primary)]" />
+                      </div>
+                      <p className="text-sm leading-6 text-[var(--tm-text)]">{b}</p>
+                    </div>
+                  </StaggerItem3D>
+                ))}
+              </Stagger>
+            </DepthReveal>
           </section>
 
           {/* Chapter: Engineering */}
-          <section id="engineering" className="scroll-mt-24">
-            <Reveal>
-              <Card>
-                <CardHeader>
-                  <div className="grid size-10 place-items-center rounded-md bg-[var(--tm-surface-muted)] text-[var(--tm-primary)]">
-                    <ShieldCheck className="size-5" />
+          <section id="engineering" className="scroll-mt-28">
+            <DepthReveal>
+              <div className="mb-2 flex items-center gap-2">
+                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">04 / Engineering</span>
+              </div>
+              <h3 className="mb-6 text-xl font-bold text-[var(--tm-text-strong)]">Engineering & Standar</h3>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  { icon: ShieldCheck, title: 'Standar Internasional', desc: 'HTM 02-01, NFPA 99, ISO 14644' },
+                  { icon: Zap, title: 'Commissioning', desc: 'Uji fungsi & pressure test lengkap' },
+                  { icon: Award, title: 'Dokumentasi', desc: 'As-built drawing & logbook maintenance' },
+                ].map(({ icon: Icon, title, desc }) => (
+                  <div key={title} className="rounded-xl border border-[var(--tm-border)] bg-[var(--tm-surface)] p-5">
+                    <div className="mb-3 grid size-10 place-items-center rounded-lg bg-[var(--tm-primary)]/10 text-[var(--tm-primary)]">
+                      <Icon className="size-5" />
+                    </div>
+                    <p className="text-sm font-semibold text-[var(--tm-text-strong)]">{title}</p>
+                    <p className="mt-1 text-xs text-[var(--tm-muted)]">{desc}</p>
                   </div>
-                  <CardTitle className="text-xl">Engineering & Standar</CardTitle>
-                  <CardDescription>
-                    Eksekusi mengacu pada standar lokal dan internasional yang berlaku.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-7 text-[var(--tm-muted)]">
-                    Setiap proyek didukung dokumentasi teknis lengkap, commissioning,
-                    serta uji fungsi sesuai standar HTM 02-01, NFPA 99, dan ISO 14644.
-                    Tim kami menyediakan as-built drawing dan logbook maintenance untuk
-                    kelancaran operasional jangka panjang.
-                  </p>
-                </CardContent>
-              </Card>
-            </Reveal>
+                ))}
+              </div>
+            </DepthReveal>
           </section>
 
           {/* Chapter: CTA */}
-          <section id="cta" className="scroll-mt-24">
-            <Reveal>
-              <Card className="gradient-border">
-                <CardHeader>
-                  <div className="grid size-10 place-items-center rounded-md bg-[var(--tm-surface-muted)] text-[var(--tm-primary)]">
-                    <Phone className="size-5" />
+          <section id="cta" className="scroll-mt-28">
+            <DepthReveal>
+              <div
+                className="relative overflow-hidden rounded-2xl p-8"
+                style={{ background: 'linear-gradient(135deg, var(--tm-primary) 0%, var(--tm-accent) 100%)' }}
+              >
+                <div className="absolute inset-0 hero-grid opacity-10 pointer-events-none" />
+                <div className="relative">
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-white/60">05 / Konsultasi</span>
                   </div>
-                  <CardTitle className="text-xl">Konsultasikan Kebutuhan Anda</CardTitle>
-                  <CardDescription>
+                  <h3 className="mb-2 text-xl font-bold text-white">Konsultasikan Kebutuhan Anda</h3>
+                  <p className="mb-6 text-sm text-white/75">
                     Tim teknis kami siap membantu dari survey awal hingga commissioning.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
+                  </p>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <a
                       href="mailto:teknomedindotimurpt@gmail.com?subject=Request%20Quotation"
-                      className="inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-semibold transition-opacity hover:opacity-90"
-                      style={{ backgroundColor: 'var(--tm-primary)', color: '#ffffff' }}
+                      className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold !text-white transition-all hover:-translate-y-0.5"
+                      style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)' }}
                     >
                       Request Quotation <ArrowRight className="ml-2 size-4" />
                     </a>
-                    <Button variant="outline" onClick={() => navigate('/contact')}>
+                    <button
+                      onClick={() => navigate('/contact')}
+                      className="inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold !text-white/80 transition-all hover:text-white"
+                      style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+                    >
                       Konsultasi
-                    </Button>
+                    </button>
                   </div>
-                </CardContent>
-              </Card>
-            </Reveal>
+                </div>
+              </div>
+            </DepthReveal>
           </section>
         </div>
       </div>
