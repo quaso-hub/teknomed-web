@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { ArrowRight, X, MapPin, Calendar, ChevronRight } from 'lucide-react'
 import { Reveal, Stagger, StaggerItem3D, TiltCard, CharReveal, ClipReveal } from '../components/Motion'
 import { motion, AnimatePresence } from 'motion/react'
@@ -29,22 +30,12 @@ export default function Projects() {
       if (e.key === 'Escape') setSelectedProject(null)
     }
     document.addEventListener('keydown', handleKey)
-    document.body.style.overflow = 'hidden'
     lenis?.stop()
-    // Force scroll to current position so fixed modal stays centered
-    const scrollY = window.scrollY
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
+    document.body.style.overflow = 'hidden'
     modalRef.current?.focus()
     return () => {
       document.removeEventListener('keydown', handleKey)
-      const scrollY = Math.abs(parseInt(document.body.style.top || '0'))
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
       document.body.style.overflow = ''
-      window.scrollTo(0, scrollY)
       lenis?.start()
     }
   }, [selectedProject, lenis])
@@ -224,18 +215,18 @@ export default function Projects() {
         </Reveal>
       </Section>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setSelectedProject(null)}
-            data-lenis-prevent
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-            aria-modal="true"
+      {/* Modal — portal ke document.body agar keluar dari Lenis transform context */}
+      {createPortal(
+        <AnimatePresence>
+          {selectedProject && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setSelectedProject(null)}
+              style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+              aria-modal="true"
             aria-label={`Detail proyek: ${selectedProject.title}`}
             role="dialog"
           >
@@ -348,7 +339,9 @@ export default function Projects() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
     </>
   )
 }
