@@ -143,7 +143,7 @@ function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id:
   return (
     <nav
       aria-label="Navigasi bab produk"
-      className="sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-[var(--tm-page)]/90 px-4 py-2.5 backdrop-blur-sm lg:hidden"
+      className="sticky top-14 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-[var(--tm-page)]/90 px-4 py-2.5 backdrop-blur-sm lg:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
       {CHAPTERS.map(ch => {

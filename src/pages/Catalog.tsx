@@ -131,11 +131,15 @@ export default function Catalog() {
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
-                className="relative px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300"
+                className={[
+                  'relative px-5 py-2 rounded-lg text-sm font-medium transition-all duration-300',
+                  activeCategory === cat
+                    ? 'text-white'
+                    : 'text-[var(--tm-text)] hover:text-[var(--tm-text-strong)]',
+                ].join(' ')}
                 style={{
                   backgroundColor: activeCategory === cat ? 'var(--tm-primary)' : 'transparent',
-                  color: activeCategory === cat ? '#ffffff' : 'var(--tm-text)',
-                  boxShadow: activeCategory === cat ? 'var(--shadow-sm), 0 0 0 1px var(--tm-primary)' : 'none',
+                  boxShadow: activeCategory === cat ? 'var(--shadow-sm), 0 0 0 1px color-mix(in srgb, var(--tm-primary) 60%, transparent)' : 'none',
                 }}
               >
                 {cat}

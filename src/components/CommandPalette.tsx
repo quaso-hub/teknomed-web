@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { Search, ArrowRight, Command } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useLenis } from 'lenis/react'
 import { useHotkey } from '../hooks/useHotkey'
 
 interface CommandItem {
@@ -33,12 +34,32 @@ export default function CommandPalette() {
   const listRef = useRef<HTMLUListElement>(null)
   const navigate = useNavigate()
   const reduced = useReducedMotion()
+  const lenis = useLenis()
 
   const open = useCallback(() => {
     setQueryRaw('')
     setActiveIdx(0)
     setIsOpen(true)
   }, [])
+
+  const close = useCallback(() => {
+    setIsOpen(false)
+  }, [])
+
+  // Stop/start Lenis when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      lenis?.stop()
+      document.body.style.overflow = 'hidden'
+    } else {
+      lenis?.start()
+      document.body.style.overflow = ''
+    }
+    return () => {
+      lenis?.start()
+      document.body.style.overflow = ''
+    }
+  }, [isOpen, lenis])
 
   const setQuery = useCallback((next: string) => {
     setQueryRaw(next)
@@ -78,7 +99,7 @@ export default function CommandPalette() {
   useEffect(() => {
     if (!isOpen) return
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setIsOpen(false); return }
+      if (e.key === 'Escape') { close(); return }
       if (e.key === 'ArrowDown') {
         e.preventDefault()
         setActiveIdx((i) => (i + 1) % filtered.length)
@@ -97,16 +118,10 @@ export default function CommandPalette() {
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [isOpen, filtered, activeIdx, execute])
+  }, [isOpen, filtered, activeIdx, execute, close])
 
   useEffect(() => {
     if (isOpen) inputRef.current?.focus()
-  }, [isOpen])
-
-  useEffect(() => {
-    if (!isOpen) return
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
   const overlayVariants = { hidden: { opacity: 0 }, visible: { opacity: 1 } }
@@ -124,7 +139,7 @@ export default function CommandPalette() {
           animate="visible"
           exit="hidden"
           variants={reduced ? {} : overlayVariants}
-          onClick={() => setIsOpen(false)}
+          onClick={close}
         >
           <motion.div
             className="w-full max-w-lg overflow-hidden rounded-xl bg-[var(--tm-surface)] shadow-2xl border border-[var(--tm-border)]"

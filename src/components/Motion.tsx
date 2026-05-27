@@ -537,9 +537,9 @@ export function HorizontalScrollSection({
 type MarqueeProps = { children: ReactNode; className?: string; speed?: number; reverse?: boolean }
 export function MarqueeTrack({ children, className, speed = 30, reverse = false }: MarqueeProps) {
   const reduced = useReducedMotion()
-  if (reduced) return <div className={cn('flex overflow-hidden', className)}>{children}</div>
+  if (reduced) return <div className={cn('flex w-full overflow-hidden', className)}>{children}</div>
   return (
-    <div className={cn('flex overflow-hidden select-none', className)}>
+    <div className={cn('flex w-full overflow-hidden select-none', className)}>
       <div
         className="flex shrink-0 gap-6 [&>*]:shrink-0 group"
         style={{
