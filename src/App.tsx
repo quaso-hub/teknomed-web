@@ -8,7 +8,13 @@ import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
 import CommandPalette from './components/CommandPalette'
 import { ToastProvider } from './components/Toast'
-import { PageSkeleton } from './components/ui/Skeleton'
+import {
+  PageSkeleton,
+  HeroSkeleton,
+  CatalogSkeleton,
+  ProductDetailSkeleton,
+  ContactSkeleton,
+} from './components/ui/Skeleton'
 import { SmoothScrollProvider } from './components/SmoothScrollProvider'
 import { CustomCursor } from './components/Motion'
 
@@ -20,6 +26,18 @@ const Projects = lazy(() => import('./pages/Projects'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Catalog = lazy(() => import('./pages/Catalog'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+
+/** Pick a route-aware skeleton so loading state matches incoming layout. */
+function RouteSkeleton() {
+  const location = useLocation()
+  const path = location.pathname
+
+  if (path === '/') return <HeroSkeleton />
+  if (path === '/contact') return <ContactSkeleton />
+  if (path === '/catalog') return <CatalogSkeleton />
+  if (path.startsWith('/catalog/')) return <ProductDetailSkeleton />
+  return <PageSkeleton />
+}
 
 // Premium page transition: scale+blur (elegant for medical brand)
 // Exit: content scales down + blurs out
@@ -91,7 +109,7 @@ function App() {
 
           <Navbar />
           <main>
-            <Suspense fallback={<PageSkeleton />}>
+            <Suspense fallback={<RouteSkeleton />}>
               <AnimatedRoutes />
             </Suspense>
           </main>

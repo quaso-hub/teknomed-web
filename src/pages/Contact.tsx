@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, Clock3, Copy, Mail, MapPin, Phone, MessageCircle } from 'lucide-react'
+﻿import { ArrowRight, CheckCircle2, Clock3, Copy, Mail, MapPin, Phone, MessageCircle } from 'lucide-react'
 import { useState, useCallback } from 'react'
 import { Reveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
@@ -9,6 +9,31 @@ import { SITE } from '../config/site'
 
 const inputClass =
   'h-11 w-full rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface)] px-3 text-sm text-[var(--tm-text-strong)] outline-none transition-colors focus:border-[var(--tm-primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--tm-primary)_20%,transparent)]'
+
+const inputErrorClass =
+  'h-11 w-full rounded-md border border-red-500 bg-[var(--tm-surface)] px-3 text-sm text-[var(--tm-text-strong)] outline-none transition-colors focus:ring-2 focus:ring-red-500/20'
+
+type FormErrors = Partial<Record<'name' | 'email' | 'message', string>>
+
+function validateContact(data: {
+  name: string
+  email: string
+  message: string
+}): FormErrors {
+  const errors: FormErrors = {}
+  if (!data.name.trim()) errors.name = 'Nama wajib diisi'
+  if (!data.email.trim()) {
+    errors.email = 'Email wajib diisi'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) {
+    errors.email = 'Format email tidak valid'
+  }
+  if (!data.message.trim()) {
+    errors.message = 'Pesan wajib diisi'
+  } else if (data.message.trim().length < 10) {
+    errors.message = 'Minimal 10 karakter'
+  }
+  return errors
+}
 
 function CopyButton({ text, label }: { text: string; label: string }) {
   const [copied, setCopied] = useState(false)
@@ -48,17 +73,29 @@ export default function Contact() {
   useDocumentTitle('Kontak')
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
+  const [errors, setErrors] = useState<FormErrors>({})
   const { addToast } = useToast()
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
-    const name    = data.get('name') as string
-    const email   = data.get('email') as string
-    const company = data.get('company') as string
-    const phone   = data.get('phone') as string
-    const message = data.get('message') as string
+    const name    = (data.get('name') as string) ?? ''
+    const email   = (data.get('email') as string) ?? ''
+    const company = (data.get('company') as string) ?? ''
+    const phone   = (data.get('phone') as string) ?? ''
+    const message = (data.get('message') as string) ?? ''
 
+    const validationErrors = validateContact({ name, email, message })
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      addToast('Periksa kembali isian form', 'warning')
+      const firstKey = Object.keys(validationErrors)[0]
+      const firstField = e.currentTarget.querySelector<HTMLElement>(`[name="${firstKey}"]`)
+      firstField?.focus()
+      return
+    }
+
+    setErrors({})
     const subject = encodeURIComponent(`Inquiry dari ${name}${company ? ` (${company})` : ''}`)
     const body = encodeURIComponent(
       `Nama: ${name}\nEmail: ${email}\nPerusahaan: ${company || '-'}\nTelepon: ${phone || '-'}\n\nKebutuhan:\n${message}`
@@ -70,6 +107,12 @@ export default function Contact() {
       setSent(true)
       addToast('Email client dibuka. Terima kasih!', 'success')
     }, 400)
+  }
+
+  function handleFieldChange(field: keyof FormErrors) {
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }))
+    }
   }
 
   return (
@@ -267,13 +310,40 @@ export default function Contact() {
                       <span className="text-sm font-semibold text-[var(--tm-text-strong)]">
                         Nama <span className="text-red-500">*</span>
                       </span>
-                      <input className={inputClass} placeholder="Nama Anda" name="name" required autoComplete="name" />
+                      <input
+                        className={errors.name ? inputErrorClass : inputClass}
+                        placeholder="Nama Anda"
+                        name="name"
+                        autoComplete="name"
+                        aria-invalid={Boolean(errors.name)}
+                        aria-describedby={errors.name ? 'name-error' : undefined}
+                        onChange={() => handleFieldChange('name')}
+                      />
+                      {errors.name && (
+                        <span id="name-error" role="alert" className="text-xs text-red-500">
+                          {errors.name}
+                        </span>
+                      )}
                     </label>
                     <label className="grid gap-2">
                       <span className="text-sm font-semibold text-[var(--tm-text-strong)]">
                         Email <span className="text-red-500">*</span>
                       </span>
-                      <input className={inputClass} placeholder="email@domain.com" name="email" type="email" required autoComplete="email" />
+                      <input
+                        className={errors.email ? inputErrorClass : inputClass}
+                        placeholder="email@domain.com"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'email-error' : undefined}
+                        onChange={() => handleFieldChange('email')}
+                      />
+                      {errors.email && (
+                        <span id="email-error" role="alert" className="text-xs text-red-500">
+                          {errors.email}
+                        </span>
+                      )}
                     </label>
                     <label className="grid gap-2">
                       <span className="text-sm font-semibold text-[var(--tm-text-strong)]">Perusahaan / Instansi</span>
@@ -288,12 +358,22 @@ export default function Contact() {
                         Kebutuhan proyek <span className="text-red-500">*</span>
                       </span>
                       <textarea
-                        className="min-h-36 w-full resize-none rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface)] px-3 py-2.5 text-sm text-[var(--tm-text-strong)] outline-none transition-colors focus:border-[var(--tm-primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--tm-primary)_20%,transparent)]"
+                        className={
+                          errors.message
+                            ? 'min-h-36 w-full resize-none rounded-md border border-red-500 bg-[var(--tm-surface)] px-3 py-2.5 text-sm text-[var(--tm-text-strong)] outline-none focus:ring-2 focus:ring-red-500/20'
+                            : 'min-h-36 w-full resize-none rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface)] px-3 py-2.5 text-sm text-[var(--tm-text-strong)] outline-none transition-colors focus:border-[var(--tm-primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--tm-primary)_20%,transparent)]'
+                        }
                         placeholder="Jenis layanan, lokasi proyek, target waktu, dll."
                         name="message"
-                        required
-                        minLength={10}
+                        aria-invalid={Boolean(errors.message)}
+                        aria-describedby={errors.message ? 'message-error' : undefined}
+                        onChange={() => handleFieldChange('message')}
                       />
+                      {errors.message && (
+                        <span id="message-error" role="alert" className="text-xs text-red-500">
+                          {errors.message}
+                        </span>
+                      )}
                     </label>
                   </div>
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
