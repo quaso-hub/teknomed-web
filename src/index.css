@@ -629,3 +629,100 @@ h1, h2, h3 { font-optical-sizing: auto; }
 @media (prefers-reduced-motion: reduce) {
   .hero-mesh-bg { animation: none; }
 }
+
+/* ─── 3D Text Extrusion (shader.se / Vaonis pattern) ────────────────────────── */
+/* Creates a layered shadow that gives text real depth */
+.text-3d {
+  text-shadow:
+    1px 1px 0 color-mix(in srgb, var(--tm-primary) 40%, transparent),
+    2px 2px 0 color-mix(in srgb, var(--tm-primary) 30%, transparent),
+    3px 3px 0 color-mix(in srgb, var(--tm-primary) 20%, transparent),
+    4px 4px 0 color-mix(in srgb, var(--tm-primary) 10%, transparent),
+    0 8px 24px color-mix(in srgb, var(--tm-primary) 25%, transparent);
+}
+
+/* ─── Holographic shimmer (EatNaked premium card) ───────────────────────────── */
+@keyframes holo-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.holo-card {
+  position: relative;
+  overflow: hidden;
+}
+.holo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    transparent 20%,
+    color-mix(in srgb, var(--tm-primary) 8%, transparent) 30%,
+    color-mix(in srgb, var(--tm-secondary) 6%, transparent) 40%,
+    color-mix(in srgb, var(--tm-accent) 8%, transparent) 50%,
+    transparent 60%
+  );
+  background-size: 300% 300%;
+  animation: holo-shift 6s ease infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.holo-card:hover::before {
+  opacity: 1;
+}
+
+/* ─── 3D Flip reveal (NRG card entrance) ────────────────────────────────────── */
+@keyframes flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(800px) rotateY(-25deg) translateZ(-60px) scale(0.9);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(800px) rotateY(0deg) translateZ(0) scale(1);
+    filter: blur(0px);
+  }
+}
+.flip-reveal {
+  animation: flip-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.flip-reveal-delay-1 { animation-delay: 0.1s; }
+.flip-reveal-delay-2 { animation-delay: 0.2s; }
+.flip-reveal-delay-3 { animation-delay: 0.3s; }
+.flip-reveal-delay-4 { animation-delay: 0.4s; }
+.flip-reveal-delay-5 { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-reveal { animation: none; }
+}
+
+/* ─── Depth parallax layers (Digitalists stacked sections) ──────────────────── */
+.depth-layer-1 { transform: translateZ(0px);   will-change: transform; }
+.depth-layer-2 { transform: translateZ(-20px);  will-change: transform; }
+.depth-layer-3 { transform: translateZ(-40px);  will-change: transform; }
+
+/* ─── Glow pulse (Vaonis product highlight) ─────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px color-mix(in srgb, var(--tm-primary) 20%, transparent),
+      0 0 40px color-mix(in srgb, var(--tm-primary) 10%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 30px color-mix(in srgb, var(--tm-primary) 35%, transparent),
+      0 0 60px color-mix(in srgb, var(--tm-primary) 20%, transparent),
+      0 0 80px color-mix(in srgb, var(--tm-accent) 10%, transparent);
+  }
+}
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-pulse { animation: none; }
+}

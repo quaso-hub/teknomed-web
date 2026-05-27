@@ -114,12 +114,12 @@ export default function Home() {
               </Badge>
             </Reveal>
 
-            {/* H1 with CharReveal + NRG text wipe */}
+            {/* H1 with CharReveal + NRG text wipe + 3D extrusion */}
             <h1 className="font-serif text-4xl font-bold tracking-tight text-[var(--tm-text-strong)] sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
               <span className="block pb-1">
                 <CharReveal text="PT Teknomed" delay={0.1} />
               </span>
-              <span className="block text-wipe">
+              <span className="block text-wipe text-3d">
                 <CharReveal text="Indo Timur" delay={0.4} />
               </span>
             </h1>
@@ -198,9 +198,9 @@ export default function Home() {
             </DepthReveal>
           </div>
 
-          {/* Right: animated visual card — Vaonis perspective depth */}
+          {/* Right: animated visual card — Vaonis perspective depth + glow */}
           <ScaleReveal delay={0.3} className="h-full">
-            <Card className="overflow-hidden h-full perspective-card shadow-depth gradient-border">
+            <Card className="overflow-hidden h-full perspective-card shadow-depth gradient-border glow-pulse holo-card">
               <CardHeader className="p-0">
                 {/* Animated mesh gradient background */}
                 <div
@@ -286,7 +286,7 @@ export default function Home() {
             <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
                 <ScrollTiltCard maxTilt={4} className="h-full">
-                  <Card className="group h-full card-shine transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth">
+                  <Card className={`group h-full card-shine holo-card transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth flip-reveal flip-reveal-delay-${Math.min(index + 1, 5)}`}>
                     <CardContent className="p-6 space-y-4">
                       <div className="flex items-center justify-between">
                         <div
