@@ -729,3 +729,36 @@ Per PLAN.md:
 - "AmbientIcons terlalu ramai?" Turunkan opacity di ICONS array di AmbientIcons.tsx.
 - "MarkersRail tidak muncul?" Hanya di lg: breakpoint. Mobile pakai MobileChapterNav pills.
 - "Phase 5 mulai dari mana?" Foto proyek dulu - ganti Unsplash URL di src/data/projects.ts.
+
+---
+
+## 19. Sesi Penerima: State Saat Ini (2026-05-28 lanjutan)
+
+### 19.1 Commit history sesi ini (lanjutan dari section 18)
+- 5bd64a6 fix(ux): projects redesign editorial, modal lenis scroll, marquee NRG style, command palette scroll fix
+- b9bf592 feat(3d): StaggerItem3D, ScrollTiltCard, DepthReveal - scroll-driven 3D from Vaonis/NRG/EatNaked
+- 9bd61c9 feat(3d): apply StaggerItem3D + DepthReveal to About, Services, Catalog pages
+
+### 19.2 3D Primitives baru di Motion.tsx
+| Component | Pattern dari | Behavior |
+|---|---|---|
+| `StaggerItem3D` | NRG card grid | Elements fly in dari Z-axis: scale 0.85 + rotateX 12 + blur 4px → normal |
+| `ScrollTiltCard` | Vaonis Hyperia | Card tilt driven by scroll position (bukan mouse) — rotateX berubah saat scroll |
+| `DepthReveal` | EatNaked/Digitalists | Section entrance: scale 0.9 + y 40 + blur 12px + rotateX 8 → normal |
+
+### 19.3 Fixes sesi ini
+- **CommandPalette**: `data-lenis-prevent` + `overscroll-contain` pada ul list — scroll di dalam modal sekarang jalan
+- **Projects modal**: `data-lenis-prevent` pada motion.div modal — scroll di dalam modal jalan
+- **Marquee**: hapus manual duplicate `[...areas, ...areas]`, biarkan MarqueeTrack handle. NRG editorial style: index prefix + uppercase + ✦ separator + fade edges
+- **Projects page**: redesign editorial — Digitalists chapter prefix, image card dengan hover scale, compact stats bar, area pills horizontal
+
+### 19.4 Pages yang sudah pakai 3D primitives
+- Home: StaggerItem3D (services), ScrollTiltCard (stats + services), DepthReveal (stats)
+- About: StaggerItem3D, DepthReveal
+- Services: StaggerItem3D, DepthReveal
+- Catalog: StaggerItem3D
+- Projects: redesign editorial + modal scroll fix
+
+### 19.5 Yang masih pending
+- Button biru tulisan hitam: user melaporkan ada tapi belum bisa diidentifikasi page-nya. Perlu user kasih tau di page mana.
+- Phase 5: foto proyek asli, sitemap, JSON-LD, meta per page
