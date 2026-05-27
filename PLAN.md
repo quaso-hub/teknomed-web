@@ -1,4 +1,4 @@
-# PLAN.md - Teknomed Web 3D Premium Direction
+﻿# PLAN.md - Teknomed Web 3D Premium Direction
 
 > Living plan untuk transformasi teknomed-web jadi pengalaman premium dengan kualitas referensi: World of NRG, Vaonis Hyperia, Shader.se, Digitalists.at, EatNaked.co.
 >
@@ -129,6 +129,230 @@ sertifikasi -> tampilkan dengan tone yang sama.
    WordReveal di Motion.tsx).
 5. Pinjam clarity EatNaked: setiap claim harus diukur. "5 area" jadi
    "Jawa Timur, Bali, NTB, NTT, Sulawesi". "Berpengalaman" jadi "Sejak 2021".
+
+
+---
+
+## 2.7 Technical Teardown Synthesis (5 Reference Sites)
+
+Setelah deep research dengan 5 explorer agent, berikut sintesis pattern yang
+bisa diadopsi untuk teknomed-web. Ringkasan per site sudah dilakukan; teknik
+yang aktionable diekstrak di section 2.8 (cherry-pick) dan section 4 update.
+
+### 2.7.1 Stack Fingerprint Per Site
+
+| Site | Framework | 3D | Smooth Scroll | Animation | Catatan |
+|---|---|---|---|---|---|
+| NRG | Static HTML + vanilla JS | NONE | Lenis 1.1.14 | Hand-rolled rAF + Lottie | Bundle ~600KB JS critical path. Tidak pakai 3D sama sekali |
+| Hyperia | Shopify + Alpine.js | Canvas image-sequence | Lenis | GSAP + ScrollTrigger | Bukan Three.js! Hero pakai 120 frame JPG di canvas. ax-load lazy per section |
+| Shader.se | Next.js + R3F | Three.js r183 + WebGPU + TSL | Lenis (forked) | R3F + uikit fork | Single shared canvas full-screen. Selective render. WebGPU bleeding edge |
+| Digitalists | WordPress + Barba.js | NONE | Lenis (dual-instance) | GSAP 3 + SplitText + ScrollTrigger | Dual-Lenis: globalLenis + popupLenis untuk modal |
+| EatNaked | Custom static + ES modules | Canvas image-sequence x2 | Lenis 1.3.4 | GSAP 3.13 full plugin pack | 9 plugin GSAP. Frame seq 201+40. Custom FlickCards 3D stack |
+
+### 2.7.2 Critical Insights
+
+1. **3D bukan = Three.js**. NRG, Hyperia, EatNaked menghasilkan kesan premium
+   3D **tanpa Three.js sama sekali**. Hyperia pakai canvas image-sequence
+   (drawImage 120 frame JPG di scroll). EatNaked pakai 201 frame AVIF dual-orient.
+   Ini secara performa jauh lebih ramah daripada Three.js + glTF + post-processing.
+
+2. **Lenis adalah baseline 5/5 site**. Sudah diinstal di project. Pertahankan.
+   Tapi pelajari pattern dual-instance dari Digitalists untuk modal Projects.
+
+3. **GSAP + ScrollTrigger dominan**. 4/5 site pakai. Project Teknomed sekarang
+   pakai motion/react. Decision point: tetap motion/react (sudah committed di
+   HANDOFF) atau migrate ke GSAP?
+   - Jangan migrate. motion/react useScroll + useTransform setara untuk 80%
+     use case yang penting. GSAP punya keunggulan di SplitText (auto split)
+     dan Pin (paling stabil), tapi keduanya bisa di-emulate dengan motion/react.
+   - Untuk SplitText pattern (signature digitalists), pakai pre-split di JSX
+     manual (zero JS hydration cost).
+   - Untuk Pin pattern (signature Hyperia), pakai sticky CSS + useScroll.
+
+4. **Shader.se adalah outlier ekstrem**. Mereka WebGPU + TSL + uikit. Tidak
+   transferable untuk medical brand (audience mereka peers/agencies, bukan
+   klinik). Ambil cuma arsitektur "single shared canvas + selective render"
+   sebagai inspirasi, bukan stack.
+
+5. **Bundle budget realistis** untuk teknomed: <= 350 KB gzipped. Ini bisa
+   dicapai dengan Lenis (10) + motion/react (sudah ada) + canvas image-seq
+   (zero library, hand-rolled drawImage).
+## 2.8 Cherry-Pick: Teknik Konkret yang Diadopsi
+
+Dari semua pattern, ini yang dipilih untuk teknomed. Setiap teknik diberi
+asal site, mapping ke file project, dan implementation hint.
+
+### 2.8.1 Cursor Rotation Skew (dari Digitalists)
+- Asal: digitalists.at GSAP quickTo + clamp delta-X rotation
+- Mapping: src/components/Motion.tsx CustomCursor
+- Hint: track delta clientX, rotation clamp(-90, 90, 4*delta), reset 400ms timeout
+- Effort: 30 menit
+- Dampak: cursor punya identitas signature, bukan dot biasa
+
+### 2.8.2 Pre-Split Word Reveal (dari Digitalists)
+- Asal: digitalists.at server-side word split, blur+opacity reveal sine.out 1.7s stagger 0.15
+- Mapping: src/components/Motion.tsx WordReveal (replace runtime split)
+- Hint: terima text prop, .split(' ') di JSX, render per-word motion.span
+- Effort: 30 menit
+- Dampak: zero hydration cost, identik a11y, premium feel
+
+### 2.8.3 Pinned Chapter Storytelling (dari Hyperia)
+- Asal: vaonis hyperia hyperiaStorytelling 580vh sticky 3 absolute beats blur+opacity scrub
+- Mapping: src/pages/ProductDetail.tsx restructure jadi chapter
+- Hint: useScroll target=ref offset=start start, end end, useTransform per beat opacity 0->1->0
+- Effort: 1-2 sesi (per produk butuh content beats)
+- Dampak: signature hero pattern medical authority
+
+### 2.8.4 Canvas Image-Sequence Hero (dari Hyperia + EatNaked)
+- Asal: hyperia 120 frame JPG drawImage scroll, eatnaked 201 frame AVIF dual-orient
+- Mapping: ganti placeholder ProductDetail viewer current dengan canvas frame seq
+- Hint: prerender 60-80 frame dari Blender per produk, AVIF dengan poster fallback
+- Effort: 2-3 sesi (need 3D modeling per produk)
+- Dampak: 3D feel tanpa Three.js bundle cost, mobile friendly
+- Decision deferred ke Phase 4
+
+### 2.8.5 Glass Card with Backdrop Blur (dari NRG)
+- Asal: nrg topicHero glass 40rem x 33rem, blur 1rem, asymmetric padding, accent per category
+- Mapping: src/components/ui/Card.tsx variant glass
+- Hint: CSS backdrop-filter blur(1rem) bg rgba 0.2 + GPU detect fallback solid bg
+- Effort: 1 jam
+- Dampak: visual depth tanpa 3D cost
+
+### 2.8.6 Anima Staggered Entry System (dari NRG)
+- Asal: nrg data-anima-delay system, easing cubic-bezier 0.55 0.1 0.26 0.995 default
+- Mapping: update easing default di Motion.tsx primitives
+- Hint: ganti easing cubic-bezier 0.25 0.46 0.45 0.94 jadi 0.55 0.1 0.26 0.995
+- Effort: 30 menit (search-replace + visual regression test)
+- Dampak: konsistensi feel premium di semua transition
+
+### 2.8.7 Markers Rail MorphSVG (dari EatNaked)
+- Asal: eatnaked SVG line per section morph straight to wave saat in-view
+- Mapping: section progress indicator vertical kiri-page Teknomed
+- Hint: SVG path animation, motion.path d attribute interpolation
+- Effort: 1-2 jam
+- Dampak: editorial feel
+
+### 2.8.8 Floating Ambient Cutout PNG (dari EatNaked)
+- Asal: eatnaked 11 veggie PNG static positioned blur per layer GSAP one-shot reveal
+- Mapping: src/pages/Home.tsx hero accent floating elements
+- Hint: hardcode 5-7 medical icons SVG (gas valve, panel, fan), absolute pos, blur 4-6px per layer, motion.div initial+animate stagger random
+- Effort: 2-3 jam (cari/buat SVG icon yang cocok)
+- Dampak: ambient depth, CPU murah karena static + parallax dari Lenis scroll natural
+
+### 2.8.9 Dual-Lenis Pattern (dari Digitalists)
+- Asal: digitalists globalLenis stop popupLenis start saat modal open
+- Mapping: src/pages/Projects.tsx modal proyek + src/components/SmoothScrollProvider.tsx
+- Hint: useLenis hook, lenis.stop() saat modal mount, lenis.start() saat unmount
+- Effort: 30 menit
+- Dampak: fix bug Lenis vs Maps iframe yang sudah identifikasi di Phase 1
+
+### 2.8.10 Editorial Numeric Prefix (dari Digitalists)
+- Asal: digitalists CS 695 prefix mono font 13px uppercase
+- Mapping: src/data/projects.ts + src/data/products.ts add field prefix
+- Hint: PRJ 2401 untuk projects, ITM 042 untuk products, render dengan font-mono
+- Effort: 1 jam
+- Dampak: editorial taste signal
+
+## 2.9 Anti-Patterns dari Research (yang DITOLAK untuk Teknomed)
+
+1. WebGPU + TSL + uikit fork (Shader.se). Bleeding edge. Maintenance trap.
+   Mobile Safari coverage 88 persen Mei 2026. Teknomed butuh reliability medical-grade.
+2. Full-canvas hero tanpa DOM text (Shader.se). Anti-SEO, anti-screen-reader.
+3. Ironic corporate copy parody (Shader.se). Anti-medical authority.
+4. Film grain + chromatic aberration post-FX. Estetika rusak = anti-medical.
+5. cursor: none global (Digitalists style). Sudah dimundurkan, jangan kembali.
+6. 9 GSAP plugin loaded (EatNaked). Bundle bloat, kita cuma butuh 2-3 plugin equivalent.
+7. Lottie 250KB untuk illustration tunggal (NRG). Pakai inline SVG motion.path.
+8. Hardcoded rem positions per breakpoint (EatNaked floating veggies). Pakai
+   CSS custom properties + clamp() lebih scalable.
+9. WordPress + ACF blocks tanpa code-split (Digitalists 1.2MB bundle). Vite
+   sudah handle ini, jangan regress.
+10. Audio + preloader gate (Hyperia). Wrong tone untuk medical contractor.
+
+## 2.10 Bundle Budget Revision Berdasar Research
+
+Target update setelah research:
+
+| Route | Sebelum | Target Baru | Strategi |
+|---|---|---|---|
+| / (Home) | 17.4 KB | <= 25 KB | Tambah ambient floating SVG (no canvas) |
+| /catalog | 9.8 KB | <= 15 KB | Tambah filter UI premium |
+| /catalog/:slug | 7.2 KB | <= 50 KB (dengan canvas seq) atau <= 12 KB (tanpa) | Decision di Phase 4: full image-sequence (mahal asset 5-8MB JPG) atau static |
+| /projects | 17.7 KB | <= 22 KB | Modal dual-Lenis fix masuk sini |
+| /about | 6.6 KB | <= 8 KB | Tambah marker rail SVG |
+| /services | 6.1 KB | <= 8 KB | - |
+| /contact | 11.6 KB | <= 14 KB | Form validation |
+| Main shared | 277 KB | <= 280 KB | Lenis sudah masuk. Cap di sini. |
+| CSS | 55 KB | <= 60 KB | Tambah glass + marker styles |
+
+Total target gzipped <= 350 KB di route paling berat (catalog/:slug dengan
+image-sequence). Mobile fallback: poster image saja, no canvas.
+
+## 2.11 Phase 4 Revision: 3D Direction (Konkret)
+
+Update Phase 4 di section 3 sebelumnya. Sebelumnya: rekomendasi awal Three.js
+plain + HDR env + Bloom subtle. Sekarang setelah teardown 5 site:
+
+### Decision (locked)
+- TIDAK pakai Three.js untuk Hero / ProductDetail. Beralih ke canvas
+  image-sequence pattern (Hyperia + EatNaked).
+- Three.js plain TETAP TERSEDIA di src/components/Product3DViewer.tsx untuk
+  use case yang real-time interaktif (drag rotate, zoom). Tapi BUKAN pattern
+  utama hero ProductDetail.
+- Tidak migrate ke R3F. Tidak pakai WebGPU.
+- Lenis tetap. motion/react tetap.
+
+### Hero ProductDetail Pattern Baru (Hyperia-style)
+1. Pinned section 400-500vh dengan sticky top-0 h-screen.
+2. Canvas 1920x1080 (atau 1.5x DPR) di tengah.
+3. 60-80 frame JPG/AVIF prerender dari Blender. Per produk butuh:
+   - MGPS: rotating manifold panel + pipa exposed
+   - MOT: ruang OT module assembled from parts
+   - HVAC: AHU cutaway dengan internal flow
+   - Electrical: panel cabinet door open reveal breakers
+   - Chiller: chassis dengan fan blades animation
+   - Consumables: pallet zoom-in to filter detail
+4. drawImage di useScroll progress callback (motion/react useMotionValueEvent).
+5. Asset weight target: 60 frame x 80KB AVIF = 4.8 MB. Acceptable untuk product page.
+6. Mobile fallback: pickFrame[0] sebagai static poster, no canvas.
+7. Loader: spinner gate sebelum unpin + first frame ready.
+
+### ProductDetail Chapter Structure Baru
+Ganti current single-panel layout dengan 5 chapter:
+- Chapter 0: Hero (canvas reveal + product name)
+- Chapter 1: Problem (kenapa ini matter, target hospital pain point)
+- Chapter 2: Engineering (specs, standards, compliance, technical detail)
+- Chapter 3: Visual exploration (3 still photos atau detail crop dengan caption)
+- Chapter 4: CTA (request quotation, request site survey, contact)
+
+Setiap chapter pakai pinned-sticky dengan blur+opacity scrub crossfade beats
+sesuai pattern Hyperia.
+
+### Asset Pipeline (Phase 4 task baru)
+1. Setup Blender atau pakai Spline.design untuk model produk awal.
+2. Render 60 frame per produk, output JPG 80 percent quality, target 80KB per frame.
+3. Optional: convert ke AVIF dengan sharp atau cwebp. Test ukuran.
+4. Naming convention: /public/seq/<slug>/<frame-index>.avif
+5. Preload first 5 frame, lazy sisa.
+6. Hosting: bundle dist/ atau external CDN kalau total > 30MB.
+
+### Hero Home (Decision pending)
+- NoiseMeshGradient sudah dibuat tapi tidak diaktifkan. Test dulu performa di
+  iPhone SE / mid Android. Kalau >16ms first paint, drop dan ganti ambient
+  floating SVG icon (pattern EatNaked tapi medical icons).
+- Decision deferred, evaluasi di Phase 4 hari pertama.
+
+### Acceptance Phase 4 (Updated)
+- ProductDetail bundle gzipped <= 60 KB (no Three.js)
+- Image sequence asset weight <= 6 MB per produk (12 MB sample untuk 2 produk pertama)
+- First Contentful Paint /catalog/:slug <= 1.8s di 4G slow Chrome mobile
+- Lighthouse Performance >= 85 mobile
+- iPhone SE simulator: scroll smooth 60fps di chapter transition
+- prefers-reduced-motion: jump cut, no scrub
+- Mobile (< 768px): static poster only, no canvas
+
+
+---
 
 ## 3. Phased Execution Plan
 
