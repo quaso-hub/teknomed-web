@@ -11,7 +11,7 @@ import {
   Counter, FloatCard, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
   CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
-  DepthReveal, MouseParallaxLayer, TiltCard3D,
+  DepthReveal, MouseParallaxLayer, TiltCard3D, ScrollTiltCard,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { Badge } from '../components/ui/Badge'
