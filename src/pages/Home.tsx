@@ -11,8 +11,7 @@ import {
   Counter, FloatCard, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
   CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
-  ScrollTiltCard, DepthReveal, MouseParallaxLayer,
-  TiltCard3D, ScrollStory,
+  DepthReveal, MouseParallaxLayer, TiltCard3D,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { Badge } from '../components/ui/Badge'
@@ -20,6 +19,18 @@ import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardFooter, CardHeader } from '../components/ui/Card'
 import { SITE } from '../config/site'
 import { HOME_STATS } from '../data/stats'
+import { lazy, Suspense, useEffect, useState } from 'react'
+
+// Three.js WebGL shader — lazy loaded, desktop only
+const NoiseMeshGradient = lazy(() => import('../components/NoiseMeshGradient'))
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    setIsDesktop(window.innerWidth >= 1024)
+  }, [])
+  return isDesktop
+}
 
 const services = [
   {
@@ -90,15 +101,17 @@ export default function Home() {
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <SpotlightSection className="relative overflow-hidden" ref={heroRef}>
-        {/* Animated background — CSS mesh gradient (no Three.js, zero bundle cost) */}
+        {/* Animated background — WebGL shader desktop, CSS fallback mobile */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          {/* Layered conic + radial mesh — shader.se feel without WebGL */}
-          <div className="absolute inset-0 hero-mesh-bg" />
+          {/* Three.js WebGL noise mesh — desktop only, lazy loaded */}
+          <Suspense fallback={<div className="absolute inset-0 hero-mesh-bg" />}>
+            <NoiseMeshGradient className="absolute inset-0 w-full h-full opacity-70" />
+          </Suspense>
           {/* Grid overlay */}
-          <div className="absolute inset-0 hero-grid opacity-25" />
+          <div className="absolute inset-0 hero-grid opacity-20" />
           {/* Vignette */}
           <div className="vignette absolute inset-0" />
-          {/* Ambient icons with mouse parallax — NRG dual-lag pattern */}
+          {/* Ambient icons with mouse parallax */}
           <MouseParallaxLayer strength={20} lag={10} className="absolute inset-0 pointer-events-none">
             <AmbientIcons containerRef={heroRef} />
           </MouseParallaxLayer>
@@ -323,17 +336,6 @@ export default function Home() {
           ))}
         </Stagger>
       </div>
-
-      {/* ── Scroll Story — Vaonis Hyperia scroll-scrubbed text ───────────────── */}
-      <ScrollStory
-        blocks={[
-          'Kami membangun fasilitas kesehatan yang menyelamatkan nyawa.',
-          'Setiap instalasi gas medis dirancang dengan presisi tinggi.',
-          'Dari Jawa Timur hingga Sulawesi — standar yang sama.',
-          'Kepercayaan dibangun satu proyek dalam satu waktu.',
-        ]}
-        className="bg-[var(--tm-footer)]"
-      />
 
       {/* ── Area Coverage Marquee — NRG editorial style ─────────────────────── */}
       <div className="relative overflow-hidden border-y border-[var(--tm-border)]"
