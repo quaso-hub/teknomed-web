@@ -1,7 +1,7 @@
 import { useState, useMemo, useDeferredValue, useTransition } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Search, X, SlidersHorizontal } from 'lucide-react'
-import { Reveal, Stagger, StaggerItem3D, DepthReveal } from '../components/Motion'
+import { Reveal, Stagger, StaggerItem3D } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import Badge from '../components/ui/Badge'

@@ -1,5 +1,5 @@
 import { ClipboardList, ShieldCheck, Compass, FileCheck2, Users } from 'lucide-react'
-import { FloatCard, Stagger, StaggerItem3D, CharReveal, ClipReveal, DepthReveal, ScrollTiltCard } from '../components/Motion'
+import { FloatCard, Stagger, StaggerItem3D, CharReveal, ClipReveal, DepthReveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'

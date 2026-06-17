@@ -9,7 +9,7 @@ import Section from '../components/Section'
 import Badge from '../components/ui/Badge'
 import { Card, CardContent } from '../components/ui/Card'
 import {
-  PROJECTS, SCOPE_CATEGORIES, PROJECT_AREAS, PROJECT_STATS, PROJECT_CATEGORIES,
+  PROJECTS, PROJECT_AREAS, PROJECT_STATS, PROJECT_CATEGORIES,
   type ProjectCategory, type Project,
 } from '../data/projects'
 
@@ -79,7 +79,7 @@ export default function Projects() {
         {/* Area pills - centered, premium marquee style */}
         <Reveal>
           <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {PROJECT_AREAS.map((area, i) => (
+            {PROJECT_AREAS.map((area) => (
               <span
                 key={area}
                 className="inline-flex items-center gap-1.5 rounded-full border border-[var(--tm-border)] bg-[var(--tm-surface)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[var(--tm-text)] uppercase transition-colors hover:border-[var(--tm-primary)] hover:text-[var(--tm-primary)]"

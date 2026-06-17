@@ -1,13 +1,12 @@
-﻿import { ArrowRight, Move3d, Sparkles, ShieldCheck, Layers3, Phone, CheckCircle2, Zap, Award } from 'lucide-react'
+﻿import { ArrowRight, Move3d, Sparkles, ShieldCheck, CheckCircle2, Zap, Award } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Reveal, DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
-import { MarkersRail } from '../components/MarkersRail'
+import { DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card'
+import { Card, CardContent } from '../components/ui/Card'
 
 // 3D viewer dipause dulu - akan kembali di Phase 4 dengan canvas image-sequence
 // pattern (Hyperia-style). File Product3DViewer.tsx tetap ada di
@@ -314,7 +313,7 @@ export default function ProductDetail() {
               </div>
               <h3 className="mb-6 text-xl font-bold text-[var(--tm-text-strong)]">Cakupan Layanan</h3>
               <Stagger className="grid gap-3 sm:grid-cols-2">
-                {product.bullets.map((b, i) => (
+                {product.bullets.map((b) => (
                   <StaggerItem3D key={b}>
                     <div className="flex items-start gap-3 rounded-xl border border-[var(--tm-border)] bg-[var(--tm-surface)] p-4 transition-colors hover:border-[var(--tm-primary)]">
                       <div className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--tm-primary)]/10">

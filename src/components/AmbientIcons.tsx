@@ -7,7 +7,6 @@
  * - GPU: transform only (no layout thrash)
  */
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import { useRef } from 'react'
 
 /* ── SVG icon paths (monoline, medical/MEP themed) ─────────────────────────── */
 
