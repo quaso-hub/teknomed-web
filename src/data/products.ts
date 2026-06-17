@@ -9,6 +9,10 @@ export interface Product {
   desc: string
   specs: string[]
   tags: string[]
+  /** Longer summary for detail page (falls back to desc if absent). */
+  summary?: string
+  /** Process-oriented bullets for detail page coverage section. */
+  bullets?: string[]
 }
 
 export const PRODUCTS: Product[] = [
@@ -19,6 +23,13 @@ export const PRODUCTS: Product[] = [
     category: 'Konstruksi',
     icon: Syringe,
     desc: 'Perencanaan dan instalasi jaringan gas medis untuk fasilitas kesehatan.',
+    summary: 'Solusi perencanaan dan instalasi jaringan gas medis untuk fasilitas kesehatan.',
+    bullets: [
+      'Perencanaan jalur pipa dan titik outlet sesuai standar',
+      'Instalasi sistem distribusi gas medis (O2, N2O, Vacuum, dll)',
+      'Pengujian kebocoran dan commissioning',
+      'Maintenance berkala dan after-sales support',
+    ],
     specs: [
       'O2, N2O, CO2, Vacuum, Air Medis',
       'Sesuai standar HTM 02-01 & NFPA 99',
@@ -34,6 +45,13 @@ export const PRODUCTS: Product[] = [
     category: 'Konstruksi',
     icon: SquareStack,
     desc: 'Ruang operasi modular yang dapat dikustomisasi sesuai standar dan kebutuhan.',
+    summary: 'Ruang operasi modular yang dapat dikustomisasi sesuai standar dan kebutuhan.',
+    bullets: [
+      'Panel modular dinding dan plafon dengan finishing anti-bakteri',
+      'Integrasi HVAC, electrical, dan sistem pendukung',
+      'Pintu hermetik dan sistem kontrol tekanan',
+      'Maintenance dan after-sales support',
+    ],
     specs: [
       'Panel modular anti-bakteri',
       'Integrasi HVAC & electrical',
@@ -49,6 +67,13 @@ export const PRODUCTS: Product[] = [
     category: 'Konstruksi',
     icon: Wind,
     desc: 'Sistem tata udara untuk kenyamanan, kontrol temperatur, dan kebersihan ruangan.',
+    summary: 'Sistem tata udara untuk kenyamanan, kontrol temperatur, dan kebersihan ruangan.',
+    bullets: [
+      'Perencanaan load dan kebutuhan airflow',
+      'Instalasi AHU, ducting, dan diffuser',
+      'Balancing dan testing sesuai standar',
+      'Sistem filtrasi HEPA untuk cleanroom',
+    ],
     specs: [
       'AHU, FCU, ducting & diffuser',
       'Filtrasi HEPA H13/H14',
@@ -64,6 +89,13 @@ export const PRODUCTS: Product[] = [
     category: 'Konstruksi',
     icon: Zap,
     desc: 'Pekerjaan mekanikal dan elektrikal untuk proyek rumah sakit dan klinik.',
+    summary: 'Pekerjaan mekanikal dan elektrikal untuk proyek rumah sakit dan klinik.',
+    bullets: [
+      'Instalasi panel listrik dan distribusi daya',
+      'Sistem grounding dan proteksi petir',
+      'Instalasi pompa, plumbing, dan fire protection',
+      'Koordinasi MEP terintegrasi',
+    ],
     specs: [
       'Panel MDP, SDP, distribusi daya',
       'Grounding & lightning protection',
@@ -79,6 +111,13 @@ export const PRODUCTS: Product[] = [
     category: 'Penjualan',
     icon: HardHat,
     desc: 'Sistem pendinginan khusus untuk ruang radiologi.',
+    summary: 'Sistem pendinginan khusus untuk ruang radiologi.',
+    bullets: [
+      'Chiller dedicated untuk peralatan radiologi',
+      'Kontrol temperatur presisi',
+      'Monitoring dan alarm system',
+      'Maintenance preventif berkala',
+    ],
     specs: [
       'Chiller dedicated radiologi',
       'Kontrol temperatur presisi ±0.5°C',
@@ -94,6 +133,13 @@ export const PRODUCTS: Product[] = [
     category: 'Penjualan',
     icon: Package,
     desc: 'Pengadaan consumable dan spare part peralatan medis.',
+    summary: 'Pengadaan consumable dan spare part peralatan medis.',
+    bullets: [
+      'Filter HEPA dan pre-filter',
+      'Spare part AHU dan ducting',
+      'Komponen gas medis (valve, regulator, outlet)',
+      'Consumable maintenance rutin',
+    ],
     specs: [
       'Filter HEPA & pre-filter',
       'Spare part AHU & ducting',

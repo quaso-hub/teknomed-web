@@ -7,86 +7,11 @@ import Section from '../components/Section'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
+import { getProductBySlug } from '../data/products'
 
 // 3D viewer dipause dulu - akan kembali di Phase 4 dengan canvas image-sequence
 // pattern (Hyperia-style). File Product3DViewer.tsx tetap ada di
 // src/components/ untuk use case interaktif lain. Lihat PLAN.md section 2.11.
-
-type Product = {
-  slug: string
-  name: string
-  summary: string
-  bullets: string[]
-}
-
-const PRODUCTS: Product[] = [
-  {
-    slug: 'mgps',
-    name: 'Medical Gas Pipeline System (MGPS)',
-    summary: 'Solusi perencanaan dan instalasi jaringan gas medis untuk fasilitas kesehatan.',
-    bullets: [
-      'Perencanaan jalur pipa dan titik outlet sesuai standar',
-      'Instalasi sistem distribusi gas medis (O2, N2O, Vacuum, dll)',
-      'Pengujian kebocoran dan commissioning',
-      'Maintenance berkala dan after-sales support',
-    ],
-  },
-  {
-    slug: 'mot',
-    name: 'Modular Operating Theatre (MOT)',
-    summary: 'Ruang operasi modular yang dapat dikustomisasi sesuai standar dan kebutuhan.',
-    bullets: [
-      'Panel modular dinding dan plafon dengan finishing anti-bakteri',
-      'Integrasi HVAC, electrical, dan sistem pendukung',
-      'Pintu hermetik dan sistem kontrol tekanan',
-      'Maintenance dan after-sales support',
-    ],
-  },
-  {
-    slug: 'hvac-cleanroom',
-    name: 'HVAC & Cleanroom',
-    summary: 'Sistem tata udara untuk kenyamanan, kontrol temperatur, dan kebersihan ruangan.',
-    bullets: [
-      'Perencanaan load dan kebutuhan airflow',
-      'Instalasi AHU, ducting, dan diffuser',
-      'Balancing dan testing sesuai standar',
-      'Sistem filtrasi HEPA untuk cleanroom',
-    ],
-  },
-  {
-    slug: 'electrical-mechanical',
-    name: 'Electrical & Mechanical',
-    summary: 'Pekerjaan mekanikal dan elektrikal untuk proyek rumah sakit dan klinik.',
-    bullets: [
-      'Instalasi panel listrik dan distribusi daya',
-      'Sistem grounding dan proteksi petir',
-      'Instalasi pompa, plumbing, dan fire protection',
-      'Koordinasi MEP terintegrasi',
-    ],
-  },
-  {
-    slug: 'radiology-chiller',
-    name: 'Radiology Room Chiller',
-    summary: 'Sistem pendinginan khusus untuk ruang radiologi.',
-    bullets: [
-      'Chiller dedicated untuk peralatan radiologi',
-      'Kontrol temperatur presisi',
-      'Monitoring dan alarm system',
-      'Maintenance preventif berkala',
-    ],
-  },
-  {
-    slug: 'consumables-spareparts',
-    name: 'Consumables & Spare Parts',
-    summary: 'Pengadaan consumable dan spare part peralatan medis.',
-    bullets: [
-      'Filter HEPA dan pre-filter',
-      'Spare part AHU dan ducting',
-      'Komponen gas medis (valve, regulator, outlet)',
-      'Consumable maintenance rutin',
-    ],
-  },
-]
 
 /** Chapter rangka. Phase 4 akan ekspansi jadi 5 chapter pinned-sticky scrub. */
 type Chapter = { id: string; label: string }
@@ -172,7 +97,7 @@ function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id:
 export default function ProductDetail() {
   const { slug } = useParams()
   const navigate = useNavigate()
-  const product = useMemo(() => PRODUCTS.find((p) => p.slug === slug), [slug])
+  const product = useMemo(() => (slug ? getProductBySlug(slug) : undefined), [slug])
   useDocumentTitle(product?.name ?? 'Produk')
 
   const [activeId, setActiveId] = useState<string>(CHAPTERS[0].id)
@@ -239,7 +164,7 @@ export default function ProductDetail() {
     <Section
       eyebrow="Katalog"
       title={product.name}
-      description={product.summary}
+      description={product.summary ?? product.desc}
     >
       <div className="mb-6">
         <Link to="/catalog" className="text-sm font-semibold text-[var(--tm-muted)] hover:text-[var(--tm-text-strong)] transition-colors">
@@ -262,7 +187,7 @@ export default function ProductDetail() {
                 <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">01 / Overview</span>
               </div>
               <h2 className="mb-3 text-2xl font-bold text-[var(--tm-text-strong)]">{product.name}</h2>
-              <p className="mb-6 text-base leading-7 text-[var(--tm-muted)]">{product.summary}</p>
+              <p className="mb-6 text-base leading-7 text-[var(--tm-muted)]">{product.summary ?? product.desc}</p>
               <div className="flex flex-wrap gap-2">
                 {['Konsultasi', 'Instalasi', 'Maintenance', 'Commissioning'].map((item) => (
                   <Badge key={item} variant="outline" className="px-3 py-1">{item}</Badge>
@@ -313,7 +238,7 @@ export default function ProductDetail() {
               </div>
               <h3 className="mb-6 text-xl font-bold text-[var(--tm-text-strong)]">Cakupan Layanan</h3>
               <Stagger className="grid gap-3 sm:grid-cols-2">
-                {product.bullets.map((b) => (
+                {(product.bullets ?? product.specs).map((b) => (
                   <StaggerItem3D key={b}>
                     <div className="flex items-start gap-3 rounded-xl border border-[var(--tm-border)] bg-[var(--tm-surface)] p-4 transition-colors hover:border-[var(--tm-primary)]">
                       <div className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[var(--tm-primary)]/10">
