@@ -9,18 +9,8 @@ import {
   useMotionValue,
   animate,
 } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { cn } from '../lib/utils'
-
-function useWindowWidth() {
-  const [w, setW] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1024))
-  useEffect(() => {
-    const handler = () => setW(window.innerWidth)
-    window.addEventListener('resize', handler, { passive: true })
-    return () => window.removeEventListener('resize', handler)
-  }, [])
-  return w
-}
 
 export function AppMotionProvider({ children }: { children: ReactNode }) {
   return <MotionConfig reducedMotion="user">{children}</MotionConfig>
@@ -60,21 +50,6 @@ export function Stagger({ children, className, stagger = 0.08 }: StaggerProps) {
       variants={{
         hidden: {},
         visible: { transition: { staggerChildren: stagger } },
-      }}
-      className={cn(className)}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
-  const reduced = useReducedMotion()
-  return (
-    <motion.div
-      variants={reduced ? {} : {
-        hidden: { opacity: 0, y: 16 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: PREMIUM_EASE } },
       }}
       className={cn(className)}
     >
@@ -157,22 +132,6 @@ export function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
   return <span ref={ref}>{reduced ? `${to}${suffix}` : `0${suffix}`}</span>
 }
 
-// ── Parallax section background ───────────────────────────────────────────────
-export function ParallaxBg({ children, className, speed = 0.15 }: { children: ReactNode; className?: string; speed?: number }) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', `${speed * 100}%`])
-
-  return (
-    <div ref={ref} className={cn('relative overflow-hidden', className)}>
-      <motion.div style={reduced ? undefined : { y }} className="absolute inset-0 -z-10">
-        {children}
-      </motion.div>
-    </div>
-  )
-}
-
 // ── Fade in line - horizontal rule with reveal ────────────────────────────────
 export function FadeLine({ className }: { className?: string }) {
   const reduced = useReducedMotion()
@@ -188,105 +147,6 @@ export function FadeLine({ className }: { className?: string }) {
   )
 }
 
-
-// ── Text scramble - characters shuffle then resolve ───────────────────────────
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-export function TextScramble({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useRef(false)
-
-  useEffect(() => {
-    if (reduced || !ref.current) return
-    const el = ref.current
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || inView.current) return
-      inView.current = true
-      let frame = 0
-      const totalFrames = 12
-      const timer = setTimeout(() => {
-        const interval = setInterval(() => {
-          el.textContent = text.split('').map((char, i) => {
-            if (char === ' ') return ' '
-            if (frame / totalFrames > i / text.length) return char
-            // Only scramble 1 char at a time, not all at once
-            return i === Math.floor((1 - frame / totalFrames) * text.length)
-              ? CHARS[Math.floor(Math.random() * CHARS.length)]
-              : char
-          }).join('')
-          if (++frame > totalFrames) { el.textContent = text; clearInterval(interval) }
-        }, 80)
-      }, delay * 1000)
-      return () => clearTimeout(timer)
-    }, { threshold: 0.5 })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [text, delay, reduced])
-
-  return <span ref={ref} className={cn(className)}>{text}</span>
-}
-
-// ── Word reveal - words fade in staggered (Digitalists-style blur+opacity) ────
-type WordRevealProps = {
-  text: string
-  className?: string
-  /** Trigger at page load instead of when scrolled into view (default: false). */
-  instant?: boolean
-  /** Stagger delay between words in seconds (default: 0.12). */
-  stagger?: number
-  /** Initial blur radius in px (default: 6). */
-  blur?: number
-  /** Total transition duration per word in seconds (default: 0.7). */
-  duration?: number
-  /** Delay before first word starts. */
-  delay?: number
-}
-export function WordReveal({
-  text,
-  className,
-  instant = false,
-  stagger = 0.12,
-  blur = 6,
-  duration = 0.7,
-  delay = 0,
-}: WordRevealProps) {
-  const reduced = useReducedMotion()
-  const words = text.split(' ')
-  const triggerProps = instant
-    ? { initial: 'hidden' as const, animate: 'visible' as const }
-    : { initial: 'hidden' as const, whileInView: 'visible' as const, viewport: { once: true, margin: '-10% 0px' } }
-  return (
-    <motion.span
-      className={cn('inline', className)}
-      aria-label={text}
-      {...(reduced ? {} : triggerProps)}
-      variants={{
-        hidden: {},
-        visible: { transition: { staggerChildren: stagger, delayChildren: delay } },
-      }}
-    >
-      {words.map((word, i) => (
-        <motion.span
-          key={i}
-          className="inline-block mr-[0.25em]"
-          aria-hidden="true"
-          variants={reduced ? {} : {
-            hidden: { opacity: 0, y: 12, filter: `blur(${blur}px)` },
-            visible: {
-              opacity: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              // sine-out-ish curve (lebih lembut dari default ease-out di project)
-              transition: { duration, ease: [0.39, 0.575, 0.565, 1] },
-            },
-          }}
-        >
-          {word}
-        </motion.span>
-      ))}
-    </motion.span>
-  )
-}
 
 // ── Tilt card - 3D perspective tilt on hover ──────────────────────────────────
 export function TiltCard({ children, className }: { children: ReactNode; className?: string }) {
@@ -440,99 +300,6 @@ export function ScaleReveal({ children, className, delay = 0 }: { children: Reac
   )
 }
 
-// ── Horizontal scroll section - pinned sticky (Awwwards #1 pattern 2025) ───────
-type HorizontalScrollProps = {
-  children: ReactNode
-  className?: string
-  /** Number of full-screen panels */
-  panels: number
-  /** Disable on mobile (recommended) */
-  mobileBreakpoint?: number
-}
-
-/** Single progress dot - extracted so useTransform stays at top level */
-function HScrollDot({
-  index,
-  total,
-  scrollYProgress,
-}: {
-  index: number
-  total: number
-  scrollYProgress: import('motion/react').MotionValue<number>
-}) {
-  const width = useTransform(
-    scrollYProgress,
-    [index / total, (index + 0.5) / total],
-    [6, 20]
-  )
-  const opacity = useTransform(
-    scrollYProgress,
-    [(index - 0.2) / total, index / total, (index + 0.8) / total, (index + 1) / total],
-    [0.3, 1, 1, 0.3]
-  )
-  return (
-    <motion.div
-      className="rounded-full"
-      style={{
-        width,
-        height: 6,
-        backgroundColor: 'var(--tm-primary)',
-        opacity,
-      }}
-    />
-  )
-}
-
-export function HorizontalScrollSection({
-  children,
-  className,
-  panels,
-  mobileBreakpoint = 768,
-}: HorizontalScrollProps) {
-  const reduced = useReducedMotion()
-  const width = useWindowWidth()
-  const isMobile = width < mobileBreakpoint
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  })
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ['0%', `-${(panels - 1) * 100}%`]
-  )
-  const smoothX = useSpring(x, { stiffness: 100, damping: 30 })
-
-  // Mobile or reduced motion: just render children as-is
-  if (isMobile || reduced) {
-    return <div className={cn(className)}>{children}</div>
-  }
-
-  return (
-    <section
-      ref={ref}
-      className={cn('relative', className)}
-      style={{ height: `${panels * 100}vh` }}
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div
-          style={{ x: smoothX, willChange: 'transform' }}
-          className="flex h-full"
-        >
-          {children}
-        </motion.div>
-        {/* Progress dots */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {Array.from({ length: panels }).map((_, i) => (
-            <HScrollDot key={i} index={i} total={panels} scrollYProgress={scrollYProgress} />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ── Marquee track - CSS infinite scroll (zero JS, pause on hover) ──────────────
 type MarqueeProps = { children: ReactNode; className?: string; speed?: number; reverse?: boolean }
 export function MarqueeTrack({ children, className, speed = 30, reverse = false }: MarqueeProps) {
@@ -632,29 +399,6 @@ export function CustomCursor() {
         mixBlendMode: 'multiply',
       }}
     />
-  )
-}
-
-// ── View parallax - element moves at different speed when scrolling ─────────────
-type ViewParallaxProps = {
-  children: ReactNode
-  className?: string
-  speed?: number  // positive = slow, negative = opposite direction
-}
-export function ViewParallax({ children, className, speed = 0.3 }: ViewParallaxProps) {
-  const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [`-${speed * 100}%`, `${speed * 100}%`])
-
-  if (reduced) return <div className={cn(className)}>{children}</div>
-
-  return (
-    <div ref={ref} className={cn('overflow-hidden', className)}>
-      <motion.div style={{ y, willChange: 'transform' }}>
-        {children}
-      </motion.div>
-    </div>
   )
 }
 
@@ -849,90 +593,3 @@ export function TiltCard3D({
   )
 }
 
-// ── ScrollStoryBlock — Vaonis Hyperia scroll-scrubbed text ───────────────────
-// Each block fades in word-by-word, then blurs out as you scroll past.
-export function ScrollStoryBlock({
-  text,
-  index,
-  total,
-  containerRef,
-}: {
-  text: string
-  index: number
-  total: number
-  containerRef: React.RefObject<HTMLElement | null>
-}) {
-  const reduced = useReducedMotion()
-  const words = text.split(' ')
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start'],
-  })
-  const sliceSize = 1 / total
-  const start = index * sliceSize
-  const mid = start + sliceSize * 0.35
-  const end = start + sliceSize
-
-  const opacity = useTransform(scrollYProgress, [start, mid, end - sliceSize * 0.1, end], [0, 1, 1, 0])
-  const blur = useTransform(scrollYProgress, [start, mid, end - sliceSize * 0.1, end], [10, 0, 0, 8])
-  const y = useTransform(scrollYProgress, [start, mid], [30, 0])
-  const smoothBlur = useSpring(blur, { stiffness: 80, damping: 18 })
-  const filterVal = useTransform(smoothBlur, (v) => `blur(${v}px)`)
-
-  if (reduced) return null
-
-  return (
-    <motion.div
-      style={{ opacity, y, filter: filterVal }}
-      className="absolute inset-0 flex items-center justify-center px-8 text-center"
-    >
-      <p className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-        {words.map((word, i) => (
-          <motion.span
-            key={i}
-            className="mr-[0.25em] inline-block"
-            style={{
-              opacity: useTransform(
-                scrollYProgress,
-                [start + i * 0.003, start + i * 0.003 + 0.04],
-                [0, 1]
-              ),
-            }}
-          >
-            {word}
-          </motion.span>
-        ))}
-      </p>
-    </motion.div>
-  )
-}
-
-// ── ScrollStory — Vaonis Hyperia full story section ──────────────────────────
-export function ScrollStory({
-  blocks,
-  className,
-}: {
-  blocks: string[]
-  className?: string
-}) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  return (
-    <div
-      ref={containerRef}
-      className={cn('relative', className)}
-      style={{ height: `${blocks.length * 120}vh` }}
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {blocks.map((text, i) => (
-          <ScrollStoryBlock
-            key={i}
-            text={text}
-            index={i}
-            total={blocks.length}
-            containerRef={containerRef as React.RefObject<HTMLElement | null>}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
