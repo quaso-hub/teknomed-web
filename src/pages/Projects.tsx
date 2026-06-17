@@ -144,6 +144,8 @@ export default function Projects() {
                           <img
                             src={project.imageUrl}
                             alt={project.title}
+                            width={800}
+                            height={600}
                             loading="lazy"
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
@@ -249,6 +251,8 @@ export default function Projects() {
                 <img
                   src={selectedProject.imageUrl}
                   alt={selectedProject.title}
+                  width={680}
+                  height={220}
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />

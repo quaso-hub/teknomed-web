@@ -8,6 +8,7 @@ import ScrollProgress from './components/ScrollProgress'
 import BackToTop from './components/BackToTop'
 import CommandPalette from './components/CommandPalette'
 import { ToastProvider } from './components/Toast'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import {
   PageSkeleton,
   HeroSkeleton,
@@ -100,6 +101,14 @@ function App() {
     <SmoothScrollProvider>
       <ToastProvider>
         <div className="min-h-dvh bg-[var(--tm-page)] text-[var(--tm-text)] transition-colors duration-300">
+          {/* Skip to content - a11y */}
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:rounded focus:bg-[var(--tm-primary)] focus:px-4 focus:py-2 focus:text-white"
+          >
+            Skip to content
+          </a>
+
           {/* Global QoL overlays */}
           <ScrollProgress />
           <RouteProgressBar />
@@ -108,10 +117,12 @@ function App() {
           <CustomCursor />
 
           <Navbar />
-          <main>
-            <Suspense fallback={<RouteSkeleton />}>
-              <AnimatedRoutes />
-            </Suspense>
+          <main id="main">
+            <ErrorBoundary>
+              <Suspense fallback={<RouteSkeleton />}>
+                <AnimatedRoutes />
+              </Suspense>
+            </ErrorBoundary>
           </main>
           <Footer />
 
