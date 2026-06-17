@@ -119,7 +119,7 @@ export default function Home() {
               <span className="block pb-1">
                 <CharReveal text="PT Teknomed" delay={0.1} />
               </span>
-              <span className="block text-wipe text-3d">
+              <span className="block text-wipe">
                 <CharReveal text="Indo Timur" delay={0.4} />
               </span>
             </h1>
@@ -198,9 +198,9 @@ export default function Home() {
             </DepthReveal>
           </div>
 
-          {/* Right: animated visual card — Vaonis perspective depth + glow */}
+          {/* Right: visual card — calm depth (Vaonis perspective, medical authority) */}
           <ScaleReveal delay={0.3} className="h-full">
-            <Card className="overflow-hidden h-full perspective-card shadow-depth gradient-border glow-pulse holo-card">
+            <Card className="overflow-hidden h-full perspective-card shadow-depth">
               <CardHeader className="p-0">
                 {/* Animated mesh gradient background */}
                 <div
@@ -282,11 +282,11 @@ export default function Home() {
         </Reveal>
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ icon: Icon, title, desc, color, to }, index) => (
+          {services.map(({ icon: Icon, title, desc, color, to }) => (
             <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
                 <TiltCard3D maxTilt={8} className="h-full">
-                  <Card className={`group h-full card-shine holo-card transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth flip-reveal flip-reveal-delay-${Math.min(index + 1, 5)}`}>
+                  <Card className="group h-full card-shine transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth">
                     <CardContent className="p-6 space-y-4">
                       <div className="flex items-center justify-between">
                         <div
