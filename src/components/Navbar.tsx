@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useLenis } from 'lenis/react'
 import Container from './Container'
 import { useTheme } from './theme-context'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 
 function useScrolled(threshold = 8) {
   const [scrolled, setScrolled] = useState(false)
@@ -34,10 +35,12 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const menuId = useId()
   const closeBtnRef = useRef<HTMLButtonElement | null>(null)
+  const drawerRef = useRef<HTMLElement | null>(null)
   const { theme, toggleTheme } = useTheme()
   const scrolled = useScrolled()
   const reduced = useReducedMotion()
   const lenis = useLenis()
+  useFocusTrap(drawerRef, isOpen)
 
   useEffect(() => {
     if (!isOpen) return
@@ -214,6 +217,7 @@ export default function Navbar() {
 
             {/* Drawer panel */}
             <motion.section
+              ref={drawerRef}
               id={menuId}
               role="dialog"
               aria-modal="true"

@@ -5,6 +5,7 @@ import { Search, ArrowRight, Command } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useLenis } from 'lenis/react'
 import { useHotkey } from '../hooks/useHotkey'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 
 interface CommandItem {
   id: string
@@ -32,9 +33,11 @@ export default function CommandPalette() {
   const [activeIdx, setActiveIdx] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const reduced = useReducedMotion()
   const lenis = useLenis()
+  useFocusTrap(panelRef, isOpen)
 
   const open = useCallback(() => {
     setQueryRaw('')
@@ -142,6 +145,7 @@ export default function CommandPalette() {
           onClick={close}
         >
           <motion.div
+            ref={panelRef}
             className="w-full max-w-lg overflow-hidden rounded-xl bg-[var(--tm-surface)] shadow-2xl border border-[var(--tm-border)]"
             variants={reduced ? undefined : panelVariants}
             onClick={(e) => e.stopPropagation()}

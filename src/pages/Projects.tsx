@@ -6,6 +6,7 @@ import { Reveal, Stagger, StaggerItem3D, TiltCard, CharReveal, ClipReveal } from
 import { motion, AnimatePresence } from 'motion/react'
 import { useLenis } from 'lenis/react'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 import Section from '../components/Section'
 import Badge from '../components/ui/Badge'
 import { Card, CardContent } from '../components/ui/Card'
@@ -20,6 +21,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const lenis = useLenis()
+  useFocusTrap(modalRef, !!selectedProject)
 
   const filtered = activeFilter === 'Semua'
     ? PROJECTS
