@@ -40,12 +40,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ addToast }}>
       {children}
       {createPortal(
-        <div className="fixed bottom-6 left-1/2 z-[60] flex -translate-x-1/2 flex-col gap-2 px-4">
+        <div
+          className="fixed bottom-6 left-1/2 z-[100] flex -translate-x-1/2 flex-col gap-2 px-4"
+          role="region"
+          aria-label="Notifications"
+        >
           <AnimatePresence mode="popLayout">
             {toasts.map((toast) => (
               <motion.div
                 key={toast.id}
                 layout
+                role={toast.type === 'error' ? 'alert' : 'status'}
+                aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
