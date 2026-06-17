@@ -7,6 +7,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useRef } from 'react'
 import { AmbientIcons } from '../components/AmbientIcons'
+import { Testimonials } from '../components/Testimonials'
 import {
   Counter, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
@@ -368,6 +369,9 @@ export default function Home() {
           </div>
         </div>
       </Reveal>
+
+      {/* ── Testimonials — EatNaked social proof pattern ──────────────────── */}
+      <Testimonials />
 
       {/* ── CTA ─────────────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
