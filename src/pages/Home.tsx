@@ -283,7 +283,7 @@ export default function Home() {
         </Reveal>
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ icon: Icon, title, desc, color, to }) => (
+          {services.map(({ icon: Icon, title, desc, color, to }, index) => (
             <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
                 <TiltCard3D maxTilt={8} className="h-full">
