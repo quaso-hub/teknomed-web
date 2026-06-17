@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import { Link } from 'react-router-dom'
 import { ArrowRight, X, MapPin, Calendar, ChevronRight } from 'lucide-react'
 import { Reveal, Stagger, StaggerItem3D, TiltCard, CharReveal, ClipReveal } from '../components/Motion'
 import { motion, AnimatePresence } from 'motion/react'
@@ -204,13 +205,13 @@ export default function Projects() {
             <p className="mx-auto mb-6 max-w-[480px] text-base text-white/90">
               Konsultasikan kebutuhan fasilitas kesehatan Anda bersama tim ahli kami.
             </p>
-            <a
-              href="/contact"
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-[0.95rem] font-bold no-underline"
               style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}
             >
               Hubungi Kami <ArrowRight size={18} />
-            </a>
+            </Link>
           </div>
         </Reveal>
       </Section>
@@ -320,12 +321,12 @@ export default function Projects() {
                   />
                 </div>
                 <div className="flex gap-3">
-                  <a
-                    href="/contact"
+                  <Link
+                    to="/contact"
                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--tm-primary)] px-5 py-3 text-sm font-semibold !text-white no-underline hover:opacity-90 transition-opacity"
                   >
                     Diskusikan Proyek Serupa <ArrowRight size={15} />
-                  </a>
+                  </Link>
                   <a
                     href={`https://maps.google.com/?q=${selectedProject.mapQuery}`}
                     target="_blank"
