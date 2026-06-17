@@ -8,7 +8,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useRef } from 'react'
 import { AmbientIcons } from '../components/AmbientIcons'
 import {
-  Counter, FloatCard, MagneticWrap, Reveal,
+  Counter, MagneticWrap, Reveal,
   Stagger, StaggerItem3D, SpotlightSection,
   CharReveal, ClipReveal, ScaleReveal, MarqueeTrack,
   DepthReveal, MouseParallaxLayer, TiltCard3D, ScrollTiltCard,
@@ -19,19 +19,6 @@ import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardFooter, CardHeader } from '../components/ui/Card'
 import { SITE } from '../config/site'
 import { HOME_STATS } from '../data/stats'
-import { lazy, Suspense, useEffect, useState } from 'react'
-
-// Three.js WebGL shader — lazy loaded, desktop only
-const NoiseMeshGradient = lazy(() => import('../components/NoiseMeshGradient'))
-
-function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    setIsDesktop(window.innerWidth >= 1024)
-  }, [])
-  return isDesktop
-}
-
 const services = [
   {
     icon: Hammer,
@@ -101,14 +88,11 @@ export default function Home() {
     <div>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <SpotlightSection className="relative overflow-hidden" ref={heroRef}>
-        {/* Animated background — WebGL shader desktop, CSS fallback mobile */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          {/* Three.js WebGL noise mesh — desktop only, lazy loaded */}
-          <Suspense fallback={<div className="absolute inset-0 hero-mesh-bg" />}>
-            <NoiseMeshGradient className="absolute inset-0 w-full h-full opacity-70" />
-          </Suspense>
-          {/* Grid overlay */}
-          <div className="absolute inset-0 hero-grid opacity-20" />
+          {/* Animated background — CSS mesh gradient (zero bundle cost) */}
+          <div className="absolute inset-0 -z-10 overflow-hidden">
+            <div className="absolute inset-0 hero-mesh-bg" />
+            {/* Grid overlay */}
+            <div className="absolute inset-0 hero-grid opacity-20" />
           {/* Vignette */}
           <div className="vignette absolute inset-0" />
           {/* Ambient icons with mouse parallax */}
