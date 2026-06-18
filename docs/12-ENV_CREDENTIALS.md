@@ -2,21 +2,22 @@
 
 > **Project**: Teknomed Integrated System
 > **Versi**: 1.0.0 — 2026-06-18
-> **Status**: Credentials ready, VPS SSH butuh setup key
+> **Status**: ✅ All credentials ready, VPS accessible, 3 repos pushed
 
-## 1. Supabase (Cloud) — READY
+## 1. Supabase (Cloud) — ✅ READY
 
 | Item | Value |
 |------|-------|
 | **Project ID** | `jssqoalxnmkpmogouypy` |
 | **Project URL** | `https://jssqoalxnmkpmogouypy.supabase.co` |
-| **Region** | Singapore (terdekat Indonesia) |
+| **Region** | Singapore |
 | **Publishable Key (anon)** | `sb_publishable_Egc7nfZTxy74078Tj3oX2A_4mPyUz3t` |
 | **Secret Key (service_role)** | `sb_secret_pLHtfLU1UxB9LfMntLtNRw_a3387Uly` |
 | **Anon JWT** | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc3FvYWx4bm1rcG1vZ291eXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODgwMDcsImV4cCI6MjA5NjY2NDAwN30.NCtOrsbefv4c3wN5DGwe10r8eXoF-uGEI3zpEvZfg_I` |
 | **Service Role JWT** | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc3FvYWx4bm1rcG1vZ291eXB5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTA4ODAwNywiZXhwIjoyMDk2NjY0MDA3fQ.e1jKs3C-DigkwMqkk0-8gaQwBs_MEAOasHVOU9lJ7ek` |
-| **JWT Secret** | (ambil di Supabase Dashboard → Settings → API → JWT Secret) |
-| **DB Password** | (set saat create project, simpan di password manager) |
+| **JWT Secret (legacy)** | `8FCv9PzZbw9l8FP1m01c9Ofi4jX0fShzRz0l3a31WLttxZsbfBlmU+xwVCHTQM+dqFbQRoK7sDLyUXUMzsOyxA==` |
+| **JWT Signing Key (current)** | `2e99c289-4fef-4795-b042-2ba35263126d` |
+| **JWT Signing key (previous)** | `452daaa2-229f-4a31-9f99-bb8d9481283d` |
 
 ### Env vars untuk teknomed-web (`.env.local` / `.env.production`):
 ```env
@@ -29,86 +30,63 @@ VITE_3D_VIEWER_URL=https://3d.teknomedindotimurpt.co.id
 ```env
 SUPABASE_URL=https://jssqoalxnmkpmogouypy.supabase.co
 SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impzc3FvYWx4bm1rcG1vZ291eXB5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTA4ODAwNywiZXhwIjoyMDk2NjY0MDA3fQ.e1jKs3C-DigkwMqkk0-8gaQwBs_MEAOasHVOU9lJ7ek
-SUPABASE_JWT_SECRET=... (ambil dari Dashboard)
+SUPABASE_JWT_SECRET=2e99c289-4fef-4795-b042-2ba35263126d
 RESEND_API_KEY=re_xxx (setup setelah daftar Resend)
 PORT=3001
 NODE_ENV=production
 PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ```
 
-## 2. VPS DigitalOcean — READY (butuh SSH key setup)
+## 2. VPS DigitalOcean — ✅ READY (SSH accessible)
 
 | Item | Value |
 |------|-------|
-| **IP (Tailscale)** | `100.104.53.45` |
+| **Public IP** | `159.65.226.164` |
+| **Tailscale IP** | `100.104.53.45` (firewall block SSH, pakai public IP) |
 | **Tailscale hostname** | `agent-buntu-brutal` |
-| **OS** | Linux (Ubuntu, asumsi) |
+| **OS** | Ubuntu 22.04.5 LTS (Jammy) |
+| **Specs** | 4 vCPU, 8GB RAM, 155GB disk |
 | **User** | `root` |
-| **SSH keys lokal** | `~/.ssh/id_ed25519`, `~/.ssh/kiro_vps_key`, `~/.ssh/n8n_vps_key`, `~/.ssh/id_rsa` |
-| **Status SSH** | ❌ Permission denied (key belum terdaftar di VPS) |
+| **SSH key** | `~/.ssh/hermes_vps` (ed25519) |
+| **SSH command** | `ssh -i ~/.ssh/hermes_vps root@159.65.226.164` |
 
-### 2.1 SSH Key Setup (TODO)
-Semua 4 key lokal gagal SSH ke VPS. Kemungkinan:
-1. VPS butuh SSH key yang belum di-add (generate baru atau add public key via DO console)
-2. VPS pakai password auth (butuh password dari DO dashboard)
-3. SSH key sudah ada tapi untuk user berbeda (bukan root)
+### Installed tools di VPS:
+- Docker 29.3.0 ✅
+- Node v12.22.9 (perlu upgrade ke 20 LTS untuk PDF service)
+- npm
+- nginx
 
-### 2.2 Solusi (pilih satu):
-**Option A: Add SSH key via DigitalOcean Console**
-1. Login ke https://cloud.digitalocean.com
-2. Droplets → pilih VPS → Access → Launch Droplet Console
-3. Jalankan di console:
+### SSH key setup
+Key `hermes_vps` sudah terdaftar di VPS. Test berhasil:
 ```bash
-# Add public key id_ed25519
-mkdir -p ~/.ssh
-echo "ssh-ed25519 AAAA... user@host" >> ~/.ssh/authorized_keys
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/authorized_keys
+ssh -i C:\Users\warma\.ssh\hermes_vps root@159.65.226.164
+# Output: agent-buntu-brutal, Ubuntu 22.04.5 LTS
 ```
 
-**Option B: Reset root password**
-1. DO Dashboard → Droplet → Reset root password
-2. Cek email untuk password baru
-3. SSH dengan password: `ssh root@100.104.53.45`
-4. Add SSH key setelah login
+## 3. GitHub Repos — ✅ ALL PUSHED
 
-**Option C: Generate SSH key baru khusus VPS ini**
-```bash
-ssh-keygen -t ed25519 -C "teknomed-vps" -f ~/.ssh/teknomed_vps
-# Copy public key
-cat ~/.ssh/teknomed_vps.pub
-# Add ke DO Console (Option A)
-```
+| Repo | URL | Status | Local Path |
+|------|-----|--------|------------|
+| teknomed-web | https://github.com/quaso-hub/teknomed-web | ✅ Pushed (50 commits, force push) | `D:\playgrounds\teknomed-web` |
+| 3dproductvisualization | https://github.com/quaso-hub/3dproductvisualization | ✅ Pushed (29 commits + merge, force push) | `D:\playgrounds\3d-product-catalog\3dproductvisualization` |
+| catalog-new | https://github.com/quaso-hub/catalog-new | ✅ Pushed (init, 129 files) | `C:\Users\warma\Documents\brosur-lin\catalog-new` |
 
-### 2.3 Public keys lokal (untuk reference)
-```bash
-# id_ed25519.pub (ed25519, recommended)
-cat ~/.ssh/id_ed25519.pub
+### Git config (lokal):
+- user.name: `awokawokwkwkw` (perlu update ke `quaso-hub` atau `I Kadek Restu Nugraha`)
+- user.email: `147193334+quaso-hub@users.noreply.github.com`
+- credential.helper: `manager` (Git Credential Manager)
 
-# kiro_vps_key.pub
-cat ~/.ssh/kiro_vps_key.pub
-
-# n8n_vps_key.pub
-cat ~/.ssh/n8n_vps_key.pub
-
-# id_rsa.pub (RSA, legacy)
-cat ~/.ssh/id_rsa.pub
-```
-
-## 3. Domain — PENDING DNS ACCESS
+## 4. Domain — PENDING (pakai IP dulu)
 
 | Domain | Target | Status |
 |--------|--------|--------|
-| `teknomedindotimurpt.co.id` | VPS IP (public, bukan Tailscale) | Pending DNS A record |
-| `3d.teknomedindotimurpt.co.id` | VPS IP | Pending |
-| `api.teknomedindotimurpt.co.id` | VPS IP | Pending |
+| `teknomedindotimurpt.co.id` | `159.65.226.164` | Pending DNS A record (pakai IP dulu) |
+| `3d.teknomedindotimurpt.co.id` | `159.65.226.164` | Pending |
+| `api.teknomedindotimurpt.co.id` | `159.65.226.164` | Pending |
 
-**Note**: VPS DO saat ini hanya punya Tailscale IP (`100.104.53.45`). Untuk domain public, butuh:
-- **Public IP** VPS DO (cek di DO Dashboard → Droplet → Networking → Public IP), ATAU
-- **Cloudflare Tunnel** (expose VPS via tunnel, tidak butuh public IP), ATAU
-- **VPS lain** dengan public IP (Hetzner)
+**Sementara**: akses via `http://159.65.226.164` (tanpa HTTPS, tanpa domain). Caddy bisa setup nanti dengan domain.
 
-## 4. Resend (Email) — PENDING
+## 5. Resend (Email) — PENDING
 
 | Item | Value |
 |------|-------|
@@ -117,33 +95,31 @@ cat ~/.ssh/id_rsa.pub
 | **Free tier** | 100 email/hari, 3000/bulan |
 | **Domain verify** | Butuh DNS access (TXT record) |
 
-## 5. GitHub (repo + CI/CD) — PENDING
-
-| Item | Value |
-|------|-------|
-| **Repo teknomed-web** | `D:\playgrounds\teknomed-web` (local, belum push) |
-| **Repo 3d-viewer** | `D:\playgrounds\3d-product-catalog\3dproductvisualization` (local) |
-| **Repo catalog-new** | `C:\Users\warma\Documents\brosur-lin\catalog-new` (local) |
-| **GHCR** | Optional, untuk image registry |
-
 ## 6. Action Items (urutan)
 
-### Immediate (sebelum eksekusi Phase A)
-- [ ] Setup SSH key ke VPS DO (section 2.2)
-- [ ] Dapatkan public IP VPS DO (atau setup Cloudflare Tunnel)
+### ✅ Done
+- [x] Setup SSH key ke VPS DO (hermes_vps, public IP 159.65.226.164)
+- [x] Dapatkan public IP VPS DO (159.65.226.164)
+- [x] Push 3 repo ke GitHub (teknomed-web, 3dproductvisualization, catalog-new)
+- [x] Dapatkan JWT Secret dari Supabase (current + previous + legacy)
+
+### Phase A (Supabase setup — bisa mulai sekarang)
+- [ ] Run schema SQL (docs/05-DATA_MODEL.md section 2)
+- [ ] Run RLS policies SQL (section 3)
+- [ ] Run storage buckets SQL (section 4)
+- [ ] Run seed data SQL (section 5)
+- [ ] Create admin user via Supabase Auth
+- [ ] Assign role super_admin ke admin user
+
+### Phase G (Deploy — butuh domain dulu)
+- [ ] Setup DNS A record (3 domain → 159.65.226.164)
 - [ ] Daftar Resend + verify domain
-- [ ] Push 3 repo ke GitHub (atau git remote private)
-- [ ] Dapatkan JWT Secret dari Supabase Dashboard
-
-### Phase A (Supabase setup)
-- [ ] Run schema SQL (docs/05-DATA_MODEL.md)
-- [ ] Run RLS policies SQL
-- [ ] Run storage buckets SQL
-- [ ] Run seed data SQL
-- [ ] Create admin user + assign super_admin role
-
-### Phase G (Deploy)
-- [ ] Setup DNS A record (3 domain)
 - [ ] Deploy via Docker Compose (docs/11-DOCKER_MIGRATION.md)
 - [ ] SSL auto via Caddy
 - [ ] Smoke test production
+
+### VPS Preparation (sebelum Phase G)
+- [ ] Upgrade Node 12 → 20 LTS di VPS
+- [ ] Install Docker Compose plugin (cek `docker compose version`)
+- [ ] Setup Caddy di VPS
+- [ ] Clone 3 repo ke VPS
