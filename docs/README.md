@@ -16,6 +16,9 @@
 | 06 | [ROADMAP](./06-ROADMAP.md) | Phase-by-phase execution plan, effort, dependency, deliverable | PM, dev |
 | 07 | [SKILL_TOOLS_MAP](./07-SKILL_TOOLS_MAP.md) | Mapping skill, tools, agent, MCP per phase | AI agent operator |
 | 08 | [DEPLOYMENT](./08-DEPLOYMENT.md) | VPS setup, Caddy, CI/CD, backup, monitoring | DevOps |
+| 09 | [PROJECT_ANALYSIS](./09-PROJECT_ANALYSIS.md) | Analisis mendalam catalog-new + 3dproductvisualization | Developer, integrator |
+| 10 | [LAPORAN_KP_PLAN](./10-LAPORAN_KP_PLAN.md) | Struktur laporan KP UBAYA (7 bab, format, aturan bahasa) | Mahasiswa, dosen |
+| 11 | [DOCKER_MIGRATION](./11-DOCKER_MIGRATION.md) | Docker compose stack + VPS migration strategy | DevOps |
 
 ## Cara Membaca
 
