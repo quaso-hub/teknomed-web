@@ -20,6 +20,7 @@
 | 10 | [LAPORAN_KP_PLAN](./10-LAPORAN_KP_PLAN.md) | Struktur laporan KP UBAYA (7 bab, format, aturan bahasa) | Mahasiswa, dosen |
 | 11 | [DOCKER_MIGRATION](./11-DOCKER_MIGRATION.md) | Docker compose stack + VPS migration strategy | DevOps |
 | 12 | [ENV_CREDENTIALS](./12-ENV_CREDENTIALS.md) | Supabase, VPS, domain, Resend credentials + action items | DevOps, developer |
+| 13 | [TASK_OWNERSHIP](./13-TASK_OWNERSHIP.md) | Pemilahan tugas user vs agent + dependency map | PM, user, agent operator |
 
 ## Cara Membaca
 
