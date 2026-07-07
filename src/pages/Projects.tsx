@@ -8,24 +8,26 @@ import { useLenis } from 'lenis/react'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import Section from '../components/Section'
-import Badge from '../components/ui/Badge'
-import { Card, CardContent } from '../components/ui/Card'
+import { Badge, badgeVariants } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
+import { useProjects, type ProjectItem } from '../lib/data-hooks'
 import {
-  PROJECTS, PROJECT_AREAS, PROJECT_STATS, PROJECT_CATEGORIES,
-  type ProjectCategory, type Project,
+  PROJECT_AREAS, PROJECT_STATS, PROJECT_CATEGORIES,
+  type ProjectCategory,
 } from '../data/projects'
 
 export default function Projects() {
   useDocumentTitle('Proyek')
+  const { projects } = useProjects()
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>('Semua')
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const lenis = useLenis()
   useFocusTrap(modalRef, !!selectedProject)
 
   const filtered = activeFilter === 'Semua'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.category === activeFilter)
+    ? projects
+    : projects.filter(p => p.category === activeFilter)
 
   useEffect(() => {
     if (!selectedProject) return

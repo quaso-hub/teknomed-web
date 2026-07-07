@@ -4,21 +4,23 @@ import { ArrowRight, Search, X, SlidersHorizontal } from 'lucide-react'
 import { Reveal, Stagger, StaggerItem3D } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import Badge from '../components/ui/Badge'
+import { Badge, badgeVariants } from '@/components/ui/badge'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '../components/ui/Card'
-import Button from '../components/ui/Button'
-import { PRODUCTS, PRODUCT_CATEGORIES, type ProductCategory } from '../data/products'
+} from '../components/ui/card'
+import Button from '../components/ui/button'
+import { PRODUCT_CATEGORIES, type ProductCategory } from '../data/products'
+import { useProducts } from '../lib/data-hooks'
 
 
 
 export default function Catalog() {
   useDocumentTitle('Katalog')
+  const { products: sourceProducts } = useProducts()
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('Semua')
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
@@ -27,7 +29,7 @@ export default function Catalog() {
 
   const filtered = useMemo(() => {
     const q = deferredSearch.toLowerCase()
-    return PRODUCTS.filter((p) => {
+    return sourceProducts.filter((p) => {
       const matchCategory = activeCategory === 'Semua' || p.category === activeCategory
       const matchSearch =
         !q ||
@@ -36,13 +38,13 @@ export default function Catalog() {
         p.tags.some((t) => t.toLowerCase().includes(q))
       return matchCategory && matchSearch
     })
-  }, [deferredSearch, activeCategory])
+  }, [deferredSearch, activeCategory, sourceProducts])
 
   const handleCategoryChange = (cat: ProductCategory) => {
     startTransition(() => setActiveCategory(cat))
   }
 
-  const uniqueCategories = [...new Set(PRODUCTS.map((p) => p.category))]
+  const uniqueCategories = [...new Set(sourceProducts.map((p) => p.category))]
 
   return (
     <Section className="py-16 md:py-24">
@@ -70,7 +72,7 @@ export default function Catalog() {
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={18} style={{ color: 'var(--tm-accent)' }} />
             <span className="text-sm font-medium" style={{ color: 'var(--tm-text)' }}>
-              <strong style={{ color: 'var(--tm-text-strong)' }}>{PRODUCTS.length}</strong> Produk & Layanan
+              <strong style={{ color: 'var(--tm-text-strong)' }}>{sourceProducts.length}</strong> Produk & Layanan
             </span>
           </div>
           <div

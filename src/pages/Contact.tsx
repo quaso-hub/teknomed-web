@@ -1,11 +1,12 @@
-﻿import { ArrowRight, CheckCircle2, Clock3, Copy, Mail, MapPin, Phone, MessageCircle } from 'lucide-react'
-import { useState, useCallback } from 'react'
+import { ArrowRight, CheckCircle2, Clock3, Copy, Loader2, Mail, MapPin, Phone, MessageCircle } from 'lucide-react'
+import { useState, useCallback, useRef } from 'react'
 import { Reveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
 import { useToast } from '../components/toast-context'
 import { SITE } from '../config/site'
+import { submitInquiry } from '../lib/api'
 
 const inputClass =
   'h-11 w-full rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface)] px-3 text-sm text-[var(--tm-text-strong)] outline-none transition-colors focus:border-[var(--tm-primary)] focus:ring-2 focus:ring-[color-mix(in_srgb,var(--tm-primary)_20%,transparent)]'
@@ -73,17 +74,24 @@ export default function Contact() {
   useDocumentTitle('Kontak')
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [errors, setErrors] = useState<FormErrors>({})
   const { addToast } = useToast()
+  const honeypotRef = useRef<HTMLInputElement>(null)
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError(null)
     const data = new FormData(e.currentTarget)
     const name    = (data.get('name') as string) ?? ''
     const email   = (data.get('email') as string) ?? ''
     const company = (data.get('company') as string) ?? ''
     const phone   = (data.get('phone') as string) ?? ''
     const message = (data.get('message') as string) ?? ''
+    const hp      = (data.get('website') as string) ?? ''
+
+    // ── Honeypot ──────────────────────────────
+    if (hp.trim()) return // bot filled hidden field, silently accept
 
     const validationErrors = validateContact({ name, email, message })
     if (Object.keys(validationErrors).length > 0) {
@@ -96,17 +104,25 @@ export default function Contact() {
     }
 
     setErrors({})
-    const subject = encodeURIComponent(`Inquiry dari ${name}${company ? ` (${company})` : ''}`)
-    const body = encodeURIComponent(
-      `Nama: ${name}\nEmail: ${email}\nPerusahaan: ${company || '-'}\nTelepon: ${phone || '-'}\n\nKebutuhan:\n${message}`
-    )
     setSending(true)
-    setTimeout(() => {
-      window.location.href = `mailto:${SITE.contact.email}?subject=${subject}&body=${body}`
-      setSending(false)
+
+    try {
+      await submitInquiry({
+        company_name: company || name,
+        contact_person: name,
+        email,
+        phone: phone || undefined,
+        message,
+      })
       setSent(true)
-      addToast('Email client dibuka. Terima kasih!', 'success')
-    }, 400)
+      setSending(false)
+      addToast('Pesan terkirim! Kami akan menghubungi Anda segera.', 'success')
+    } catch (err) {
+      setSending(false)
+      const msg = err instanceof Error ? err.message : 'Gagal mengirim. Silakan coba lagi.'
+      setError(msg)
+      addToast(msg, 'error')
+    }
   }
 
   function handleFieldChange(field: keyof FormErrors) {
@@ -291,7 +307,7 @@ export default function Contact() {
                   <div>
                     <p className="font-semibold text-[var(--tm-text-strong)]">Pesan terkirim!</p>
                     <p className="mt-1 text-sm text-[var(--tm-muted)]">
-                      Email client Anda akan terbuka. Kami akan segera menghubungi Anda.
+                      Tim kami akan segera menghubungi Anda.
                     </p>
                   </div>
                   <button
@@ -305,6 +321,17 @@ export default function Contact() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate>
+                  {/* Honeypot — hidden from humans, bots fill it */}
+                  <input
+                    type="text"
+                    name="website"
+                    ref={honeypotRef}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
+                    aria-hidden="true"
+                  />
+
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="grid gap-2">
                       <span className="text-sm font-semibold text-[var(--tm-text-strong)]">
@@ -376,6 +403,13 @@ export default function Contact() {
                       )}
                     </label>
                   </div>
+
+                  {error && (
+                    <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                      {error}
+                    </div>
+                  )}
+
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <button
                       type="submit"
@@ -383,8 +417,17 @@ export default function Contact() {
                       className="inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-semibold transition-all hover:opacity-90 hover:shadow-md disabled:opacity-60"
                       style={{ backgroundColor: 'var(--tm-primary)', color: '#ffffff' }}
                     >
-                      {sending ? 'Mengirim...' : 'Kirim Pesan'}
-                      {!sending && <ArrowRight className="ml-2 size-4" />}
+                      {sending ? (
+                        <>
+                          <Loader2 className="mr-2 size-4 animate-spin" />
+                          Mengirim...
+                        </>
+                      ) : (
+                        <>
+                          Kirim Pesan
+                          <ArrowRight className="ml-2 size-4" />
+                        </>
+                      )}
                     </button>
                     <span className="text-xs text-[var(--tm-muted)]">
                       Atau email ke{' '}

@@ -1,28 +1,16 @@
-import { ArrowRight, Package, Hammer, Gauge, Zap, Snowflake, Layers3, Stethoscope } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { FloatCard, Reveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
+import { useServices } from '../lib/data-hooks'
+import { iconMap } from '../data/services'
 import Section from '../components/Section'
-import { Badge } from '../components/ui/Badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card'
-
-const konstruksi = [
-  { icon: Hammer,      title: 'Civil Work',          desc: 'Infrastruktur sipil yang melibatkan pondasi, struktur, dan koordinasi lapangan.' },
-  { icon: Gauge,       title: 'Mechanical',          desc: 'Analisis, desain, manufaktur, dan pemeliharaan sistem mekanikal.' },
-  { icon: Zap,         title: 'Electrical',          desc: 'Pemasangan, pemeliharaan, serta perbaikan sistem kelistrikan.' },
-  { icon: Snowflake,   title: 'HVAC',                desc: 'Kontrol suhu, kelembapan, dan ventilasi untuk kenyamanan serta kesehatan.' },
-  { icon: Layers3,     title: 'MOT',                 desc: 'Modular Operating Theatre, ICU, clean room, partisi, dan plafon modular.' },
-  { icon: Stethoscope, title: 'Instalasi Gas Medis', desc: 'Pasokan, pengelolaan, dan kontrol gas medis untuk prosedur kesehatan.' },
-]
-
-const penjualan = [
-  { title: 'Peralatan Mekanik', desc: 'Komponen utama untuk kebutuhan sistem mekanikal proyek.' },
-  { title: 'Peralatan Mechanical', desc: 'Perangkat pendukung sistem mechanical fasilitas kesehatan.' },
-  { title: 'Mesin', desc: 'Mesin pendukung proyek dan operasional fasilitas.' },
-  { title: 'HVAC Equipment', desc: 'Perangkat tata udara dan komponen pendukungnya.' },
-]
+import { Badge, badgeVariants } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
 
 export default function Services() {
   useDocumentTitle('Layanan')
+  const { services } = useServices()
+
   return (
     <div>
       <Section
@@ -44,17 +32,20 @@ export default function Services() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2">
-                {konstruksi.map(({ icon: Icon, title, desc }) => (
-                  <div key={title} className="flex gap-3 rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4">
-                    <div className="grid size-9 shrink-0 place-items-center rounded-md bg-[var(--tm-surface-strong)] text-[var(--tm-primary)]">
-                      <Icon className="size-4" />
+                {services.map(({ icon, title, description }) => {
+                  const Icon = iconMap[icon] ?? iconMap.Hammer
+                  return (
+                    <div key={title} className="flex gap-3 rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4">
+                      <div className="grid size-9 shrink-0 place-items-center rounded-md bg-[var(--tm-surface-strong)] text-[var(--tm-primary)]">
+                        <Icon className="size-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-[var(--tm-text-strong)]">{title}</h3>
+                        <p className="mt-1 text-xs leading-5 text-[var(--tm-muted)]">{description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-[var(--tm-text-strong)]">{title}</h3>
-                      <p className="mt-1 text-xs leading-5 text-[var(--tm-muted)]">{desc}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                })}
               </CardContent>
             </Card>
           </Reveal>
@@ -72,10 +63,18 @@ export default function Services() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2">
-                {penjualan.map((item) => (
+                {[
+                  { title: 'Peralatan Mekanik', desc: 'Komponen utama untuk kebutuhan sistem mekanikal proyek.' },
+                  { title: 'Peralatan Mechanical', desc: 'Perangkat pendukung sistem mechanical fasilitas kesehatan.' },
+                  { title: 'Mesin', desc: 'Mesin pendukung proyek dan operasional fasilitas.' },
+                  { title: 'HVAC Equipment', desc: 'Perangkat tata udara dan komponen pendukungnya.' },
+                ].map((item) => (
                   <div key={item.title} className="rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4">
                     <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-[var(--tm-text-strong)]">
-                      <Package className="size-4 text-[var(--tm-primary)]" /> {item.title}
+                      <div className="grid size-4 shrink-0 place-items-center text-[var(--tm-primary)]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-3.5"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                      </div>
+                      {item.title}
                     </div>
                     <p className="text-xs leading-5 text-[var(--tm-muted)]">{item.desc}</p>
                   </div>

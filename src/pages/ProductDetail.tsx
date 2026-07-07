@@ -1,13 +1,13 @@
-Ôªøimport { ArrowRight, Move3d, Sparkles, ShieldCheck, CheckCircle2, Zap, Award } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { ArrowRight, Move3d, Sparkles, ShieldCheck, CheckCircle2, Zap, Award } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
-import { Card, CardContent } from '../components/ui/Card'
-import { getProductBySlug } from '../data/products'
+import { Badge, badgeVariants } from '@/components/ui/badge'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
+import { useProductBySlug } from '../lib/data-hooks'
 
 // 3D viewer dipause dulu - akan kembali di Phase 4 dengan canvas image-sequence
 // pattern (Hyperia-style). File Product3DViewer.tsx tetap ada di
@@ -23,7 +23,7 @@ const CHAPTERS: Chapter[] = [
   { id: 'cta', label: 'Konsultasi' },
 ]
 
-/** Sticky TOC desktop ‚Äî clean vertical list */
+/** Sticky TOC desktop ó clean vertical list */
 function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block w-full">
@@ -64,7 +64,7 @@ function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: strin
   )
 }
 
-/** Mobile TOC ‚Äî sticky horizontal pill strip, di dalam flow normal */
+/** Mobile TOC ó sticky horizontal pill strip, di dalam flow normal */
 function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav
@@ -97,7 +97,7 @@ function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id:
 export default function ProductDetail() {
   const { slug } = useParams()
   const navigate = useNavigate()
-  const product = useMemo(() => (slug ? getProductBySlug(slug) : undefined), [slug])
+  const { product } = useProductBySlug(slug ?? '')
   useDocumentTitle(product?.name ?? 'Produk')
 
   const [activeId, setActiveId] = useState<string>(CHAPTERS[0].id)
@@ -143,7 +143,7 @@ export default function ProductDetail() {
       >
         <div className="mb-6">
           <Link to="/catalog" className="text-sm font-semibold text-[var(--tm-muted)] hover:text-[var(--tm-text-strong)] transition-colors">
-            ‚Üê Kembali ke Catalog
+            ? Kembali ke Catalog
           </Link>
         </div>
         <Card>
@@ -168,15 +168,15 @@ export default function ProductDetail() {
     >
       <div className="mb-6">
         <Link to="/catalog" className="text-sm font-semibold text-[var(--tm-muted)] hover:text-[var(--tm-text-strong)] transition-colors">
-          ‚Üê Kembali ke Catalog
+          ? Kembali ke Catalog
         </Link>
       </div>
 
-      {/* Mobile chapter nav ‚Äî horizontal pill strip, sticky below navbar */}
+      {/* Mobile chapter nav ó horizontal pill strip, sticky below navbar */}
       <MobileChapterNav activeId={activeId} onJump={jumpTo} />
 
       <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-        {/* Left col: TOC only ‚Äî clean, no MarkersRail overlap */}
+        {/* Left col: TOC only ó clean, no MarkersRail overlap */}
         <ChapterTOC activeId={activeId} onJump={jumpTo} />
 
         <div ref={contentRef} className="space-y-12">

@@ -1,6 +1,5 @@
 import {
   ArrowRight, Building2, Hospital,
-  Stethoscope, Snowflake, Zap, Layers3, Gauge, Hammer,
   CheckCircle2, TrendingUp, Award
 } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
@@ -15,55 +14,13 @@ import {
   DepthReveal, MouseParallaxLayer, TiltCard3D, ScrollTiltCard,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
-import { Card, CardContent, CardFooter, CardHeader } from '../components/ui/Card'
+import { Badge, badgeVariants } from '@/components/ui/badge'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
 import { SITE } from '../config/site'
 import { HOME_STATS } from '../data/stats'
-const services = [
-  {
-    icon: Hammer,
-    title: 'Civil Work',
-    desc: 'Infrastruktur sipil, pondasi, dan koordinasi lapangan untuk fasilitas kesehatan.',
-    color: 'oklch(55% 0.18 220)',
-    to: '/services',
-  },
-  {
-    icon: Zap,
-    title: 'Electrical',
-    desc: 'Pemasangan, pemeliharaan, dan perbaikan sistem kelistrikan rumah sakit.',
-    color: 'oklch(65% 0.2 90)',
-    to: '/services',
-  },
-  {
-    icon: Layers3,
-    title: 'MOT',
-    desc: 'Modular Operating Theatre, ICU, clean room, partisi, dan plafon modular.',
-    color: 'oklch(55% 0.2 300)',
-    to: '/catalog/mot',
-  },
-  {
-    icon: Gauge,
-    title: 'Mechanical',
-    desc: 'Analisis, desain, manufaktur, dan pemeliharaan sistem mekanikal.',
-    color: 'oklch(55% 0.18 160)',
-    to: '/services',
-  },
-  {
-    icon: Snowflake,
-    title: 'HVAC',
-    desc: 'Kontrol suhu, kelembapan, dan ventilasi untuk kenyamanan serta kesehatan.',
-    color: 'oklch(60% 0.18 200)',
-    to: '/catalog/hvac-cleanroom',
-  },
-  {
-    icon: Stethoscope,
-    title: 'Gas Medis',
-    desc: 'Pasokan, pengelolaan, dan kontrol gas medis untuk prosedur kesehatan.',
-    color: 'oklch(55% 0.2 10)',
-    to: '/catalog/mgps',
-  },
-]
+import { useServices } from '../lib/data-hooks'
+import { iconMap } from '../data/services'
 
 const highlights = [
   { icon: CheckCircle2, text: 'Standar HTM 02-01 & NFPA 99' },
@@ -76,6 +33,7 @@ export default function Home() {
   const navigate = useNavigate()
   const heroRef = useRef<HTMLDivElement>(null)
   useDocumentTitle()
+  const { services } = useServices()
 
   // Subtle parallax on hero content as user scrolls
   const { scrollYProgress: heroScroll } = useScroll({
@@ -283,8 +241,16 @@ export default function Home() {
         </Reveal>
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ icon: Icon, title, desc, color, to }, index) => (
-            <StaggerItem3D key={title}>
+          {services.map(({ icon, title, description, slug }, index) => {
+            const Icon = iconMap[icon] ?? iconMap.Hammer
+            const colorMap: Record<string, string> = {
+              'Civil Work': 'oklch(55% 0.18 220)', Electrical: 'oklch(65% 0.2 90)',
+              MOT: 'oklch(55% 0.2 300)', Mechanical: 'oklch(55% 0.18 160)',
+              HVAC: 'oklch(60% 0.18 200)', 'Gas Medis': 'oklch(55% 0.2 10)',
+            }
+            const color = colorMap[title] ?? 'oklch(55% 0.18 220)'
+            const to = slug ? `/catalog/${slug}` : '/services'
+            return <StaggerItem3D key={title}>
               <Link to={to} className="block h-full no-underline">
                 <TiltCard3D maxTilt={8} className="h-full">
                   <Card className="group h-full card-shine transition-all duration-300 hover:border-[var(--tm-primary)] hover:shadow-depth">
@@ -305,7 +271,7 @@ export default function Home() {
                       </div>
                       <div>
                         <h3 className="font-serif text-lg font-bold text-[var(--tm-text-strong)]">{title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-[var(--tm-muted)]">{desc}</p>
+                        <p className="mt-2 text-sm leading-6 text-[var(--tm-muted)]">{description}</p>
                       </div>
                       <div
                         className="flex items-center gap-1.5 text-xs font-semibold group-hover:gap-2 transition-all"
@@ -318,7 +284,7 @@ export default function Home() {
                 </TiltCard3D>
               </Link>
             </StaggerItem3D>
-          ))}
+          })}
         </Stagger>
       </div>
 

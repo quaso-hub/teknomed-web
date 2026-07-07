@@ -28,6 +28,13 @@ const Contact = lazy(() => import('./pages/Contact'))
 const Catalog = lazy(() => import('./pages/Catalog'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 
+// Admin route chunk
+const AdminLogin = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.AdminLogin })))
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.AdminDashboard })))
+const AdminProducts = lazy(() => import('./pages/admin/Products').then(m => ({ default: m.AdminProducts })))
+const AdminInquiries = lazy(() => import('./pages/admin/Inquiries').then(m => ({ default: m.AdminInquiries })))
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then(m => ({ default: m.AdminLayout })))
+
 /** Pick a route-aware skeleton so loading state matches incoming layout. */
 function RouteSkeleton() {
   const location = useLocation()
@@ -89,6 +96,14 @@ function AnimatedRoutes() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/catalog/:slug" element={<ProductDetail />} />
+          
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="inquiries" element={<AdminInquiries />} />
+          </Route>
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
@@ -97,6 +112,9 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith('/admin')
+
   return (
     <SmoothScrollProvider>
       <ToastProvider>
@@ -109,14 +127,15 @@ function App() {
             Skip to content
           </a>
 
-          {/* Global QoL overlays */}
-          <ScrollProgress />
-          <RouteProgressBar />
+          {!isAdmin && (
+            <>
+              <ScrollProgress />
+              <RouteProgressBar />
+              <CustomCursor />
+              <Navbar />
+            </>
+          )}
 
-          {/* Custom cursor - spring physics dot (desktop only) */}
-          <CustomCursor />
-
-          <Navbar />
           <main id="main">
             <ErrorBoundary>
               <Suspense fallback={<RouteSkeleton />}>
@@ -124,11 +143,14 @@ function App() {
               </Suspense>
             </ErrorBoundary>
           </main>
-          <Footer />
 
-          {/* Floating elements - always on top */}
-          <BackToTop />
-          <CommandPalette />
+          {!isAdmin && (
+            <>
+              <Footer />
+              <BackToTop />
+              <CommandPalette />
+            </>
+          )}
         </div>
       </ToastProvider>
     </SmoothScrollProvider>
