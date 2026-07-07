@@ -4,17 +4,17 @@ import { ArrowRight, Search, X, SlidersHorizontal } from 'lucide-react'
 import { Reveal, Stagger, StaggerItem3D } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import { Badge, badgeVariants } from '@/components/ui/badge'
+import { Badge } from '../components/ui/Badge'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '../components/ui/card'
-import Button from '../components/ui/button'
+} from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 import { PRODUCT_CATEGORIES, type ProductCategory } from '../data/products'
-import { useProducts } from '../lib/data-hooks'
+import { useProducts } from '@/lib/data-hooks'
 
 
 

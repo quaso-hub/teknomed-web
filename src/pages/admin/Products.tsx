@@ -1,24 +1,11 @@
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { supabase } from "../../lib/supabase"
 
 export function AdminProducts() {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  
-  // Form State
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [formData, setFormData] = useState<any>({
-    name: "", category: "Konstruksi", desc: "", summary: "", slug: "", published: true, has_3d: false
-  })
-  
-  // Upload State
-  const [uploading3D, setUploading3D] = useState(false)
-  const [activeProductId, setActiveProductId] = useState<string | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [formData, setFormData] = useState<any>({ name: "", category: "Konstruksi", desc: "", summary: "", slug: "", published: true, has_3d: false, model_url: "" })
 
   const fetchProducts = async () => {
     setLoading(true)
@@ -27,180 +14,90 @@ export function AdminProducts() {
     setLoading(false)
   }
 
-  useEffect(() => {
-    fetchProducts()
-  }, [])
+  useEffect(() => { fetchProducts() }, [])
 
-  const handleSaveProduct = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    if(formData.id) {
-       await supabase.from('products').update(formData).eq('id', formData.id)
-    } else {
-       await supabase.from('products').insert([formData])
-    }
-    setIsDialogOpen(false)
+    if (formData.id) await supabase.from('products').update(formData).eq('id', formData.id)
+    else await supabase.from('products').insert([formData])
+    setIsFormOpen(false)
     fetchProducts()
   }
 
-  const handleUpload3DModel = async (e: React.ChangeEvent<HTMLInputElement>, productId: string) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploading3D(true)
-    setActiveProductId(productId)
-
-    // 1. Upload ke Storage Bucket "3d-models"
-    const filePath = `models/${Date.now()}_${file.name}`
-    const { data: uploadData, error: uploadError } = await supabase.storage.from('3d-models').upload(filePath, file)
-    
-    if (uploadError) {
-      alert("Upload gagal: " + uploadError.message)
-      setUploading3D(false)
-      setActiveProductId(null)
-      return
+  const handleDelete = async (id: string) => {
+    if (confirm("Hapus produk ini?")) {
+      await supabase.from('products').delete().eq('id', id)
+      fetchProducts()
     }
-
-    // 2. Dapatkan public URL
-    const { data: publicUrlData } = supabase.storage.from('3d-models').getPublicUrl(filePath)
-    
-    // 3. Update tabel product_3d_assets
-    await supabase.from('product_3d_assets').insert([{
-      product_id: productId,
-      asset_type: 'model',
-      storage_path: publicUrlData.publicUrl
-    }])
-    
-    // 4. Set produk has_3d = true (jika belum)
-    await supabase.from('products').update({ has_3d: true }).eq('id', productId)
-
-    alert("Berhasil unggah model 3D!")
-    setUploading3D(false)
-    setActiveProductId(null)
-    fetchProducts() // refresh UI
   }
 
-  const openForm = (prod: any = null) => {
-    if(prod) {
-      setFormData(prod)
-    } else {
-      setFormData({ name: "", category: "Konstruksi", desc: "", summary: "", slug: "", published: true, has_3d: false })
-    }
-    setIsDialogOpen(true)
+  if (isFormOpen) {
+    return (
+      <div className="max-w-2xl border border-[#333] p-8 bg-[#111]">
+        <h2 className="text-xl uppercase tracking-widest border-b border-[#333] pb-4 mb-6">{formData.id ? "Edit Data" : "Input Baru"}</h2>
+        <form onSubmit={handleSave} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase text-gray-400 mb-1">Nama</label>
+              <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white" />
+            </div>
+            <div>
+              <label className="block text-xs uppercase text-gray-400 mb-1">Slug</label>
+              <input required value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs uppercase text-gray-400 mb-1">Kategori</label>
+            <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white">
+              <option value="Konstruksi">Konstruksi</option>
+              <option value="Penjualan">Penjualan</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs uppercase text-gray-400 mb-1">Deskripsi</label>
+            <textarea required value={formData.desc} onChange={e => setFormData({...formData, desc: e.target.value})} className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white h-24" />
+          </div>
+          <div>
+            <label className="block text-xs uppercase text-gray-400 mb-1">3D Model URL (Opsional)</label>
+            <input value={formData.model_url || ''} onChange={e => setFormData({...formData, model_url: e.target.value, has_3d: !!e.target.value})} placeholder="https://..." className="w-full bg-[#0a0a0a] border border-[#333] p-2 text-sm text-white" />
+            <p className="text-[10px] text-gray-500 mt-1">Paste public URL file .glb dari Supabase Storage.</p>
+          </div>
+          <div className="flex gap-4 pt-6 border-t border-[#333]">
+            <button type="button" onClick={() => setIsFormOpen(false)} className="flex-1 border border-[#333] py-2 text-sm uppercase hover:bg-[#222]">Batal</button>
+            <button type="submit" className="flex-1 bg-white text-black py-2 text-sm uppercase font-bold hover:bg-gray-200">Simpan Data</button>
+          </div>
+        </form>
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-end border-b pb-4">
-        <h1 className="text-3xl font-bold uppercase tracking-widest">Katalog & 3D</h1>
-        
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => openForm(null)} className="uppercase text-xs tracking-wider">Tambah Produk Baru</Button>
-          </DialogTrigger>
-          <DialogContent className="admin-theme max-w-2xl bg-background text-foreground border-border">
-            <DialogHeader>
-              <DialogTitle className="uppercase tracking-widest">{formData.id ? "Edit Produk" : "Tambah Produk"}</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSaveProduct} className="space-y-4 pt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Nama Produk</Label>
-                  <Input value={formData.name} onChange={(e)=> setFormData({...formData, name: e.target.value})} required />
-                </div>
-                <div className="space-y-2">
-                  <Label>Slug URL</Label>
-                  <Input value={formData.slug} onChange={(e)=> setFormData({...formData, slug: e.target.value})} required placeholder="contoh-produk" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Deskripsi Singkat</Label>
-                <Input value={formData.desc} onChange={(e)=> setFormData({...formData, desc: e.target.value})} required />
-              </div>
-              <div className="space-y-2">
-                <Label>Kategori</Label>
-                <select 
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={formData.category} onChange={(e)=> setFormData({...formData, category: e.target.value})}
-                >
-                  <option value="Konstruksi">Konstruksi</option>
-                  <option value="Penjualan">Penjualan</option>
-                  <option value="Maintenance">Maintenance</option>
-                </select>
-              </div>
-              <div className="flex justify-end pt-4">
-                <Button type="submit" className="uppercase">Simpan Produk</Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+      <div className="flex justify-between items-center border-b border-[#333] pb-4">
+        <h1 className="text-3xl font-bold uppercase tracking-widest">Katalog Produk</h1>
+        <button onClick={() => { setFormData({name:"", category:"Konstruksi", desc:"", summary:"", slug:"", published:true, has_3d:false, model_url:""}); setIsFormOpen(true) }} className="bg-white text-black px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-gray-200">+ Tambah Data</button>
       </div>
-      
-      <div className="flex items-center space-x-2">
-        <Input placeholder="Cari nama produk..." className="max-w-sm" />
-      </div>
-
-      <div className="rounded-md border bg-card">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="uppercase text-xs w-[250px]">Nama Produk</TableHead>
-              <TableHead className="uppercase text-xs">Kategori</TableHead>
-              <TableHead className="uppercase text-xs text-center">Status 3D</TableHead>
-              <TableHead className="uppercase text-xs text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center h-24">Memuat data produk...</TableCell>
-              </TableRow>
-            ) : products.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">Belum ada data produk di Supabase.</TableCell>
-              </TableRow>
-            ) : (
-              products.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>
-                    <div className="font-semibold text-sm">{product.name}</div>
-                    <div className="text-xs text-muted-foreground font-mono">/{product.slug}</div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs border px-2 py-1 bg-muted rounded">{product.category}</span>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {product.has_3d ? (
-                      <span className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full uppercase font-bold">3D Ready</span>
-                    ) : (
-                      <div className="flex flex-col items-center gap-2">
-                        <span className="text-muted-foreground text-[10px] uppercase">Tidak Ada</span>
-                        <div className="relative">
-                           {uploading3D && activeProductId === product.id ? (
-                             <span className="text-[10px] text-blue-500 animate-pulse">Mengunggah...</span>
-                           ) : (
-                             <>
-                               <Input 
-                                 type="file" 
-                                 accept=".glb,.gltf" 
-                                 className="absolute inset-0 opacity-0 cursor-pointer w-[120px]" 
-                                 onChange={(e) => handleUpload3DModel(e, product.id)}
-                                 title="Unggah Model 3D .GLB"
-                               />
-                               <Button size="sm" variant="secondary" className="h-6 text-[10px] uppercase cursor-pointer pointer-events-none">Unggah .GLB</Button>
-                             </>
-                           )}
-                        </div>
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="sm" className="text-xs uppercase" onClick={() => openForm(product)}>Edit</Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+      <div className="border border-[#333] overflow-x-auto">
+        <table className="w-full text-sm text-left">
+          <thead className="text-xs text-gray-400 uppercase bg-[#111] border-b border-[#333]">
+            <tr><th className="px-4 py-3 font-normal">Produk</th><th className="px-4 py-3 font-normal">Kategori</th><th className="px-4 py-3 font-normal text-center">3D</th><th className="px-4 py-3 font-normal text-right">Aksi</th></tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={4} className="text-center p-8 text-gray-500">Loading...</td></tr> :
+             products.map(p => (
+              <tr key={p.id} className="border-b border-[#333] hover:bg-[#111]/50">
+                <td className="px-4 py-4"><div className="font-semibold">{p.name}</div><div className="text-xs text-gray-500">/{p.slug}</div></td>
+                <td className="px-4 py-4"><span className="text-[10px] border border-[#333] px-2 py-1 rounded-sm">{p.category}</span></td>
+                <td className="px-4 py-4 text-center">{p.has_3d ? <span className="text-[10px] bg-green-900/30 text-green-400 border border-green-500/30 px-2 py-1 uppercase tracking-wider">Tersedia</span> : <span className="text-[10px] text-gray-600 uppercase">Tidak</span>}</td>
+                <td className="px-4 py-4 text-right space-x-2">
+                  <button onClick={() => {setFormData(p); setIsFormOpen(true)}} className="text-xs text-blue-400 hover:text-blue-300 uppercase tracking-widest border border-blue-900/50 px-3 py-1">Edit</button>
+                  <button onClick={() => handleDelete(p.id)} className="text-xs text-red-400 hover:text-red-300 uppercase tracking-widest border border-red-900/50 px-3 py-1">Del</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )

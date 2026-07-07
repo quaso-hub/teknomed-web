@@ -2,8 +2,8 @@ import { ClipboardList, ShieldCheck, Compass, FileCheck2, Users } from 'lucide-r
 import { FloatCard, Stagger, StaggerItem3D, CharReveal, ClipReveal, DepthReveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
+import { Badge } from '../components/ui/Badge'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
 
 const whyUs = [
   { icon: ClipboardList, title: 'SDM Profesional', desc: 'Tenaga ahli berpengalaman di bidang MEP, gas medis, dan konstruksi fasilitas kesehatan.' },

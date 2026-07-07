@@ -8,9 +8,9 @@ import { useLenis } from 'lenis/react'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import Section from '../components/Section'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
-import { useProjects, type ProjectItem } from '../lib/data-hooks'
+import { Badge } from '../components/ui/Badge'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
+import { useProjects, type ProjectItem } from '@/lib/data-hooks'
 import {
   PROJECT_AREAS, PROJECT_STATS, PROJECT_CATEGORIES,
   type ProjectCategory,

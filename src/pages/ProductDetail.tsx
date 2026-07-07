@@ -4,10 +4,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
-import { useProductBySlug } from '../lib/data-hooks'
+import { Badge } from '../components/ui/Badge'
+import { Button, buttonVariants } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
+import { useProductBySlug } from '@/lib/data-hooks'
 
 // 3D viewer dipause dulu - akan kembali di Phase 4 dengan canvas image-sequence
 // pattern (Hyperia-style). File Product3DViewer.tsx tetap ada di
@@ -23,7 +23,7 @@ const CHAPTERS: Chapter[] = [
   { id: 'cta', label: 'Konsultasi' },
 ]
 
-/** Sticky TOC desktop — clean vertical list */
+/** Sticky TOC desktop ï¿½ clean vertical list */
 function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block w-full">
@@ -64,7 +64,7 @@ function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: strin
   )
 }
 
-/** Mobile TOC — sticky horizontal pill strip, di dalam flow normal */
+/** Mobile TOC ï¿½ sticky horizontal pill strip, di dalam flow normal */
 function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav
@@ -172,11 +172,11 @@ export default function ProductDetail() {
         </Link>
       </div>
 
-      {/* Mobile chapter nav — horizontal pill strip, sticky below navbar */}
+      {/* Mobile chapter nav ï¿½ horizontal pill strip, sticky below navbar */}
       <MobileChapterNav activeId={activeId} onJump={jumpTo} />
 
       <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-        {/* Left col: TOC only — clean, no MarkersRail overlap */}
+        {/* Left col: TOC only ï¿½ clean, no MarkersRail overlap */}
         <ChapterTOC activeId={activeId} onJump={jumpTo} />
 
         <div ref={contentRef} className="space-y-12">

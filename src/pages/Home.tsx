@@ -14,12 +14,12 @@ import {
   DepthReveal, MouseParallaxLayer, TiltCard3D, ScrollTiltCard,
 } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
+import { Badge } from '../components/ui/Badge'
+import { Button, buttonVariants } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
 import { SITE } from '../config/site'
 import { HOME_STATS } from '../data/stats'
-import { useServices } from '../lib/data-hooks'
+import { useServices } from '@/lib/data-hooks'
 import { iconMap } from '../data/services'
 
 const highlights = [

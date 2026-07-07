@@ -9,7 +9,7 @@ import {
   useMotionValue,
   animate,
 } from 'motion/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, forwardRef } from 'react'
 import { cn } from '../lib/utils'
 
 export function AppMotionProvider({ children }: { children: ReactNode }) {
@@ -179,9 +179,10 @@ export function TiltCard({ children, className }: { children: ReactNode; classNa
 }
 
 // ── Spotlight - cursor radial gradient follows mouse ──────────────────────────
-export function SpotlightSection({ children, className }: { children: ReactNode; className?: string }) {
+export const SpotlightSection = forwardRef<HTMLDivElement, { children: ReactNode; className?: string }>(({ children, className }, forwardedRef) => {
   const reduced = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
+  const fallbackRef = useRef<HTMLDivElement>(null)
+  const ref = (forwardedRef as React.RefObject<HTMLDivElement>) || fallbackRef
   const mouseX = useMotionValue(-999)
   const mouseY = useMotionValue(-999)
   const bg = useTransform(
@@ -190,7 +191,7 @@ export function SpotlightSection({ children, className }: { children: ReactNode;
   )
   const opacity = useTransform(mouseX, (x) => x === -999 ? 0 : 1)
 
-  if (reduced) return <div className={cn(className)}>{children}</div>
+  if (reduced) return <div ref={ref} className={cn(className)}>{children}</div>
 
   return (
     <div
@@ -211,7 +212,8 @@ export function SpotlightSection({ children, className }: { children: ReactNode;
       {children}
     </div>
   )
-}
+})
+SpotlightSection.displayName = 'SpotlightSection'
 
 // ── Char reveal - per-character clipPath curtain (signature Awwwards 2025) ──────
 type CharRevealProps = { text: string; className?: string; delay?: number }

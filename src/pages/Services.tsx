@@ -1,11 +1,11 @@
 import { ArrowRight } from 'lucide-react'
 import { FloatCard, Reveal } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
-import { useServices } from '../lib/data-hooks'
+import { useServices } from '@/lib/data-hooks'
 import { iconMap } from '../data/services'
 import Section from '../components/Section'
-import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card'
+import { Badge } from '../components/ui/Badge'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
 
 export default function Services() {
   useDocumentTitle('Layanan')
