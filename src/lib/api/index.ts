@@ -39,6 +39,8 @@ const mappedProjects: Project[] = PROJECTS.map(p => ({
   image: p.imageUrl,
 }));
 
+export const { submitInquiry } = api;
+
 export const api = {
   async getProducts(): Promise<Product[]> {
     try {

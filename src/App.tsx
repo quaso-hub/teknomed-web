@@ -34,6 +34,14 @@ const AdminDashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({
 const AdminProducts = lazy(() => import('./pages/admin/Products').then(m => ({ default: m.AdminProducts })))
 const AdminInquiries = lazy(() => import('./pages/admin/Inquiries').then(m => ({ default: m.AdminInquiries })))
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then(m => ({ default: m.AdminLayout })))
+const AdminModels = lazy(() => import('./pages/admin/Models').then(m => ({ default: m.AdminModels })))
+const AdminPages = lazy(() => import('./pages/admin/AdminPages').then(m => {
+  return { default: m.AdminProjects }
+}))
+const AdminServices = lazy(() => import('./pages/admin/AdminPages').then(m => ({ default: m.AdminServices })))
+const AdminTestimonials = lazy(() => import('./pages/admin/AdminPages').then(m => ({ default: m.AdminTestimonials })))
+const AdminSettings = lazy(() => import('./pages/admin/AdminPages').then(m => ({ default: m.AdminSettings })))
+const AdminPdf = lazy(() => import('./pages/admin/AdminPages').then(m => ({ default: m.AdminPdf })))
 
 /** Pick a route-aware skeleton so loading state matches incoming layout. */
 function RouteSkeleton() {
@@ -96,14 +104,6 @@ function AnimatedRoutes() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/catalog/:slug" element={<ProductDetail />} />
-          
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="inquiries" element={<AdminInquiries />} />
-          </Route>
-          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
@@ -115,27 +115,39 @@ function App() {
   const location = useLocation()
   const isAdmin = location.pathname.startsWith('/admin')
 
+  if (isAdmin) {
+    return (
+      <ErrorBoundary>
+        <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-mono">Loading...</div>}>
+          <Routes location={location}>
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="projects" element={<AdminPages />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="testimonials" element={<AdminTestimonials />} />
+              <Route path="models" element={<AdminModels />} />
+              <Route path="models/config" element={<AdminModels />} />
+              <Route path="inquiries" element={<AdminInquiries />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="pdf" element={<AdminPdf />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    )
+  }
+
   return (
     <SmoothScrollProvider>
       <ToastProvider>
         <div className="min-h-dvh bg-[var(--tm-page)] text-[var(--tm-text)] transition-colors duration-300">
-          {/* Skip to content - a11y */}
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:rounded focus:bg-[var(--tm-primary)] focus:px-4 focus:py-2 focus:text-white"
-          >
-            Skip to content
-          </a>
-
-          {!isAdmin && (
-            <>
-              <ScrollProgress />
-              <RouteProgressBar />
-              <CustomCursor />
-              <Navbar />
-            </>
-          )}
-
+          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:rounded focus:bg-[var(--tm-primary)] focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+          <ScrollProgress />
+          <RouteProgressBar />
+          <CustomCursor />
+          <Navbar />
           <main id="main">
             <ErrorBoundary>
               <Suspense fallback={<RouteSkeleton />}>
@@ -143,14 +155,9 @@ function App() {
               </Suspense>
             </ErrorBoundary>
           </main>
-
-          {!isAdmin && (
-            <>
-              <Footer />
-              <BackToTop />
-              <CommandPalette />
-            </>
-          )}
+          <Footer />
+          <BackToTop />
+          <CommandPalette />
         </div>
       </ToastProvider>
     </SmoothScrollProvider>
