@@ -33,3 +33,9 @@ logo/
 *.njsproj
 *.sln
 *.sw?
+
+# Security: never commit credentials
+docs/12-ENV_CREDENTIALS.md
+*.env.local
+*.env.production
+.env

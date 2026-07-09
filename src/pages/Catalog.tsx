@@ -1,6 +1,6 @@
 import { useState, useMemo, useDeferredValue, useTransition } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Search, X, SlidersHorizontal } from 'lucide-react'
+import { ArrowRight, Search, X, SlidersHorizontal, Eye } from 'lucide-react'
 import { Reveal, Stagger, StaggerItem3D } from '../components/Motion'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 import Section from '../components/Section'
@@ -15,21 +15,23 @@ import {
 import Button from '@/components/ui/Button'
 import { PRODUCT_CATEGORIES, type ProductCategory } from '../data/products'
 import { useProducts } from '@/lib/data-hooks'
+import { CatalogPreview } from '../components/CatalogPreview'
 
 
 
 export default function Catalog() {
   useDocumentTitle('Katalog')
-  const { products: sourceProducts } = useProducts()
+  const { data: sourceProducts } = useProducts()
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('Semua')
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const deferredSearch = useDeferredValue(search)
   const [isPending, startTransition] = useTransition()
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   const filtered = useMemo(() => {
     const q = deferredSearch.toLowerCase()
-    return sourceProducts.filter((p) => {
+    return (sourceProducts || []).filter((p) => {
       const matchCategory = activeCategory === 'Semua' || p.category === activeCategory
       const matchSearch =
         !q ||
@@ -44,9 +46,10 @@ export default function Catalog() {
     startTransition(() => setActiveCategory(cat))
   }
 
-  const uniqueCategories = [...new Set(sourceProducts.map((p) => p.category))]
+  const uniqueCategories = [...new Set((sourceProducts || []).map((p) => p.category))]
 
   return (
+    <>
     <Section className="py-16 md:py-24">
       <Reveal>
         <div className="text-center mb-12">
@@ -60,6 +63,17 @@ export default function Catalog() {
           <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--tm-muted)' }}>
             Solusi konstruksi dan pengadaan untuk fasilitas kesehatan di Jawa Timur, Bali, NTB, NTT, dan Sulawesi.
           </p>
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setPreviewOpen(true)}
+              className="gap-2"
+            >
+              <Eye size={18} />
+              Preview Katalog
+            </Button>
+          </div>
         </div>
       </Reveal>
 
@@ -72,7 +86,7 @@ export default function Catalog() {
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={18} style={{ color: 'var(--tm-accent)' }} />
             <span className="text-sm font-medium" style={{ color: 'var(--tm-text)' }}>
-              <strong style={{ color: 'var(--tm-text-strong)' }}>{sourceProducts.length}</strong> Produk & Layanan
+              <strong style={{ color: 'var(--tm-text-strong)' }}>{(sourceProducts || []).length}</strong> Produk & Layanan
             </span>
           </div>
           <div
@@ -292,5 +306,8 @@ export default function Catalog() {
         </Reveal>
       )}
     </Section>
+
+      <CatalogPreview isOpen={previewOpen} onClose={() => setPreviewOpen(false)} />
+    </>
   )
 }

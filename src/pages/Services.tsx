@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription }
 
 export default function Services() {
   useDocumentTitle('Layanan')
-  const { services } = useServices()
+  const { data: services } = useServices()
 
   return (
     <div>
@@ -32,7 +32,7 @@ export default function Services() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2">
-                {services.map(({ icon, title, description }) => {
+                {(services || []).map(({ icon, title, description }) => {
                   const Icon = iconMap[icon] ?? iconMap.Hammer
                   return (
                     <div key={title} className="flex gap-3 rounded-md border border-[var(--tm-border)] bg-[var(--tm-surface-muted)] p-4">

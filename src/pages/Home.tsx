@@ -33,7 +33,7 @@ export default function Home() {
   const navigate = useNavigate()
   const heroRef = useRef<HTMLDivElement>(null)
   useDocumentTitle()
-  const { services } = useServices()
+  const { data: services } = useServices()
 
   // Subtle parallax on hero content as user scrolls
   const { scrollYProgress: heroScroll } = useScroll({
@@ -241,7 +241,7 @@ export default function Home() {
         </Reveal>
 
         <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ icon, title, description, slug }, index) => {
+          {(services || []).map(({ icon, title, description, slug }, index) => {
             const Icon = iconMap[icon] ?? iconMap.Hammer
             const colorMap: Record<string, string> = {
               'Civil Work': 'oklch(55% 0.18 220)', Electrical: 'oklch(65% 0.2 90)',

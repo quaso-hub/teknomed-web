@@ -18,7 +18,7 @@ import {
 
 export default function Projects() {
   useDocumentTitle('Proyek')
-  const { projects } = useProjects()
+  const { data: projects } = useProjects()
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>('Semua')
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -26,8 +26,8 @@ export default function Projects() {
   useFocusTrap(modalRef, !!selectedProject)
 
   const filtered = activeFilter === 'Semua'
-    ? projects
-    : projects.filter(p => p.category === activeFilter)
+    ? (projects || [])
+    : (projects || []).filter(p => p.category === activeFilter)
 
   useEffect(() => {
     if (!selectedProject) return

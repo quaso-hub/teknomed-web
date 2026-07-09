@@ -1,4 +1,4 @@
-import { ArrowRight, Move3d, Sparkles, ShieldCheck, CheckCircle2, Zap, Award } from 'lucide-react'
+import { ArrowRight, Move3d, Sparkles, ShieldCheck, CheckCircle2, Zap, Award, ChevronDown, FileText, ListChecks } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DepthReveal, StaggerItem3D, Stagger } from '../components/Motion'
@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/Badge'
 import { Button, buttonVariants } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/Card'
 import { useProductBySlug } from '@/lib/data-hooks'
+import type { CatalogSpecGroup } from '@/types'
 
 // 3D viewer dipause dulu - akan kembali di Phase 4 dengan canvas image-sequence
 // pattern (Hyperia-style). File Product3DViewer.tsx tetap ada di
@@ -23,7 +24,68 @@ const CHAPTERS: Chapter[] = [
   { id: 'cta', label: 'Konsultasi' },
 ]
 
-/** Sticky TOC desktop � clean vertical list */
+/** Collapsible card for a single catalog spec group */
+function CatalogSpecGroupCard({ group, index }: { group: CatalogSpecGroup; index: number }) {
+  const [open, setOpen] = useState(index < 3) // first 3 open by default
+  const hasItems = group.items.length > 0
+
+  return (
+    <div className="rounded-xl border border-[var(--tm-border)] bg-[var(--tm-surface)] overflow-hidden transition-colors hover:border-[var(--tm-primary)]/40">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="flex w-full items-center gap-3 p-4 text-left"
+      >
+        <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-[var(--tm-primary)]/10 text-[var(--tm-primary)]">
+          <FileText className="size-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[var(--tm-text-strong)] truncate">{group.title}</p>
+          {group.quantity != null && (
+            <p className="text-[11px] text-[var(--tm-muted)]">
+              Qty: {group.quantity}{group.unit ? ` ${group.unit}` : ''}
+            </p>
+          )}
+        </div>
+        {hasItems && (
+          <ChevronDown
+            className={`size-4 shrink-0 text-[var(--tm-muted)] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          />
+        )}
+      </button>
+      {open && hasItems && (
+        <div className="border-t border-[var(--tm-border)] px-4 pb-4 pt-3">
+          <div className="space-y-2">
+            {group.items.map((item, i) => (
+              <div key={i} className="flex gap-2 text-sm">
+                {item.label ? (
+                  <>
+                    <span className="shrink-0 font-medium text-[var(--tm-text-strong)] min-w-[120px] max-w-[180px]">
+                      {item.label}
+                    </span>
+                    <span className="text-[var(--tm-muted)]">{item.value}</span>
+                  </>
+                ) : (
+                  <span className="flex items-start gap-2 text-[var(--tm-muted)]">
+                    <span className="mt-1.5 size-1 shrink-0 rounded-full bg-[var(--tm-primary)]/40" />
+                    {item.value}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {open && !hasItems && (
+        <div className="border-t border-[var(--tm-border)] px-4 pb-4 pt-3">
+          <p className="text-xs text-[var(--tm-muted)] italic">Spesifikasi terperinci tersedia dalam dokumen tender.</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** Sticky TOC desktop — clean vertical list */
 function ChapterTOC({ activeId, onJump }: { activeId: string; onJump: (id: string) => void }) {
   return (
     <nav aria-label="Daftar isi produk" className="sticky top-24 hidden lg:block w-full">
@@ -97,7 +159,7 @@ function MobileChapterNav({ activeId, onJump }: { activeId: string; onJump: (id:
 export default function ProductDetail() {
   const { slug } = useParams()
   const navigate = useNavigate()
-  const { product } = useProductBySlug(slug ?? '')
+  const { data: product } = useProductBySlug(slug ?? '')
   useDocumentTitle(product?.name ?? 'Produk')
 
   const [activeId, setActiveId] = useState<string>(CHAPTERS[0].id)
@@ -206,24 +268,44 @@ export default function ProductDetail() {
                 className="relative overflow-hidden rounded-2xl"
                 style={{ background: 'linear-gradient(135deg, var(--tm-primary) 0%, var(--tm-accent) 60%, var(--tm-footer) 100%)' }}
               >
-                <div className="flex flex-col items-center gap-4 px-8 py-16 text-center">
-                  <div className="grid size-16 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
-                    <Move3d className="size-7 text-white" />
+                {product.has_3d ? (
+                  <div className="relative aspect-video w-full">
+                    <iframe
+                      src={`https://3d.teknomed.web.id/viewer?product=${product.viewerConfig?.viewerProduct || slug}`}
+                      className="absolute inset-0 w-full h-full border-0"
+                      allow="fullscreen"
+                      title={`3D View: ${product.name}`}
+                    />
+                    <a
+                      href={`https://3d.teknomed.web.id/?product=${product.viewerConfig?.viewerProduct || slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-lg bg-black/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm hover:bg-black/80 transition-colors"
+                    >
+                      <Move3d className="size-3.5" />
+                      Open Full App
+                    </a>
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70 mb-2">
-                      3D Experience
-                    </p>
-                    <p className="text-lg font-bold text-white mb-1">Visualisasi Interaktif</p>
-                    <p className="max-w-[32ch] text-sm leading-6 text-white/70">
-                      Sedang disiapkan. Tim teknis dapat mengirim spesifikasi penuh via email.
-                    </p>
+                ) : (
+                  <div className="flex flex-col items-center gap-4 px-8 py-16 text-center">
+                    <div className="grid size-16 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+                      <Move3d className="size-7 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70 mb-2">
+                        3D Experience
+                      </p>
+                      <p className="text-lg font-bold text-white mb-1">Visualisasi Interaktif</p>
+                      <p className="max-w-[32ch] text-sm leading-6 text-white/70">
+                        Sedang disiapkan. Tim teknis dapat mengirim spesifikasi penuh via email.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
+                      <Sparkles className="size-3" />
+                      Coming Soon
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
-                    <Sparkles className="size-3" />
-                    Coming Soon
-                  </div>
-                </div>
+                )}
                 {/* Decorative grid */}
                 <div className="absolute inset-0 hero-grid opacity-10 pointer-events-none" />
               </div>
@@ -259,7 +341,7 @@ export default function ProductDetail() {
                 <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.25em] text-[var(--tm-muted)]">04 / Engineering</span>
               </div>
               <h3 className="mb-6 text-xl font-bold text-[var(--tm-text-strong)]">Engineering & Standar</h3>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-3 mb-8">
                 {[
                   { icon: ShieldCheck, title: 'Standar Internasional', desc: 'HTM 02-01, NFPA 99, ISO 14644' },
                   { icon: Zap, title: 'Commissioning', desc: 'Uji fungsi & pressure test lengkap' },
@@ -274,6 +356,28 @@ export default function ProductDetail() {
                   </div>
                 ))}
               </div>
+
+              {/* Catalog brochure specs — dynamic per product */}
+              {product.catalogSpecs && product.catalogSpecs.length > 0 && (
+                <div>
+                  <div className="mb-4 flex items-center gap-2">
+                    <ListChecks className="size-4 text-[var(--tm-primary)]" />
+                    <h4 className="text-base font-bold text-[var(--tm-text-strong)]">
+                      Spesifikasi Detail Katalog
+                    </h4>
+                    <Badge variant="outline" className="ml-auto text-[10px]">
+                      {product.catalogSpecs.length} item
+                    </Badge>
+                  </div>
+                  <Stagger className="grid gap-3 sm:grid-cols-2">
+                    {product.catalogSpecs.map((group, i) => (
+                      <StaggerItem3D key={group.title}>
+                        <CatalogSpecGroupCard group={group} index={i} />
+                      </StaggerItem3D>
+                    ))}
+                  </Stagger>
+                </div>
+              )}
             </DepthReveal>
           </section>
 

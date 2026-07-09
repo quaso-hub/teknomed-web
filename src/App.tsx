@@ -1,6 +1,5 @@
 import { Suspense, lazy } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'motion/react'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import { RouteProgressBar } from './components/RouteProgressBar'
@@ -87,54 +86,71 @@ const pageVariants = {
 function AnimatedRoutes() {
   const location = useLocation()
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location.pathname}
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        style={{ willChange: 'transform, opacity, filter' }}
-      >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/catalog/:slug" element={<ProductDetail />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
+    <Routes location={location}>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/services" element={<Services />} />
+      <Route path="/projects" element={<Projects />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/catalog" element={<Catalog />} />
+      <Route path="/catalog/:slug" element={<ProductDetail />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
 
 function App() {
   const location = useLocation()
-  const isAdmin = location.pathname.startsWith('/admin')
+  const isAdminDomain = typeof window !== 'undefined' && window.location.hostname.startsWith('admin.')
+  const isAdminPath = location.pathname.startsWith('/admin')
+  const isAdmin = isAdminDomain || isAdminPath
 
   if (isAdmin) {
     return (
       <ErrorBoundary>
+        <ToastProvider>
         <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-mono">Loading...</div>}>
           <Routes location={location}>
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="projects" element={<AdminPages />} />
-              <Route path="services" element={<AdminServices />} />
-              <Route path="testimonials" element={<AdminTestimonials />} />
-              <Route path="models" element={<AdminModels />} />
-              <Route path="models/config" element={<AdminModels />} />
-              <Route path="inquiries" element={<AdminInquiries />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="pdf" element={<AdminPdf />} />
-            </Route>
+            {/* Admin subdomain: serve at root */}
+            {isAdminDomain && (
+              <>
+                <Route path="/login" element={<AdminLogin />} />
+                <Route path="/" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="projects" element={<AdminPages />} />
+                  <Route path="services" element={<AdminServices />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
+                  <Route path="models" element={<AdminModels />} />
+                  <Route path="models/config" element={<AdminModels />} />
+                  <Route path="inquiries" element={<AdminInquiries />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                  <Route path="pdf" element={<AdminPdf />} />
+                </Route>
+              </>
+            )}
+            {/* Main domain: serve at /admin path */}
+            {!isAdminDomain && (
+              <>
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="projects" element={<AdminPages />} />
+                  <Route path="services" element={<AdminServices />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
+                  <Route path="models" element={<AdminModels />} />
+                  <Route path="models/config" element={<AdminModels />} />
+                  <Route path="inquiries" element={<AdminInquiries />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                  <Route path="pdf" element={<AdminPdf />} />
+                </Route>
+              </>
+            )}
+            <Route path="*" element={<Navigate to={isAdminDomain ? "/" : "/"} replace />} />
           </Routes>
         </Suspense>
+        </ToastProvider>
       </ErrorBoundary>
     )
   }

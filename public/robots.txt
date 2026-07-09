@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+Sitemap: https://teknomed.web.id/sitemap.xml

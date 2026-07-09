@@ -1,8 +1,9 @@
-import { Clock3, Mail, MapPin, Phone, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
+import { Clock3, Mail, MapPin, Phone, ArrowRight, Eye } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Container from './Container'
 import { SITE } from '../config/site'
-
+import { CatalogPreview } from './CatalogPreview'
 const navLinks = [
   { label: 'Home', to: '/' },
   { label: 'Tentang Kami', to: '/about' },
@@ -22,8 +23,10 @@ const services = [
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   return (
+    <>
     <footer className="mt-16 border-t border-[var(--tm-border)]" style={{ backgroundColor: 'var(--tm-footer)' }}>
       <Container>
         {/* Main grid */}
@@ -72,9 +75,15 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+            {/* Preview Katalog */}
+              <button
+                onClick={() => setPreviewOpen(true)}
+                className="inline-flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition-colors"
+              >
+                <Eye size={14} />
+                Preview Katalog
+              </button>
           </div>
-
-          {/* Services list */}
           <div>
             <div className="mb-4 text-xs font-semibold uppercase tracking-widest text-white/40">Layanan</div>
             <ul className="space-y-2.5 text-sm text-white/65">
@@ -134,5 +143,7 @@ export default function Footer() {
         </div>
       </Container>
     </footer>
+    <CatalogPreview isOpen={previewOpen} onClose={() => setPreviewOpen(false)} />
+    </>
   )
 }

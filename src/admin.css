@@ -1,2 +1,121 @@
-.admin-theme { font-family: 'Geist Mono', monospace; background: #0a0a0a; color: #fafafa; }
+/* ─── Admin Theme: Dark (default) ─────────────────────────────────────────── */
+.admin-theme {
+  font-family: 'Geist Mono', monospace;
+  --adm-bg:        #0a0a0a;
+  --adm-bg-alt:    #0d0d0d;
+  --adm-surface:   #1a1a1a;
+  --adm-surface-2: #111111;
+  --adm-border:    #222222;
+  --adm-border-hi: #333333;
+  --adm-text:      #ffffff;
+  --adm-text-dim:  #999999;
+  --adm-text-muted:#666666;
+  --adm-accent:    #ffffff;
+  background: var(--adm-bg);
+  color: var(--adm-text);
+}
 .admin-theme * { box-sizing: border-box; }
+
+/* ─── Admin Theme: Light ──────────────────────────────────────────────────── */
+.admin-theme.light {
+  --adm-bg:        #ffffff;
+  --adm-bg-alt:    #f5f5f5;
+  --adm-surface:   #ebebeb;
+  --adm-surface-2: #f0f0f0;
+  --adm-border:    #e5e5e5;
+  --adm-border-hi: #d4d4d4;
+  --adm-text:      #0a0a0a;
+  --adm-text-dim:  #525252;
+  --adm-text-muted:#737373;
+  --adm-accent:    #0a0a0a;
+}
+
+/* ─── Attribute-selector overrides for Tailwind hardcoded classes ─────────── */
+/* lightningcss cannot parse escaped bracket selectors, so we use [class*=...] */
+
+/* Backgrounds */
+.admin-theme.light [class*="bg-[#0a0a0a]"] { background-color: var(--adm-bg) !important; }
+.admin-theme.light [class*="bg-[#0d0d0d]"] { background-color: var(--adm-bg-alt) !important; }
+.admin-theme.light [class*="bg-[#111]"] { background-color: var(--adm-surface-2) !important; }
+.admin-theme.light [class*="bg-[#151515]"] { background-color: var(--adm-surface-2) !important; }
+.admin-theme.light [class*="bg-[#161616]"] { background-color: var(--adm-surface-2) !important; }
+.admin-theme.light [class*="bg-[#1a1a1a]"] { background-color: var(--adm-surface) !important; }
+
+/* Logo box + primary action buttons */
+.admin-theme.light [class*="bg-white"][class*="text-black"] {
+  background-color: var(--adm-accent) !important;
+  color: var(--adm-bg) !important;
+}
+.admin-theme.light [class*="hover:bg-gray-200"]:hover {
+  background-color: #d4d4d4 !important;
+}
+
+/* Text colors */
+.admin-theme.light [class*="text-gray-400"] { color: var(--adm-text-dim) !important; }
+.admin-theme.light [class*="text-gray-500"] { color: var(--adm-text-dim) !important; }
+.admin-theme.light [class*="text-gray-600"] { color: var(--adm-text-muted) !important; }
+
+/* Border colors */
+.admin-theme.light [class*="border-[#222]"] { border-color: var(--adm-border) !important; }
+.admin-theme.light [class*="border-[#333]"] { border-color: var(--adm-border-hi) !important; }
+
+/* Hover states */
+.admin-theme.light [class*="hover:bg-[#1a1a1a]"]:hover { background-color: var(--adm-surface) !important; }
+.admin-theme.light [class*="hover:bg-[#161616]"]:hover { background-color: var(--adm-surface-2) !important; }
+.admin-theme.light [class*="hover:bg-[#222]"]:hover { background-color: var(--adm-surface) !important; }
+.admin-theme.light [class*="hover:bg-[#111]/50"]:hover { background-color: rgba(0, 0, 0, 0.04) !important; }
+
+/* Input fields */
+.admin-theme.light input:not([type="checkbox"]),
+.admin-theme.light textarea,
+.admin-theme.light select {
+  background-color: var(--adm-bg) !important;
+  border-color: var(--adm-border-hi) !important;
+  color: var(--adm-text) !important;
+}
+.admin-theme.light input:focus,
+.admin-theme.light textarea:focus,
+.admin-theme.light select:focus {
+  border-color: var(--adm-text-dim) !important;
+}
+
+/* Checkbox accent */
+.admin-theme.light [class*="accent-white"] {
+  accent-color: var(--adm-accent) !important;
+}
+
+/* Role badges */
+.admin-theme.light [class*="bg-red-500/15"] { background-color: rgba(239, 68, 68, 0.12) !important; }
+.admin-theme.light [class*="text-red-400"] { color: #dc2626 !important; }
+.admin-theme.light [class*="border-red-500/30"] { border-color: rgba(239, 68, 68, 0.3) !important; }
+
+.admin-theme.light [class*="bg-blue-500/15"] { background-color: rgba(59, 130, 246, 0.12) !important; }
+.admin-theme.light [class*="text-blue-400"] { color: #2563eb !important; }
+.admin-theme.light [class*="border-blue-500/30"] { border-color: rgba(59, 130, 246, 0.3) !important; }
+
+.admin-theme.light [class*="bg-green-500/15"] { background-color: rgba(34, 197, 94, 0.12) !important; }
+.admin-theme.light [class*="text-green-400"] { color: #16a34a !important; }
+.admin-theme.light [class*="border-green-500/30"] { border-color: rgba(34, 197, 94, 0.3) !important; }
+
+.admin-theme.light [class*="bg-gray-500/15"] { background-color: rgba(107, 114, 128, 0.12) !important; }
+.admin-theme.light [class*="border-gray-500/30"] { border-color: rgba(107, 114, 128, 0.3) !important; }
+
+/* Viewer banner */
+.admin-theme.light [class*="bg-yellow-500/10"] { background-color: rgba(234, 179, 8, 0.1) !important; }
+.admin-theme.light [class*="text-yellow-400"] { color: #ca8a04 !important; }
+.admin-theme.light [class*="border-yellow-500/30"] { border-color: rgba(234, 179, 8, 0.3) !important; }
+
+/* Edit/Delete action buttons in tables */
+.admin-theme.light [class*="border-blue-900/50"] { border-color: rgba(30, 64, 175, 0.3) !important; }
+.admin-theme.light [class*="border-red-900/50"] { border-color: rgba(127, 29, 29, 0.3) !important; }
+
+/* Active filter buttons: border-white → accent */
+.admin-theme.light [class*="border-white"][class*="text-white"] {
+  border-color: var(--adm-accent) !important;
+  color: var(--adm-text) !important;
+}
+
+/* Loading skeleton */
+.admin-theme.light [class*="bg-[#222]"][class*="animate-pulse"] {
+  background-color: var(--adm-border) !important;
+}

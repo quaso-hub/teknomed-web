@@ -1,87 +1,115 @@
-import { useEffect, useState } from "react"
-import { useNavigate, Outlet, Link, useLocation } from "react-router-dom"
+import { useState, useEffect, useCallback } from "react"
+import { Outlet, Link, useLocation } from "react-router-dom"
 import { supabase } from "../../lib/supabase"
+import { AuthGuard } from "../../components/AuthGuard"
+import type { AdminRole } from "../../components/AuthGuard"
 import "../../admin.css"
+
+const isAdminDomain = typeof window !== 'undefined' && window.location.hostname.startsWith('admin.')
+const base = isAdminDomain ? '' : '/admin'
 
 const navSections = [
   {
     label: "Overview",
     items: [
-      { to: "/admin", label: "Dashboard", icon: "◆" },
+      { to: `${base}`, label: "Dashboard", icon: "◆" },
     ]
   },
   {
     label: "Katalog",
     items: [
-      { to: "/admin/products", label: "Produk", icon: "▣" },
-      { to: "/admin/projects", label: "Proyek", icon: "▦" },
-      { to: "/admin/services", label: "Layanan", icon: "◈" },
-      { to: "/admin/testimonials", label: "Testimoni", icon: "❝" },
+      { to: `${base}/products`, label: "Produk", icon: "▣" },
+      { to: `${base}/projects`, label: "Proyek", icon: "▦" },
+      { to: `${base}/services`, label: "Layanan", icon: "◈" },
+      { to: `${base}/testimonials`, label: "Testimoni", icon: "❝" },
     ]
   },
   {
     label: "3D Viewer",
     items: [
-      { to: "/admin/models", label: "Model 3D", icon: "◇" },
-      { to: "/admin/models/config", label: "Konfigurasi", icon: "⚙" },
+      { to: `${base}/models`, label: "Model 3D", icon: "◇" },
+      { to: `${base}/models/config`, label: "Konfigurasi", icon: "⚙" },
     ]
   },
   {
     label: "Operasional",
     items: [
-      { to: "/admin/inquiries", label: "Inquiries", icon: "✉" },
-      { to: "/admin/pdf", label: "PDF Generator", icon: "⎙" },
+      { to: `${base}/inquiries`, label: "Inquiries", icon: "✉" },
+      { to: `${base}/pdf`, label: "PDF Generator", icon: "⎙" },
     ]
   },
   {
     label: "Sistem",
     items: [
-      { to: "/admin/settings", label: "Pengaturan", icon: "⚙" },
+      { to: `${base}/settings`, label: "Pengaturan", icon: "⚙" },
     ]
   },
 ]
 
-export function AdminLayout() {
-  const [session, setSession] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+/** Role badge color mapping */
+function getRoleBadgeColor(role: AdminRole | string): string {
+  switch (role) {
+    case "super_admin":
+      return "bg-red-500/15 text-red-400 border-red-500/30"
+    case "admin":
+      return "bg-blue-500/15 text-blue-400 border-blue-500/30"
+    case "editor":
+      return "bg-green-500/15 text-green-400 border-green-500/30"
+    default:
+      return "bg-gray-500/15 text-gray-400 border-gray-500/30"
+  }
+}
+
+/** Inner layout — only rendered after AuthGuard passes */
+function AdminShell({
+  email,
+  roleLabel,
+  role,
+  onLogout,
+}: {
+  email: string
+  roleLabel: string
+  role: string
+  onLogout: () => void
+}) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const navigate = useNavigate()
+  const [lightMode, setLightMode] = useState(false)
   const location = useLocation()
 
+  // Persist theme to localStorage
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-      if (!session) navigate("/admin/login")
-    })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (!session) navigate("/admin/login")
-    })
-    return () => subscription.unsubscribe()
-  }, [navigate])
+    const stored = localStorage.getItem('admin-theme')
+    if (stored === 'light') setLightMode(true)
+  }, [])
 
-  if (loading) {
-    return (
-      <div className="admin-theme flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-          <span className="text-xs uppercase tracking-widest text-gray-500">Loading...</span>
-        </div>
-      </div>
-    )
-  }
+  const toggleTheme = useCallback(() => {
+    setLightMode((prev) => {
+      const next = !prev
+      localStorage.setItem('admin-theme', next ? 'light' : 'dark')
+      return next
+    })
+  }, [])
+
+  const isViewer = role === "viewer"
 
   return (
-    <div className="admin-theme min-h-screen flex w-full bg-[#0a0a0a] text-white font-mono">
+    <div className={`admin-theme${lightMode ? ' light' : ''} min-h-screen flex w-full font-mono`}
+      style={{ background: 'var(--adm-bg)', color: 'var(--adm-text)' }}
+    >
       {/* Sidebar */}
-      <aside className={`${sidebarCollapsed ? 'w-16' : 'w-64'} border-r border-[#222] bg-[#0d0d0d] flex flex-col transition-all duration-200`}>
+      <aside className={`${sidebarCollapsed ? 'w-16' : 'w-64'} border-r flex flex-col transition-all duration-200`}
+        style={{ borderColor: 'var(--adm-border)', background: 'var(--adm-bg-alt)' }}
+      >
         {/* Logo */}
-        <div className="h-16 border-b border-[#222] flex items-center justify-between px-4">
+        <div className="h-16 border-b flex items-center justify-between px-4"
+          style={{ borderColor: 'var(--adm-border)' }}
+        >
           {!sidebarCollapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white rounded-sm flex items-center justify-center">
-                <span className="text-black font-bold text-sm">T</span>
+              <div className="w-8 h-8 rounded-sm flex items-center justify-center"
+                style={{ background: 'var(--adm-accent)' }}
+              >
+                <span className="font-bold text-sm" style={{ color: 'var(--adm-bg)' }}>T</span>
               </div>
               <div>
                 <div className="text-sm font-bold uppercase tracking-wider">Teknomed</div>
@@ -91,18 +119,27 @@ export function AdminLayout() {
           )}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-white hover:bg-[#1a1a1a] rounded transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded transition-colors"
+            style={{ color: 'var(--adm-text-muted)' }}
           >
             {sidebarCollapsed ? '→' : '←'}
           </button>
         </div>
+
+        {isViewer && !sidebarCollapsed && (
+          <div className="mx-3 mt-3 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded text-[10px] text-yellow-400 uppercase tracking-wider">
+            Read-Only Mode
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4">
           {navSections.map((section) => (
             <div key={section.label} className="mb-4">
               {!sidebarCollapsed && (
-                <div className="px-4 mb-2 text-[10px] uppercase tracking-[0.2em] text-gray-600 font-semibold">
+                <div className="px-4 mb-2 text-[10px] uppercase tracking-[0.2em] font-semibold"
+                  style={{ color: 'var(--adm-text-muted)' }}
+                >
                   {section.label}
                 </div>
               )}
@@ -113,11 +150,12 @@ export function AdminLayout() {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                      isActive
-                        ? 'bg-white/10 text-white border-r-2 border-white'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
+                    className="flex items-center gap-3 px-4 py-2 text-sm transition-colors"
+                    style={{
+                      color: isActive ? 'var(--adm-text)' : 'var(--adm-text-dim)',
+                      backgroundColor: isActive ? 'rgba(128,128,128,0.1)' : 'transparent',
+                      borderRight: isActive ? '2px solid var(--adm-accent)' : '2px solid transparent',
+                    }}
                     title={sidebarCollapsed ? item.label : undefined}
                   >
                     <span className="w-5 text-center text-xs">{item.icon}</span>
@@ -130,32 +168,58 @@ export function AdminLayout() {
         </nav>
 
         {/* User */}
-        <div className="border-t border-[#222] p-4">
+        <div className="border-t p-4" style={{ borderColor: 'var(--adm-border)' }}>
           {!sidebarCollapsed ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#1a1a1a] rounded-full flex items-center justify-center text-xs">
-                {session?.user?.email?.[0]?.toUpperCase() || 'A'}
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs"
+                style={{ background: 'var(--adm-surface)' }}
+              >
+                {email?.[0]?.toUpperCase() || 'A'}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs truncate">{session?.user?.email || 'Admin'}</div>
-                <div className="text-[10px] text-gray-500 uppercase">Super Admin</div>
+                <div className="text-xs truncate" style={{ color: 'var(--adm-text)' }}>{email || 'Admin'}</div>
+                <div className={`text-[10px] uppercase tracking-wider inline-block mt-0.5 px-1.5 py-0.5 rounded border ${getRoleBadgeColor(role)}`}>
+                  {roleLabel}
+                </div>
               </div>
+              {/* Theme toggle */}
               <button
-                onClick={() => supabase.auth.signOut()}
-                className="text-gray-500 hover:text-red-400 transition-colors text-xs"
+                onClick={toggleTheme}
+                className="w-7 h-7 flex items-center justify-center rounded text-xs transition-colors"
+                style={{ color: 'var(--adm-text-muted)' }}
+                title={lightMode ? 'Switch to dark mode' : 'Switch to light mode'}
+              >
+                {lightMode ? '◐' : '◑'}
+              </button>
+              <button
+                onClick={onLogout}
+                className="transition-colors text-xs"
+                style={{ color: 'var(--adm-text-muted)' }}
                 title="Logout"
               >
                 ↗
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => supabase.auth.signOut()}
-              className="w-full text-center text-gray-500 hover:text-red-400 transition-colors text-xs"
-              title="Logout"
-            >
-              ↗
-            </button>
+            <div className="flex flex-col items-center gap-2">
+              {/* Theme toggle (collapsed) */}
+              <button
+                onClick={toggleTheme}
+                className="w-8 h-8 flex items-center justify-center rounded text-xs transition-colors"
+                style={{ color: 'var(--adm-text-muted)' }}
+                title={lightMode ? 'Switch to dark mode' : 'Switch to light mode'}
+              >
+                {lightMode ? '◐' : '◑'}
+              </button>
+              <button
+                onClick={onLogout}
+                className="w-full text-center transition-colors text-xs"
+                style={{ color: 'var(--adm-text-muted)' }}
+                title="Logout"
+              >
+                ↗
+              </button>
+            </div>
           )}
         </div>
       </aside>
@@ -163,9 +227,13 @@ export function AdminLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-16 border-b border-[#222] bg-[#0d0d0d] flex items-center justify-between px-6">
+        <header className="h-16 border-b flex items-center justify-between px-6"
+          style={{ borderColor: 'var(--adm-border)', background: 'var(--adm-bg-alt)' }}
+        >
           <div className="flex items-center gap-4">
-            <h2 className="text-sm uppercase tracking-widest text-gray-400">
+            <h2 className="text-sm uppercase tracking-widest"
+              style={{ color: 'var(--adm-text-dim)' }}
+            >
               {navSections.flatMap(s => s.items).find(i =>
                 location.pathname === i.to ||
                 (i.to !== '/admin' && location.pathname.startsWith(i.to))
@@ -177,22 +245,46 @@ export function AdminLayout() {
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-gray-500 hover:text-white transition-colors uppercase tracking-wider"
+              className="text-xs transition-colors uppercase tracking-wider"
+              style={{ color: 'var(--adm-text-dim)' }}
             >
               Lihat Site ↗
             </a>
-            <div className="w-px h-4 bg-[#333]" />
-            <span className="text-[10px] text-gray-600 uppercase tracking-wider">
+            <div className="w-px h-4" style={{ background: 'var(--adm-border-hi)' }} />
+            <span className="text-[10px] uppercase tracking-wider"
+              style={{ color: 'var(--adm-text-muted)' }}
+            >
               {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
             </span>
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-6 overflow-y-auto bg-[#0a0a0a]">
+        <main className="flex-1 p-6 overflow-y-auto" style={{ background: 'var(--adm-bg)' }}>
           <Outlet />
         </main>
       </div>
     </div>
+  )
+}
+
+/**
+ * AdminLayout — protected by AuthGuard.
+ *
+ * AuthGuard checks session + role BEFORE rendering AdminShell.
+ * This means no admin content is ever sent to an unauthenticated user.
+ */
+export function AdminLayout() {
+  return (
+    <AuthGuard>
+      {({ session, profile, roleLabel }) => (
+        <AdminShell
+          email={session.user.email || profile.email || ""}
+          roleLabel={roleLabel}
+          role={profile.role}
+          onLogout={() => supabase.auth.signOut()}
+        />
+      )}
+    </AuthGuard>
   )
 }

@@ -1,32 +1,58 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabase"
+import { useToast } from "../../components/toast-context"
 import { Link } from "react-router-dom"
 
 export function AdminDashboard() {
+  const { addToast } = useToast()
   const [stats, setStats] = useState({ products: 0, inquiries: 0, projects: 0, testimonials: 0 })
   const [recentInquiries, setRecentInquiries] = useState<any[]>([])
   const [recentProducts, setRecentProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchStats() {
-      const [p, i, pr, t] = await Promise.all([
-        supabase.from('products').select('*', { count: 'exact', head: true }),
-        supabase.from('inquiries').select('*', { count: 'exact', head: true }),
-        supabase.from('projects').select('*', { count: 'exact', head: true }),
-        supabase.from('testimonials').select('*', { count: 'exact', head: true }),
-      ])
-      setStats({
-        products: p.count || 0,
-        inquiries: i.count || 0,
-        projects: pr.count || 0,
-        testimonials: t.count || 0,
-      })
+      try {
+        const [p, i, pr, t] = await Promise.all([
+          supabase.from('products').select('*', { count: 'exact', head: true }),
+          supabase.from('inquiries').select('*', { count: 'exact', head: true }),
+          supabase.from('projects').select('*', { count: 'exact', head: true }),
+          supabase.from('testimonials').select('*', { count: 'exact', head: true }),
+        ])
 
-      const { data: inq } = await supabase.from('inquiries').select('*').order('created_at', { ascending: false }).limit(5)
-      if (inq) setRecentInquiries(inq)
+        if (p.error) console.error('[Dashboard] products count error:', p.error.message)
+        if (i.error) console.error('[Dashboard] inquiries count error:', i.error.message)
+        if (pr.error) console.error('[Dashboard] projects count error:', pr.error.message)
+        if (t.error) console.error('[Dashboard] testimonials count error:', t.error.message)
 
-      const { data: prods } = await supabase.from('products').select('*').order('updated_at', { ascending: false }).limit(5)
-      if (prods) setRecentProducts(prods)
+        setStats({
+          products: p.count || 0,
+          inquiries: i.count || 0,
+          projects: pr.count || 0,
+          testimonials: t.count || 0,
+        })
+
+        const { data: inq, error: inqErr } = await supabase
+          .from('inquiries')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(5)
+        if (inqErr) console.error('[Dashboard] recent inquiries error:', inqErr.message)
+        else if (inq) setRecentInquiries(inq)
+
+        const { data: prods, error: prodsErr } = await supabase
+          .from('products')
+          .select('*')
+          .order('updated_at', { ascending: false })
+          .limit(5)
+        if (prodsErr) console.error('[Dashboard] recent products error:', prodsErr.message)
+        else if (prods) setRecentProducts(prods)
+      } catch (err: any) {
+        console.error('[Dashboard] fetchStats exception:', err)
+        addToast("Gagal memuat statistik dashboard", "error")
+      } finally {
+        setLoading(false)
+      }
     }
     fetchStats()
   }, [])
@@ -62,7 +88,9 @@ export function AdminDashboard() {
             className={`p-5 border ${card.color} bg-[#111] hover:bg-[#161616] transition-colors group`}
           >
             <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">{card.label}</div>
-            <div className="text-4xl font-light tracking-tighter">{card.value}</div>
+            <div className="text-4xl font-light tracking-tighter">
+              {loading ? <span className="inline-block w-12 h-8 bg-[#222] animate-pulse rounded" /> : card.value}
+            </div>
             <div className="text-[10px] text-gray-600 uppercase tracking-wider mt-2 group-hover:text-gray-400 transition-colors">
               Lihat semua →
             </div>
@@ -81,7 +109,12 @@ export function AdminDashboard() {
             </Link>
           </div>
           <div className="divide-y divide-[#222]">
-            {recentInquiries.length === 0 ? (
+            {loading ? (
+              <div className="px-5 py-8 text-center">
+                <div className="w-full h-4 bg-[#222] animate-pulse rounded mb-2" />
+                <div className="w-3/4 h-4 bg-[#222] animate-pulse rounded mx-auto" />
+              </div>
+            ) : recentInquiries.length === 0 ? (
               <div className="px-5 py-8 text-center text-gray-600 text-sm">Belum ada inquiry</div>
             ) : (
               recentInquiries.map((inq) => (
@@ -109,7 +142,12 @@ export function AdminDashboard() {
             </Link>
           </div>
           <div className="divide-y divide-[#222]">
-            {recentProducts.length === 0 ? (
+            {loading ? (
+              <div className="px-5 py-8 text-center">
+                <div className="w-full h-4 bg-[#222] animate-pulse rounded mb-2" />
+                <div className="w-3/4 h-4 bg-[#222] animate-pulse rounded mx-auto" />
+              </div>
+            ) : recentProducts.length === 0 ? (
               <div className="px-5 py-8 text-center text-gray-600 text-sm">Belum ada produk</div>
             ) : (
               recentProducts.map((prod) => (
